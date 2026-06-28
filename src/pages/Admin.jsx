@@ -1,20 +1,53 @@
 import { useEffect, useState } from "react";
 
-import { db } from "../firebase/firebase";
+import { db, auth } from "../firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate, Link } from "react-router-dom";
 
 import {
   collection,
   getDocs,
   deleteDoc,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
 
 export default function Admin() {
   const [reports, setReports] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    loadReports();
-  }, []);
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const adminQuery = query(
+        collection(db, "admins"),
+        where("email", "==", user.email)
+      );
+
+      const adminSnapshot = await getDocs(adminQuery);
+
+      if (adminSnapshot.empty) {
+        alert("관리자만 접근 가능합니다.");
+        navigate("/");
+        return;
+      }
+
+      loadReports();
+    } catch (error) {
+      console.error(error);
+      alert("관리자 확인 중 오류가 발생했습니다.");
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 
   const loadReports = async () => {
     try {
@@ -57,6 +90,11 @@ export default function Admin() {
       }}
     >
       <h1>관리자 대시보드</h1>
+      <div style={{ marginBottom: "20px" }}>
+  <Link to="/">
+    <button>🏠 홈으로</button>
+  </Link>
+</div>
 
       <br />
 

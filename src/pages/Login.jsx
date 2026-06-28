@@ -28,7 +28,7 @@ console.log("인증 여부:", user.emailVerified);
 //  return;
 //}
 
-navigate("/report");
+navigate("/");
   } catch (error) {
     console.error(error);
     alert(error.message);

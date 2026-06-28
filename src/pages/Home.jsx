@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -7,59 +6,64 @@ import { auth, db } from "../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   collection,
-  addDoc,
-  getDocs
+  getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 
-
-
-
 export default function Home() {
-  const loadStats = async () => {
-  try {
-    const reportsSnapshot = await getDocs(
-      collection(db, "reports")
-    );
-
-    const battletagsSnapshot = await getDocs(
-      collection(db, "battletags")
-    );
-
-    setReportCount(reportsSnapshot.size);
-    setBattleTagCount(battletagsSnapshot.size);
-
-  } catch (error) {
-    console.error(error);
-  }
-};
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [reportCount, setReportCount] = useState(0);
-const [battleTagCount, setBattleTagCount] = useState(0);
+  const [battleTagCount, setBattleTagCount] = useState(0);
 
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-  });
+  useEffect(() => {
+    loadStats();
 
-  loadStats();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
 
-  return () => unsubscribe();
-}, []);
-  console.log(auth.currentUser);
-  const testFirebase = async () => {
-  try {
-    await addDoc(collection(db, "reports"), {
-      battletag: "TestPlayer#1234",
-      reason: "테스트 신고",
-      createdAt: new Date(),
+      if (!currentUser) {
+        setIsAdmin(false);
+        return;
+      }
+
+      console.log("로그인 사용자:", currentUser.email);
+
+      try {
+        const q = query(
+          collection(db, "admins"),
+          where("email", "==", currentUser.email)
+        );
+
+        const snapshot = await getDocs(q);
+
+        console.log("관리자 문서 개수:", snapshot.size);
+        console.log("관리자 여부:", !snapshot.empty);
+
+        setIsAdmin(!snapshot.empty);
+
+      } catch (error) {
+        console.error("관리자 조회 오류:", error);
+      }
     });
 
-    alert("Firebase 저장 성공!");
-  } catch (error) {
-    console.error(error);
-    alert("에러 발생");
-  }
-};
+    return () => unsubscribe();
+  }, []);
+
+  const loadStats = async () => {
+    try {
+      const reportsSnapshot = await getDocs(collection(db, "reports"));
+      const battletagsSnapshot = await getDocs(collection(db, "battletags"));
+
+      setReportCount(reportsSnapshot.size);
+      setBattleTagCount(battletagsSnapshot.size);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -72,62 +76,65 @@ useEffect(() => {
         alignItems: "center",
       }}
     >
-      <h1
-        style={{
-          fontSize: "64px",
-          marginBottom: "10px",
-        }}
-      >
+      <h1 style={{ fontSize: "64px", marginBottom: "10px" }}>
         OW Watch
       </h1>
 
-      <p
-        style={{
-          color: "#94a3b8",
-          marginBottom: "30px",
-        }}
-      >
+      <p style={{ color: "#94a3b8", marginBottom: "30px" }}>
         오버워치 커뮤니티 신고 플랫폼
       </p>
 
-      <div>
-  {!user ? (
-    <Link to="/login">
-      <button>로그인</button>
-    </Link>
-  ) : (
-    <Link to="/report">
-      <button>신고하기</button>
-    </Link>
-  )}
-</div>
+      {!user ? (
+        <Link to="/login">
+          <button>로그인</button>
+        </Link>
+      ) : (
+        <>
+          <p>환영합니다 {user.email}</p>
 
-{user && (
-  <div style={{ marginBottom: "20px" }}>
-    <p>환영합니다 {user.email}</p>
+          {/* 디버깅용 - 나중에 삭제 가능 */}
+          <p>관리자 여부 : {isAdmin ? "YES" : "NO"}</p>
 
-    <button
-      onClick={async () => {
-        await auth.signOut();
-        window.location.reload();
-      }}
-    >
-      로그아웃
-    </button>
-  </div>
-)}
-      <div style={{ marginTop: "20px" }}>
-        <Link to="/ranking">
+          <div style={{ marginBottom: "20px" }}>
+            <Link to="/report">
+              <button>신고하기</button>
+            </Link>
+          </div>
+
           <button
-            style={{
-              padding: "12px 24px",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
+            onClick={async () => {
+              await auth.signOut();
+              window.location.reload();
             }}
           >
-            신고 랭킹
+            로그아웃
           </button>
+
+          {isAdmin && (
+            <div style={{ marginTop: "20px" }}>
+              <Link to="/admin">
+                <button
+                  style={{
+                    backgroundColor: "#f59e0b",
+                    color: "white",
+                    border: "none",
+                    padding: "12px 24px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
+                >
+                  🛠 관리자
+                </button>
+              </Link>
+            </div>
+          )}
+        </>
+      )}
+
+      <div style={{ marginTop: "20px" }}>
+        <Link to="/ranking">
+          <button>신고 랭킹</button>
         </Link>
       </div>
 

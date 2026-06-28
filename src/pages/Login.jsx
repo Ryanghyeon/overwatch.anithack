@@ -36,7 +36,7 @@ navigate("/");
 };
   return (
  
-</button>
+
     
     <div
       style={{

@@ -35,6 +35,15 @@ navigate("/report");
   }
 };
   return (
+    <button
+  onClick={() => {
+    window.location.href =
+      "https://discord.com/oauth2/authorize?client_id=여기에CLIENT_ID&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth%2Fdiscord%2Fcallback&scope=identify%20email";
+  }}
+>
+  Discord로 로그인
+</button>
+    
     <div
       style={{
         minHeight: "100vh",

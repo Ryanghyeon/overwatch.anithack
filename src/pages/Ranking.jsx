@@ -43,39 +43,117 @@ export default function Ranking() {
         minHeight: "100vh",
         backgroundColor: "#0f172a",
         color: "white",
-        padding: "50px",
+        padding: "50px 20px",
       }}
     >
-      <h1>신고 랭킹</h1>
-<h1>신고 랭킹</h1>
-
-<Link to="/">
-  <button>🏠 홈으로</button>
-</Link>
-      <br />
-
-      {ranking.map((player, index) => (
-        <div
-          key={player.id}
+      <div
+        style={{
+          textAlign: "center",
+          marginBottom: "40px",
+        }}
+      >
+        <h1
           style={{
-            backgroundColor: "#1e293b",
-            padding: "15px",
+            fontSize: "48px",
             marginBottom: "10px",
-            borderRadius: "10px",
           }}
         >
-          <h3>
-            #{index + 1} {player.battletag}
-          </h3>
+          🏆 신고 랭킹
+        </h1>
 
-          <p>
-            신고 횟수 : {player.reportCount}
-          </p>
-          
-        </div>
-        
-      ))}
+        <p
+          style={{
+            color: "#94a3b8",
+            fontSize: "18px",
+            marginBottom: "25px",
+          }}
+        >
+          가장 많이 신고된 배틀태그 순위
+        </p>
+
+        <Link to="/">
+          <button
+            style={{
+              backgroundColor: "#1e293b",
+              color: "white",
+              border: "none",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontSize: "15px",
+            }}
+          >
+            ← 홈으로
+          </button>
+        </Link>
+      </div>
+
+      <div
+        style={{
+          maxWidth: "850px",
+          margin: "0 auto",
+        }}
+      >
+        {ranking.map((player, index) => (
+          <div
+            key={player.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#1e293b",
+              padding: "22px",
+              marginBottom: "18px",
+              borderRadius: "14px",
+              transition: "0.2s",
+              boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-3px)";
+              e.currentTarget.style.boxShadow =
+                "0 10px 25px rgba(0,0,0,0.35)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 5px 15px rgba(0,0,0,0.2)";
+            }}
+          >
+            <div
+              style={{
+                width: "70px",
+                textAlign: "center",
+                fontSize: "35px",
+              }}
+            >
+              {index === 0 && "🥇"}
+              {index === 1 && "🥈"}
+              {index === 2 && "🥉"}
+              {index > 2 && `#${index + 1}`}
+            </div>
+
+            <div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: "24px",
+                }}
+              >
+                {player.battletag}
+              </h2>
+
+              <p
+                style={{
+                  marginTop: "8px",
+                  color: "#cbd5e1",
+                  fontSize: "17px",
+                }}
+              >
+                🚨 신고 {player.reportCount}회
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-    
   );
 }

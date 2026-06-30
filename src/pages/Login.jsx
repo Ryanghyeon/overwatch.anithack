@@ -32,7 +32,7 @@ useEffect(() => {
 
 
 
-};
+
 
    const handleLogin = async () => {
   console.log("email:", email);
@@ -44,6 +44,10 @@ console.log("password:", password);
     email,
     password
   );
+
+
+
+    
     const handleDiscordLogin = () => {
   const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
 

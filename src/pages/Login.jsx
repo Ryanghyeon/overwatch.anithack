@@ -35,6 +35,22 @@ console.log("password:", password);
     email,
     password
   );
+    const handleDiscordLogin = () => {
+  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+
+  const redirectUri = encodeURIComponent(
+    "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
+  );
+
+  const url =
+    `https://discord.com/api/oauth2/authorize` +
+    `?client_id=${clientId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&response_type=code` +
+    `&scope=identify%20email`;
+
+  window.location.href = url;
+};
 
 const user = userCredential.user;
 
@@ -80,6 +96,22 @@ navigate("/");
           }}
         >
           로그인
+          <button
+  onClick={handleDiscordLogin}
+  style={{
+    width: "100%",
+    padding: "12px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    marginTop: "10px",
+    backgroundColor: "#5865F2",
+    color: "white",
+  }}
+>
+  디스코드로 로그인
+</button>
         </h1>
 
         <label>이메일</label>

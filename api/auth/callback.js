@@ -16,15 +16,15 @@ export default async function handler(req, res) {
 
     // 1. Access Token 요청
     const tokenResponse = await fetch(
-      "https://discord.com/api/oauth2/token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: params,
-      }
-    );
+  "https://discord.com/api/oauth2/token",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(), // 
+  }
+);
 
     const tokenData = await tokenResponse.json();
 

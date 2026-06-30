@@ -44,11 +44,15 @@ export default async function handler(req, res) {
 
     const user = await userResponse.json();
 
-    // 현재는 테스트용으로 JSON만 반환
-    return res.status(200).json({
-      success: true,
-      user,
-    });
+ return res.redirect(
+  `https://overwatch-anithack-otzm.vercel.app/login?user=${encodeURIComponent(
+    JSON.stringify({
+      id: user.id,
+      username: user.username,
+      avatar: user.avatar,
+    })
+  )}`
+);
 
   } catch (err) {
     console.error(err);

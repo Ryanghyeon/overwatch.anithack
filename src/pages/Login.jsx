@@ -24,8 +24,7 @@ useEffect(() => {
     navigate("/");
   }
 }, []);
-const handleDiscordLogin = () => {
-  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+
 
   const redirectUri = encodeURIComponent(
     "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
@@ -111,6 +110,8 @@ navigate("/");
           }}
         >
           로그인
+         
+          
           <button
   onClick={handleDiscordLogin}
   style={{

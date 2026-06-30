@@ -3,10 +3,27 @@ import { useState } from "react";
 import { auth } from "../firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 export default function Login() {
 const navigate = useNavigate();  
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
+  const [params] = useSearchParams();
+
+useEffect(() => {
+  const user = params.get("user");
+
+  if (user) {
+    const parsed = JSON.parse(decodeURIComponent(user));
+
+    localStorage.setItem("user", JSON.stringify(parsed));
+
+    console.log("디스코드 로그인:", parsed);
+
+    navigate("/");
+  }
+}, []);
 
 const handleLogin = async () => {
   console.log("email:", email);

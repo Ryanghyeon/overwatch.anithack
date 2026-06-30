@@ -30,38 +30,33 @@ export default function Home() {
     margin: "8px 0",
   };
 
-  useEffect(() => {
-    loadStats();
+useEffect(() => {
+  loadStats();
 
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      // ✅ Firebase 로그인
       setUser(currentUser);
+    } else {
+      // ✅ 디스코드 로그인 fallback
+      const discordUser = localStorage.getItem("user");
 
-      if (!currentUser) {
-        setIsAdmin(false);
-        return;
+      if (discordUser) {
+        setUser(JSON.parse(discordUser));
+      } else {
+        setUser(null);
       }
+    }
 
-      console.log("로그인 사용자:", currentUser.email);
+    // ✅ 관리자 체크는 Firebase만
+    if (!currentUser) {
+      setIsAdmin(false);
+      return;
+    }
+  });
 
-      try {
-        const q = query(
-          collection(db, "admins"),
-          where("email", "==", currentUser.email)
-        );
-
-        const snapshot = await getDocs(q);
-
-        console.log("관리자 문서 개수:", snapshot.size);
-        console.log("관리자 여부:", !snapshot.empty);
-
-        setIsAdmin(!snapshot.empty);
-      } catch (error) {
-        console.error("관리자 조회 오류:", error);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  return () => unsubscribe();
+}, []);
 
   const loadStats = async () => {
     try {
@@ -130,7 +125,7 @@ export default function Home() {
               marginBottom: "20px",
             }}
           >
-            <strong>{user.email}</strong>
+           <strong>{user.email || user.username}</strong>
           </div>
 
           <Link to="/report">
@@ -157,9 +152,10 @@ export default function Home() {
           <button
             style={buttonStyle}
             onClick={async () => {
-              await auth.signOut();
-              window.location.reload();
-            }}
+  await auth.signOut();
+  localStorage.removeItem("user"); // ✅ 디코도 같이 로그아웃
+  window.location.reload();
+}}
           >
             로그아웃
           </button>

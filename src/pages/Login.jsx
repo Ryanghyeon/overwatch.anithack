@@ -26,54 +26,28 @@ useEffect(() => {
 }, []);
 
 
-  const redirectUri = encodeURIComponent(
-    "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
-  );
+ const handleDiscordLogin = () => {
+    const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
 
+    const redirectUri = encodeURIComponent(
+      "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
+    );
 
+    const url = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20email`;
 
+    window.location.href = url;
+  };
 
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  };
 
-   const handleLogin = async () => {
-  console.log("email:", email);
-console.log("password:", password);
-  try {
-  const userCredential =
-  await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-
-
-    
-    const handleDiscordLogin = () => {
-  const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
-
-  const redirectUri = encodeURIComponent(
-    "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
-  );
-
-  const url = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20email`;
-  window.location.href = url;
-};
-
-const user = userCredential.user;
-
-console.log("인증 여부:", user.emailVerified);
-
-//.if (!user.emailVerified) {
-//alert("이메일 인증 후 로그인 가능합니다.");
-//  return;
-//}
-
-navigate("/");
-  } catch (error) {
-    console.error(error);
-    alert(error.message);
-  }
-};
   return (
  
 

@@ -30,16 +30,11 @@ useEffect(() => {
     "https://overwatch-anithack-otzm.vercel.app/api/auth/discord/callback"
   );
 
-  const url =
-    `https://discord.com/api/oauth2/authorize +
-    `?client_id=${clientId}` +
-    `&redirect_uri=${redirectUri}` +
-    `&response_type=code` +
-    `&scope=identify%20email`;
 
-  window.location.href = url;
+
 };
-const handleLogin = async () => {
+
+   const handleLogin = async () => {
   console.log("email:", email);
 console.log("password:", password);
   try {
@@ -57,7 +52,7 @@ console.log("password:", password);
   );
 
   const url =
-    `https://discord.com/api/oauth2/authorize` +
+    `https://discord.com/api/oauth2/authorize`+
     `?client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
     `&response_type=code` +

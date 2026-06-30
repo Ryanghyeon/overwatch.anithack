@@ -6,12 +6,8 @@ export default function handler(req, res) {
     `https://discord.com/oauth2/authorize` +
     `?client_id=${clientId}` +
     `&response_type=code` +
-    `&scope=identify%20email` +
+    `&scope=identify email` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
-  res.writeHead(302, {
-    Location: url,
-  });
-
-  res.end();
+  res.send(url);
 }

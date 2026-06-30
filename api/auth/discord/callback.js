@@ -44,8 +44,8 @@ export default async function handler(req, res) {
 
     const user = await userResponse.json();
 
-   return res.redirect(
-  `https://overwatch-anithack-otzm.vercel.app/login-success?user=${encodeURIComponent(
+ return res.redirect(
+  `https://overwatch-anithack-otzm.vercel.app/login?user=${encodeURIComponent(
     JSON.stringify({
       id: user.id,
       username: user.username,

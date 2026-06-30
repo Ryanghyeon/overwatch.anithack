@@ -31,7 +31,7 @@ useEffect(() => {
   );
 
   const url =
-    `https://discord.com/api/oauth2/authorize` +
+    `https://discord.com/api/oauth2/authorize +
     `?client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
     `&response_type=code` +

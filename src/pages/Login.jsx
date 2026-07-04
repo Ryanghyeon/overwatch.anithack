@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { auth } from "../firebase/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword,signInWithCustomToken, } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -12,18 +12,22 @@ const [password, setPassword] = useState("");
   const [params] = useSearchParams();
 
 useEffect(() => {
-  const user = params.get("user");
+  const token = params.get("token");
 
-  if (user) {
-    const parsed = JSON.parse(decodeURIComponent(user));
+  if (!token) return;
 
-    localStorage.setItem("user", JSON.stringify(parsed));
-
-    console.log("디스코드 로그인:", parsed);
-
-    navigate("/");
+  async function login() {
+    try {
+      await signInWithCustomToken(auth, token);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("디스코드 로그인에 실패했습니다.");
+    }
   }
-}, []);
+
+  login();
+}, [params, navigate]);
 
 
  const handleDiscordLogin = () => {

@@ -1,10 +1,15 @@
-import admin from "firebase-admin";
+import { getApps, initializeApp, cert } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 
-if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.firebase_discord);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
+const serviceAccount = JSON.parse(process.env.firebase_discord);
 
-export default admin;
+const app =
+  getApps().length === 0
+    ? initializeApp({
+        credential: cert(serviceAccount),
+      })
+    : getApps()[0];
+
+const auth = getAuth(app);
+
+export default auth;

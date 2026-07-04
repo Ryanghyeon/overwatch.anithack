@@ -1,3 +1,4 @@
+import admin from "./discord.js";
 export default async function handler(req, res) {
    const { code } = req.query;
 
@@ -44,14 +45,14 @@ export default async function handler(req, res) {
 
     const user = await userResponse.json();
 
+     // Firebase Custom Token 생성
+const customToken = await admin.auth().createCustomToken(user.id, {
+  username: user.username,
+  avatar: user.avatar,
+});
+
  return res.redirect(
-  `https://overwatch-anithack-otzm.vercel.app/login?user=${encodeURIComponent(
-    JSON.stringify({
-      id: user.id,
-      username: user.username,
-      avatar: user.avatar,
-    })
-  )}`
+  `https://overwatch-anithack-otzm.vercel.app/login?token=${encodeURIComponent(customToken)}`
 );
 
   } catch (err) {

@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     const user = await userResponse.json();
 
      // Firebase Custom Token 생성
-const customToken = await admin.auth().createCustomToken(user.id, {
+const customToken = await admin.auth.createCustomToken(user.id, {
   username: user.username,
   avatar: user.avatar,
 });

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { auth, db } from "../../firebase/firebase";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import './Register.css'; // 🔥 CSS 파일 연결
+import './Register.css';
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -30,6 +30,7 @@ export default function Register() {
         uid: user.uid,
         username,
         email,
+        photoUrl: `https://ui-avatars.com/api/?name=${username}&background=random&color=fff`,
         role: "user",
         createdAt: new Date(),
       });

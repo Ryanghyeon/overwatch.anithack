@@ -1,4 +1,5 @@
-.mypage-wrapper {
+/* 전체 배경 및 가운데 정렬 */
+.profile-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -6,21 +7,42 @@
   padding: 20px;
 }
 
-.mypage-box {
+/* 프로필 설정 카드 박스 */
+.profile-box {
   width: 100%;
   max-width: 450px;
   background: var(--card-bg);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  position: relative;
 }
 
-.mypage-title {
+/* 뒤로 가기 버튼 */
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  transition: color 0.2s;
+}
+
+.btn-back:hover {
+  color: var(--text-main);
+}
+
+.profile-title {
   text-align: center;
   font-size: 24px;
   color: var(--text-main);
+  margin-top: 10px;
   margin-bottom: 30px;
 }
 
@@ -37,10 +59,11 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--ow-orange);
-  box-shadow: 0 0 15px rgba(255, 156, 42, 0.3);
+  box-shadow: 0 0 15px rgba(249, 158, 26, 0.3);
 }
 
-.mypage-label {
+/* 입력 필드 라벨 */
+.profile-label {
   display: block;
   font-size: 14px;
   color: var(--text-sub);
@@ -48,7 +71,8 @@
   font-weight: bold;
 }
 
-.mypage-input {
+/* 입력창 스타일 */
+.profile-input {
   width: 100%;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--card-border);
@@ -59,19 +83,22 @@
   font-size: 16px;
   outline: none;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
-.mypage-input:focus {
+.profile-input:focus {
   border-color: var(--ow-orange);
+  box-shadow: 0 0 8px rgba(249, 158, 26, 0.2);
 }
 
-.mypage-tip {
+.profile-tip {
   font-size: 12px;
   color: #38bdf8;
   margin-top: -15px;
   margin-bottom: 25px;
 }
 
+/* 저장 버튼 */
 .btn-save {
   width: 100%;
   background: var(--ow-orange);
@@ -88,4 +115,146 @@
 .btn-save:hover {
   background: #e68a26;
   transform: translateY(-2px);
+}
+
+.profile-loading {
+  color: white;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}
+/* 기존 Profile.css 아래에 이어서 추가하세요 */
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 20px;
+}
+
+.profile-username {
+  font-size: 26px;
+  color: var(--text-main);
+  margin: 15px 0 5px 0;
+}
+
+.badge-admin {
+  margin-left: 8px;
+  font-size: 20px;
+}
+
+.profile-date {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* 섹션 공통 */
+.profile-section {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: var(--text-sub);
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+
+/* 관리자 모드 디자인 */
+.section-admin {
+  border: 1px solid rgba(255, 78, 0, 0.3);
+}
+
+.text-red {
+  color: var(--ow-red);
+}
+
+.admin-info {
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.btn-ban {
+  width: 100%;
+  background: rgba(255, 78, 0, 0.1);
+  color: var(--ow-red);
+  border: 1px solid var(--ow-red);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-ban:hover {
+  background: var(--ow-red);
+  color: white;
+}
+
+/* 일반 유저 (열람 모드) 디자인 */
+.stats-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.stats-label {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.stats-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+/* 나중에 업데이트 될 게임 전적 박스 */
+.coming-soon-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.2) 10px,
+    rgba(255, 255, 255, 0.03) 10px,
+    rgba(255, 255, 255, 0.03) 20px
+  );
+  border: 1px dashed var(--text-sub);
+  padding: 30px 20px;
+  border-radius: 8px;
+  color: var(--text-sub);
+  text-align: center;
+}
+
+.coming-soon-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.coming-soon-box p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+.coming-soon-badge {
+  background: var(--text-sub);
+  color: var(--bg-dark);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: bold;
 }

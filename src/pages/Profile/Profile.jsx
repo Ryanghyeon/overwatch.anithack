@@ -1,108 +1,180 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../../firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 
-export default function MyPage() {
+export default function Profile() {
+  const { uid: urlUid } = useParams();
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  // 1. 화면이 켜지면 내 기존 프로필 정보 불러오기
+  const [loading, setLoading] = useState(true);
+  
+  const [currentUserData, setCurrentUserData] = useState(null);
+  const [targetUserData, setTargetUserData] = useState(null);
+  const [isMe, setIsMe] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  const [editUsername, setEditUsername] = useState("");
+  const [userReportCount, setUserReportCount] = useState(0);
+
   useEffect(() => {
-    const fetchMyProfile = async () => {
-      const user = auth.currentUser;
-      if (!user) {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      let myUid = null;
+      if (user) {
+        myUid = user.uid;
+      } else {
+        const discordUserStr = localStorage.getItem("user");
+        if (discordUserStr) myUid = JSON.parse(discordUserStr).id || JSON.parse(discordUserStr).uid;
+      }
+
+      if (!myUid) {
         alert("로그인이 필요합니다.");
         navigate("/login");
         return;
       }
 
-      try {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+      const targetUid = urlUid || myUid;
+      setIsMe(myUid === targetUid);
 
-        if (userSnap.exists()) {
-          setNickname(userSnap.data().nickname || "");
-          setPhotoUrl(userSnap.data().photoUrl || "https://cdn.discordapp.com/embed/avatars/0.png");
+      try {
+        const myRef = doc(db, "users", myUid);
+        const mySnap = await getDoc(myRef);
+        if (mySnap.exists()) {
+          setCurrentUserData(mySnap.data());
+          setIsAdmin(mySnap.data().role === "admin");
+        }
+
+        const targetRef = doc(db, "users", targetUid);
+        const targetSnap = await getDoc(targetRef);
+        
+        if (targetSnap.exists()) {
+          const data = targetSnap.data();
+          setTargetUserData(data);
+          
+          if (myUid === targetUid) {
+            setEditUsername(data.username || "");
+          } else {
+            const q = query(collection(db, "reports"), where("reporterUid", "==", targetUid));
+            const reportDocs = await getDocs(q);
+            setUserReportCount(reportDocs.size);
+          }
+        } else {
+          alert("존재하지 않는 유저입니다.");
+          navigate("/");
         }
       } catch (error) {
-        console.error("프로필 불러오기 에러:", error);
+        console.error("프로필 로딩 에러:", error);
       } finally {
         setLoading(false);
       }
-    };
+    });
 
-    fetchMyProfile();
-  }, [navigate]);
+    return () => unsubscribe();
+  }, [urlUid, navigate]);
 
-  // 2. 수정 완료 버튼 누르면 DB 업데이트!
   const handleSave = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    if (!nickname.trim()) {
-      alert("닉네임을 입력해 주세요.");
+    if (!editUsername.trim()) {
+      alert("유저네임을 입력해 주세요.");
       return;
     }
 
     try {
-      await updateDoc(doc(db, "users", user.uid), {
-        nickname: nickname,
-        photoUrl: photoUrl,
-      });
+      let finalPhotoUrl = currentUserData.photoUrl;
+
+      // ✨ 핵심 로직: 디스코드 프사(discordapp.com)를 쓰고 있다면 건드리지 않음!
+      // 기존 프사가 없거나, ui-avatars(기본 이니셜 프사)를 쓰고 있을 때만 새 닉네임으로 프사 업데이트
+      if (!finalPhotoUrl || finalPhotoUrl.includes("ui-avatars.com")) {
+        finalPhotoUrl = `https://ui-avatars.com/api/?name=${editUsername}&background=random&color=fff`;
+      }
+
+      await setDoc(doc(db, "users", currentUserData.uid), {
+        username: editUsername,
+        photoUrl: finalPhotoUrl, 
+      }, { merge: true });
 
       alert("프로필이 성공적으로 업데이트되었습니다! ✨");
-      navigate("/"); // 홈으로 돌아가기
+      window.location.reload(); 
     } catch (error) {
       console.error(error);
-      alert("프로필 업데이트 중 오류가 발생했습니다.");
+      alert("업데이트 중 오류가 발생했습니다.");
     }
   };
 
-  if (loading) return <div style={{ color: "white", textAlign: "center", marginTop: "50px" }}>로딩 중...</div>;
+  const handleAdminBan = () => {
+    alert(`[관리자 권한] ${targetUserData.username} 유저를 제재했습니다. (기능 구현 예정)`);
+  };
+
+  if (loading) return <div className="profile-loading">데이터를 불러오는 중...</div>;
+  if (!targetUserData) return null;
+
+  const displayPhoto = targetUserData.photoUrl || `https://ui-avatars.com/api/?name=${targetUserData.username || "유저"}&background=random&color=fff`;
 
   return (
-    <div className="mypage-wrapper">
-      <div className="mypage-box">
+    <div className="profile-wrapper">
+      <div className="profile-box">
         <button className="btn-back" onClick={() => navigate(-1)}>⬅ 뒤로 가기</button>
         
-        <h1 className="mypage-title">⚙️ 내 프로필 설정</h1>
-
-        {/* 동그란 프로필 사진 미리보기 */}
-        <div className="profile-preview-container">
-          <img 
-            src={photoUrl || "https://cdn.discordapp.com/embed/avatars/0.png"} 
-            alt="프로필 미리보기" 
-            className="profile-preview-img"
-            onError={(e) => e.target.src = "https://cdn.discordapp.com/embed/avatars/0.png"} // 링크 깨졌을 때 방어
-          />
+        <div className="profile-header">
+          <img src={displayPhoto} alt="프로필" className="profile-preview-img" />
+          <h1 className="profile-username">
+            {targetUserData.username}
+            {targetUserData.role === "admin" && <span className="badge-admin">👑</span>}
+          </h1>
+          <p className="profile-date">
+            가입일 : {targetUserData.createdAt ? targetUserData.createdAt.toDate().toLocaleDateString() : "기록 없음"}
+          </p>
         </div>
 
-        <label className="mypage-label">닉네임</label>
-        <input
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          className="mypage-input"
-          placeholder="새로운 닉네임 입력"
-        />
+        {isMe && (
+          <div className="profile-section section-me">
+            <h3 className="section-title">⚙️ 내 프로필 설정</h3>
+            
+            <label className="profile-label">유저네임</label>
+            <input
+              type="text"
+              value={editUsername}
+              onChange={(e) => setEditUsername(e.target.value)}
+              className="profile-input"
+              placeholder="변경할 닉네임을 입력하세요"
+            />
+            
+            <p className="profile-tip">
+              💡 디스코드 가입 유저는 원본 프로필 사진이 유지되며,<br/>
+              이메일 가입 유저는 닉네임 변경 시 프로필 사진이 새롭게 만들어집니다!
+            </p>
 
-        <label className="mypage-label">프로필 사진 (이미지 주소 URL)</label>
-        <input
-          type="text"
-          value={photoUrl}
-          onChange={(e) => setPhotoUrl(e.target.value)}
-          className="mypage-input"
-          placeholder="https://..."
-        />
-        <p className="mypage-tip">💡 팁: 웹상의 이미지 우클릭 후 '이미지 주소 복사'를 붙여넣으세요!</p>
+            <button onClick={handleSave} className="btn-save">
+              변경사항 저장
+            </button>
+          </div>
+        )}
 
-        <button onClick={handleSave} className="btn-save">
-          변경사항 저장하기
-        </button>
+        {!isMe && isAdmin && (
+          <div className="profile-section section-admin">
+            <h3 className="section-title text-red">🚨 관리자 전용 정보</h3>
+            <p className="admin-info"><strong>UID:</strong> {targetUserData.uid}</p>
+            <p className="admin-info"><strong>Email:</strong> {targetUserData.email || "비공개(디스코드 가입 등)"}</p>
+            <p className="admin-info"><strong>작성한 신고:</strong> {userReportCount}건</p>
+            <button onClick={handleAdminBan} className="btn-ban">이 유저 강제 정지하기</button>
+          </div>
+        )}
+
+        {!isMe && !isAdmin && (
+          <div className="profile-section section-public">
+            <div className="stats-box">
+              <span className="stats-label">활동 점수 (신고 기여도)</span>
+              <span className="stats-value">{userReportCount} 건</span>
+            </div>
+            
+            <div className="coming-soon-box">
+              <span className="coming-soon-icon">🎮</span>
+              <p>오버워치 전적 연동</p>
+              <span className="coming-soon-badge">업데이트 예정</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

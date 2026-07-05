@@ -17,6 +17,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/profile/:uid" element={<Profile />} />
       </Routes>
     </BrowserRouter>

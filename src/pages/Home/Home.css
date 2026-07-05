@@ -32,6 +32,7 @@
   /* 글씨에 그라데이션 넣기 */
   background: linear-gradient(135deg, var(--ow-orange), var(--ow-red));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   
   /* 글씨 뒤에 은은한 빛 번짐 */

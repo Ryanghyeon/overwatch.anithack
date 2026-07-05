@@ -19,36 +19,66 @@ export default function Home() {
       if (currentUser) {
         setUser(currentUser);
 
-        // 🌟 1. 파이어베이스 이메일 유저 DB 동기화
+        // 🌟 1. 파이어베이스 유저 동기화 (이메일 & 디스코드 커스텀 토큰 모두 여기로 옴)
         try {
           const userRef = doc(db, "users", currentUser.uid);
           const userSnap = await getDoc(userRef);
 
           if (userSnap.exists()) {
             const data = userSnap.data();
-            setUserNickname(data.nickname || currentUser.email.split("@")[0]);
-            setIsAdmin(data.role === "admin");
+            const updates = {};
+            
+            // 🛡️ [자동 복구 로직] 백엔드가 생성한 반쪽짜리 디스코드 계정 방어
+            if (!data.role) updates.role = "user";
+            if (!data.createdAt) updates.createdAt = new Date();
+            
+            // 디스코드 백엔드는 'username'으로 저장하므로, 우리 시스템에 맞게 'nickname'으로 복사
+            if (!data.nickname && data.username) updates.nickname = data.username;
+            
+            // 디스코드 프로필 사진 URL 생성 (백엔드가 avatar 해시값만 줬을 경우 방어)
+            if (!data.photoUrl && data.avatar) {
+              updates.photoUrl = `https://cdn.discordapp.com/avatars/${data.uid}/${data.avatar}.png`;
+            }
+
+            // 누락된 필드가 하나라도 있으면 DB에 병합(merge)하여 덮어쓰기!
+            if (Object.keys(updates).length > 0) {
+              await setDoc(userRef, updates, { merge: true });
+            }
+
+            // 화면에 띄울 닉네임 결정 (우선순위 적용)
+            const displayNickname = data.nickname || updates.nickname || data.username || (currentUser.email ? currentUser.email.split("@")[0] : "유저");
+            setUserNickname(displayNickname);
+            setIsAdmin(data.role === "admin" || updates.role === "admin");
+            
           } else {
-            setUserNickname(currentUser.email.split("@")[0]);
+            // 🔰 완전 처음 가입하는 일반 파이어베이스 유저 기본 세팅
+            const defaultName = currentUser.email ? currentUser.email.split("@")[0] : "유저";
+            await setDoc(userRef, {
+              uid: currentUser.uid,
+              nickname: defaultName,
+              photoUrl: "https://cdn.discordapp.com/embed/avatars/0.png",
+              role: "user",
+              createdAt: new Date(),
+            });
+            setUserNickname(defaultName);
             setIsAdmin(false);
           }
         } catch (error) {
           console.error("유저 정보 불러오기 에러:", error);
         }
       } else {
-        // ✅ 2. 디스코드 로그인 fallback 및 DB 자동 복구 동기화
+        // ✅ 2. 혹시 모를 로컬 스토리지 전용 디스코드 유저 fallback 처리
         const discordUserStr = localStorage.getItem("user");
         if (discordUserStr) {
           const parsedUser = JSON.parse(discordUserStr);
           setUser(parsedUser);
           
-          const discordUid = parsedUser.id || parsedUser.uid; // 디스코드 고유 ID
+          const discordUid = parsedUser.id || parsedUser.uid;
           
           try {
             const userRef = doc(db, "users", discordUid);
             const userSnap = await getDoc(userRef);
 
-            // 기본 데이터 세팅
             const defaultData = {
               uid: discordUid,
               nickname: parsedUser.username,
@@ -58,14 +88,12 @@ export default function Home() {
             };
 
             if (userSnap.exists()) {
-              // 🛡️ [자동 복구 로직] 기존 유저지만 role이나 createdAt이 없다면?
               const data = userSnap.data();
               const updates = {};
               
               if (!data.role) updates.role = "user";
               if (!data.createdAt) updates.createdAt = new Date();
 
-              // 누락된 필드가 하나라도 있으면 DB에 병합(merge)하여 업데이트!
               if (Object.keys(updates).length > 0) {
                 await setDoc(userRef, updates, { merge: true });
               }
@@ -73,7 +101,6 @@ export default function Home() {
               setUserNickname(data.nickname || parsedUser.username);
               setIsAdmin(data.role === "admin" || updates.role === "admin");
             } else {
-              // 🔰 완전 처음 가입하는 유저는 모든 정보 생성!
               await setDoc(userRef, {
                 ...defaultData,
                 role: "user",

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../../firebase/firebase";
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"; // ✨ deleteDoc 추가
+import { onAuthStateChanged, deleteUser } from "firebase/auth"; // ✨ deleteUser 추가
 import { useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 
@@ -74,6 +74,7 @@ export default function Profile() {
     return () => unsubscribe();
   }, [urlUid, navigate]);
 
+  // 프로필 저장
   const handleSave = async () => {
     if (!editUsername.trim()) {
       alert("유저네임을 입력해 주세요.");
@@ -83,8 +84,6 @@ export default function Profile() {
     try {
       let finalPhotoUrl = currentUserData.photoUrl;
 
-      // ✨ 핵심 로직: 디스코드 프사(discordapp.com)를 쓰고 있다면 건드리지 않음!
-      // 기존 프사가 없거나, ui-avatars(기본 이니셜 프사)를 쓰고 있을 때만 새 닉네임으로 프사 업데이트
       if (!finalPhotoUrl || finalPhotoUrl.includes("ui-avatars.com")) {
         finalPhotoUrl = `https://ui-avatars.com/api/?name=${editUsername}&background=random&color=fff`;
       }
@@ -99,6 +98,42 @@ export default function Profile() {
     } catch (error) {
       console.error(error);
       alert("업데이트 중 오류가 발생했습니다.");
+    }
+  };
+
+  // ✨ 회원 탈퇴 로직
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      "정말로 탈퇴하시겠습니까? \n모든 프로필 정보가 영구적으로 삭제되며 되돌릴 수 없습니다."
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("유저 정보를 찾을 수 없습니다.");
+
+      // 1. Firestore(장부)에서 내 문서 삭제
+      await deleteDoc(doc(db, "users", user.uid));
+
+      // 2. Authentication(출입국 관리소)에서 계정 삭제
+      await deleteUser(user);
+
+      // 3. 로컬 스토리지 데이터 청소
+      localStorage.removeItem("user");
+
+      alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      // ✨ 파이어베이스 보안 정책 방어 코드: 로그인한 지 오래된 상태에서 탈퇴 시도 시
+      if (error.code === 'auth/requires-recent-login') {
+        alert("보안을 위해 다시 로그인한 후 탈퇴를 진행해 주세요.");
+        await auth.signOut();
+        localStorage.removeItem("user");
+        navigate("/login");
+      } else {
+        alert("탈퇴 중 오류가 발생했습니다: " + error.message);
+      }
     }
   };
 
@@ -148,6 +183,13 @@ export default function Profile() {
             <button onClick={handleSave} className="btn-save">
               변경사항 저장
             </button>
+
+            {/* ✨ 회원 탈퇴 버튼 추가 */}
+            <div className="danger-zone">
+              <button onClick={handleDeleteAccount} className="btn-delete-account">
+                회원 탈퇴
+              </button>
+            </div>
           </div>
         )}
 

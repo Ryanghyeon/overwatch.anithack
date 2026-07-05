@@ -258,3 +258,30 @@
   border-radius: 20px;
   font-weight: bold;
 }
+
+/* 위험 구역 (회원 탈퇴 등) */
+.danger-zone {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 78, 0, 0.2);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 회원 탈퇴 버튼 */
+.btn-delete-account {
+  background: transparent;
+  color: var(--text-sub);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete-account:hover {
+  background: rgba(255, 78, 0, 0.1);
+  color: var(--ow-red);
+  border-color: var(--ow-red);
+}

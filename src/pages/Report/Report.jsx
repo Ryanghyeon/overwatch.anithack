@@ -19,7 +19,7 @@ export default function Report() {
   const navigate = useNavigate();
   const [battleTag, setBattleTag] = useState("");
   const [reason, setReason] = useState("");
-  const [details, setDetails] = useState(""); // ✅ 세부사항 상태 추가!
+  const [details, setDetails] = useState(""); 
 
   const handleReport = async () => {
     try {
@@ -30,14 +30,11 @@ export default function Report() {
         return;
       }
 
-      // 🛡️ 빈칸 제출 방지 (기존 코드)
       if (!battleTag.trim()) {
         alert("배틀태그를 입력해 주세요.");
         return;
       }
 
-      // 배틀태그 형식 유효성 검사
-      // 규칙: 앞에는 한글/영문/숫자가 오고, 그 뒤에 '#'이 오며, 마지막은 숫자 4~5자리로 끝나야 함
       const battleTagRegex = /^[a-zA-Z0-9가-힣]+#\d{4,5}$/;
       
       if (!battleTagRegex.test(battleTag)) {
@@ -49,7 +46,7 @@ export default function Report() {
         alert("신고 사유를 선택해 주세요.");
         return;
       }
-      // 중복 신고 검사
+
       const reportQuery = query(
         collection(db, "reports"),
         where("reporterUid", "==", user.uid),
@@ -61,7 +58,6 @@ export default function Report() {
         return;
       }
       
-      // ✅ reports 장부에 세부사항(details)도 함께 저장!
       await addDoc(collection(db, "reports"), {
         battletag: battleTag,
         reason: reason,
@@ -70,19 +66,19 @@ export default function Report() {
         createdAt: new Date(),
       });
       
-      // battletags 랭킹 업데이트 로직 (이전과 동일)
+      // ✨ battletags 장부 업데이트 로직 (reportCount -> count 로 이름 통일!)
       const battletagRef = doc(db, "battletags", battleTag);
       const battletagSnap = await getDoc(battletagRef);
 
       if (!battletagSnap.exists()) {
         await setDoc(battletagRef, {
           battletag: battleTag,
-          reportCount: 1,
+          count: 1, // ✨ 여기 수정됨!
           lastReportedAt: new Date(),
         });
       } else {
         await updateDoc(battletagRef, {
-          reportCount: increment(1),
+          count: increment(1), // ✨ 여기 수정됨!
           lastReportedAt: new Date(),
         });
       }

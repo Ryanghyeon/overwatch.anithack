@@ -2,15 +2,20 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc, query, where } from "firebase/firestore";
 import './Home.css';
 
 export default function Home() {
   const [user, setUser] = useState(null);
-  const [userName, setUserName] = useState(""); // ✨ userNickname -> userName으로 변경!
+  const [userName, setUserName] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [reportCount, setReportCount] = useState(0);
   const [battleTagCount, setBattleTagCount] = useState(0);
+
+  // ✨ 검색 관련 상태 추가
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState(null); // null: 검색 안함, false: 클린 유저, object: 전과 유저
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     loadStats();
@@ -19,7 +24,6 @@ export default function Home() {
       if (currentUser) {
         setUser(currentUser);
 
-        // 🌟 1. 파이어베이스 유저 동기화 (이메일 & 디스코드 커스텀 토큰 모두 여기로 옴)
         try {
           const userRef = doc(db, "users", currentUser.uid);
           const userSnap = await getDoc(userRef);
@@ -28,33 +32,26 @@ export default function Home() {
             const data = userSnap.data();
             const updates = {};
             
-            // 🛡️ [자동 복구 로직] 백엔드가 생성한 반쪽짜리 디스코드 계정 방어
             if (!data.role) updates.role = "user";
             if (!data.createdAt) updates.createdAt = new Date();
             
-            // ✨ (삭제됨) 더 이상 nickname으로 복사하는 땜질 코드가 필요 없습니다!
-            
-            // 디스코드 프로필 사진 URL 생성 (백엔드가 avatar 해시값만 줬을 경우 방어)
             if (!data.photoUrl && data.avatar) {
               updates.photoUrl = `https://cdn.discordapp.com/avatars/${data.uid}/${data.avatar}.png`;
             }
 
-            // 누락된 필드가 하나라도 있으면 DB에 병합(merge)하여 덮어쓰기!
             if (Object.keys(updates).length > 0) {
               await setDoc(userRef, updates, { merge: true });
             }
 
-            // ✨ 화면에 띄울 이름 결정 (DB의 username 우선, 없으면 이메일 앞부분)
             const displayUsername = data.username || (currentUser.email ? currentUser.email.split("@")[0] : "유저");
             setUserName(displayUsername);
             setIsAdmin(data.role === "admin" || updates.role === "admin");
             
           } else {
-            // 🔰 완전 처음 가입하는 일반 파이어베이스 유저 기본 세팅
             const defaultName = currentUser.email ? currentUser.email.split("@")[0] : "유저";
             await setDoc(userRef, {
               uid: currentUser.uid,
-              username: defaultName, // ✨ nickname 대신 username으로 저장!
+              username: defaultName,
               photoUrl: "https://cdn.discordapp.com/embed/avatars/0.png",
               role: "user",
               createdAt: new Date(),
@@ -66,7 +63,6 @@ export default function Home() {
           console.error("유저 정보 불러오기 에러:", error);
         }
       } else {
-        // ✅ 2. 혹시 모를 로컬 스토리지 전용 디스코드 유저 fallback 처리
         const discordUserStr = localStorage.getItem("user");
         if (discordUserStr) {
           const parsedUser = JSON.parse(discordUserStr);
@@ -80,7 +76,7 @@ export default function Home() {
 
             const defaultData = {
               uid: discordUid,
-              username: parsedUser.username, // ✨ nickname 대신 username으로 저장!
+              username: parsedUser.username,
               photoUrl: parsedUser.avatar 
                 ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
                 : "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -97,7 +93,7 @@ export default function Home() {
                 await setDoc(userRef, updates, { merge: true });
               }
 
-              setUserName(data.username || parsedUser.username); // ✨ 데이터 불러올 때도 username
+              setUserName(data.username || parsedUser.username);
               setIsAdmin(data.role === "admin" || updates.role === "admin");
             } else {
               await setDoc(userRef, {
@@ -133,6 +129,32 @@ export default function Home() {
     }
   };
 
+  // ✨ 통합 검색 함수 (battletags 요약 장부만 1번 조회하므로 비용/속도 최적화 완벽)
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    try {
+      const q = query(collection(db, "battletags"), where("battletag", "==", searchQuery.trim()));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // 전과가 있는 배틀태그인 경우
+        const tagDoc = querySnapshot.docs[0];
+        setSearchResult({ id: tagDoc.id, ...tagDoc.data() });
+      } else {
+        // 전과가 없는 깨끗한 유저인 경우
+        setSearchResult(false);
+      }
+    } catch (error) {
+      console.error("검색 중 에러 발생:", error);
+      alert("검색 중 오류가 발생했습니다.");
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const handleLogout = async () => {
     await auth.signOut();
     localStorage.removeItem("user");
@@ -145,14 +167,50 @@ export default function Home() {
         <h1 className="home-title">OW Watch</h1>
         <p className="home-subtitle">오버워치 커뮤니티 신고 플랫폼</p>
 
+        {/* ✨ [추가] 통합 검색창 UI */}
+        <form onSubmit={handleSearch} className="search-form">
+          <div className="search-input-wrapper">
+            <input
+              type="text"
+              placeholder="배틀태그 검색"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="btn-search" disabled={isSearching}>
+              {isSearching ? "🔍" : "🔍 검색"}
+            </button>
+          </div>
+        </form>
+
+        {searchResult !== null && (
+          <div className="search-result-box">
+            {searchResult === false ? (
+              <p className="result-clean">
+                🟢 <strong>{searchQuery}</strong> 유저는 접수된 신고 내역이 없습니다.
+              </p>
+            ) : (
+              <div className="result-danger">
+              <p>
+                🚨 <strong>{searchResult.battletag}</strong> 유저는 현재까지 
+                <span className="danger-count"> {searchResult.count || searchResult.reportCount || 0}번</span> 신고되었습니다!
+              </p>
+              <button className="btn-go-detail" onClick={() => alert("상세 신고 기록실 타임라인은 업데이트 예정입니다!")}>
+              🔍 상세 전과 기록 보기
+              </button>
+            </div>
+            )}
+          </div>
+        )}
+
         {!user ? (
-          <>
+          <div className="auth-buttons" style={{ marginTop: "30px" }}>
             <Link to="/login"><button className="btn-action">로그인</button></Link>
             <br />
             <Link to="/ranking"><button className="btn-action">🏆 신고 랭킹</button></Link>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="user-menu" style={{ marginTop: "30px" }}>
             {isAdmin ? (
               <div className="admin-greeting">
                 <span className="admin-badge">👑 </span> 
@@ -181,16 +239,16 @@ export default function Home() {
             )}
 
             <button className="btn-action" onClick={handleLogout}>로그아웃</button>
-          </>
+          </div>
         )}
 
         <div className="stats-container">
           <div>
-            <div className="stat-label">누적 신고 수</div>
+            <div className="stat-label">누적 신고</div>
             <div className="stat-value report-val">{reportCount}</div>
           </div>
           <div>
-            <div className="stat-label">누적 배틀태그 수</div>
+            <div className="stat-label">누적 배틀태그</div>
             <div className="stat-value battletag-val">{battleTagCount}</div>
           </div>
         </div>

@@ -1,26 +1,98 @@
+/* src/pages/Home/Home.css */
+
+/* 전체 배경 (가운데 정렬 포함) */
 .home-wrapper {
-  background-color: var(--bg-main);
-  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-main); /* index.css 변수 */
+  color: var(--text-main);          /* index.css 변수 */
+  font-family: sans-serif;
 }
 
+/* 중앙 메인 박스 */
 .home-box {
-  background-color: var(--bg-box);
-  box-shadow: var(--shadow);
+  width: 420px;
+  background-color: var(--bg-box);  /* index.css 변수 */
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);        /* index.css 변수 */
 }
 
+/* 메인 타이틀 */
 .home-title {
-  color: var(--accent);
+  font-size: 48px;
+  margin-bottom: 10px;
+  color: var(--accent);             /* index.css 변수 */
 }
 
+/* 서브 타이틀 */
 .home-subtitle {
-  color: var(--text-sub);
+  color: var(--text-sub);           /* index.css 변수 */
+  margin-bottom: 30px;
 }
 
+/* 로그인된 유저 정보 박스 */
+.user-info {
+  background-color: var(--bg-main);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* 공통 액션 버튼 */
 .btn-action {
   background-color: var(--accent);
-  color: #ffffff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  min-width: 180px;
+  margin: 8px 0;
+  transition: background-color 0.2s ease;
 }
 
 .btn-action:hover {
   background-color: var(--accent-hover);
+}
+
+/* 하단 통계 영역 */
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 35px;
+  padding-top: 20px;
+  border-top: 1px solid var(--text-sub);
+}
+
+.stat-label {
+  color: var(--text-sub);
+  font-size: 14px;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.report-val {
+  color: var(--accent);
+}
+
+.battletag-val {
+  color: #38bdf8; /* 파란색 고정 포인트 */
+}
+
+/* 우측 하단 관리자 상태 */
+.admin-indicator {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  color: var(--text-sub);
+  font-size: 13px;
 }

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { auth } from "../firebase/firebase";
 import { signInWithEmailAndPassword, signInWithCustomToken } from "firebase/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import './Login.css';
 
 export default function Login() {
   const navigate = useNavigate();  
@@ -11,11 +12,9 @@ export default function Login() {
   const [params] = useSearchParams();
 
   useEffect(() => {
-    // 1. 주소창에서 토큰 가져오기
     const token = params.get("token");
     console.log("🔍 현재 주소창의 token 값:", token);
 
-    // 토큰이 없으면 여기서 함수가 종료되므로 화면이 그대로 멈춰있게 됩니다.
     if (!token) {
       console.log("⚠️ 토큰이 없습니다. 대기 중...");
       return;
@@ -57,30 +56,42 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div style={{ width: "400px", padding: "40px", backgroundColor: "#1e293b", borderRadius: "12px", color: "white" }}>
-        <h1 style={{ textAlign: "center", marginBottom: "30px" }}>로그인</h1>
+    <div className="login-wrapper">
+      <div className="login-box">
+        <h1 className="login-title">로그인</h1>
         
-        <button onClick={handleDiscordLogin} style={{ width: "100%", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", marginTop: "10px", backgroundColor: "#5865F2", color: "white" }}>
+        <button onClick={handleDiscordLogin} className="btn-discord">
           디스코드로 로그인
         </button>
 
-        <label style={{ display: "block", marginTop: "20px" }}>이메일</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="example@email.com" style={{ width: "100%", padding: "12px", marginTop: "8px", marginBottom: "20px", borderRadius: "8px", border: "none" }} />
+        <label className="input-label auth-label">이메일</label>
+        <input 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          type="email" 
+          placeholder="example@email.com" 
+          className="input-field" 
+        />
 
-        <label style={{ display: "block" }}>비밀번호</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="비밀번호 입력" style={{ width: "100%", padding: "12px", marginTop: "8px", marginBottom: "20px", borderRadius: "8px", border: "none" }} />
+        <label className="input-label">비밀번호</label>
+        <input 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          type="password" 
+          placeholder="비밀번호 입력" 
+          className="input-field" 
+        />
 
-        <button onClick={handleLogin} style={{ width: "100%", padding: "12px", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", backgroundColor: "#3b82f6", color: "white" }}>
+        <button onClick={handleLogin} className="btn-login">
           로그인
         </button>
 
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Link to="/register" style={{ color: "#60a5fa", textDecoration: "none" }}>회원가입</Link>
+        <div className="link-wrapper">
+          <Link to="/register" className="text-link">회원가입</Link>
         </div>
 
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Link to="/" style={{ color: "#60a5fa", textDecoration: "none" }}>홈으로 돌아가기</Link>
+        <div className="link-wrapper">
+          <Link to="/" className="text-link">홈으로 돌아가기</Link>
         </div>
       </div>
     </div>

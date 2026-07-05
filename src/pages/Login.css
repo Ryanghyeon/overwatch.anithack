@@ -1,0 +1,85 @@
+/* 전체 배경을 덮는 래퍼 */
+.login-wrapper {
+  min-height: 100vh;
+  background-color: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 중앙 로그인 박스 */
+.login-box {
+  width: 400px;
+  padding: 40px;
+  background-color: #1e293b;
+  border-radius: 12px;
+  color: white;
+}
+
+/* 제목 */
+.login-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* 디스코드 로그인 버튼 */
+.btn-discord {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  background-color: #5865F2;
+  color: white;
+}
+
+/* 입력창 라벨 (이메일, 비밀번호 글씨) */
+.input-label {
+  display: block;
+}
+
+.auth-label {
+  margin-top: 20px;
+}
+
+/* 입력창 (Input) */
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: none;
+  /* (선택) 입력할 때 기본적으로 들어가는 테두리 제거하려면 아래 코드 추가 */
+  /* outline: none; */
+}
+
+/* 기본 로그인 버튼 */
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* 하단 링크들을 감싸는 영역 */
+.link-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 하단 텍스트 링크 */
+.text-link {
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.text-link:hover {
+  text-decoration: underline; /* 마우스 올렸을 때 밑줄 효과 (선택) */
+}

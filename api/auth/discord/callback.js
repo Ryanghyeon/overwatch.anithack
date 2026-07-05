@@ -49,8 +49,22 @@ export default async function handler(req, res) {
 
     const user = await userResponse.json();
 
-    // 3. 🔥 파이어베이스 커스텀 토큰 생성 (디스코드 유저 ID 사용)
+    // 3. 파이어베이스 커스텀 토큰 생성
     const firebaseToken = await admin.auth().createCustomToken(user.id);
+
+    // =================================================================
+    // 🔥 [추가된 부분] Firestore 데이터베이스 'users' 컬렉션에 정보 저장
+    // =================================================================
+    const db = admin.firestore();
+    await db.collection('users').doc(user.id).set({
+      uid: user.id,
+      username: user.username,
+      email: user.email || "", // 디스코드 이메일 정보
+      avatar: user.avatar || "",
+      lastLogin: admin.firestore.FieldValue.serverTimestamp() // 접속 시간 기록
+    }, { merge: true }); 
+    // 💡 merge: true 옵션을 넣어야 기존에 저장된 다른 데이터(예: 포인트, 레벨 등)가 날아가지 않습니다.
+    // =================================================================
 
     // 4. 프론트엔드 로그인 페이지로 파이어베이스 토큰과 함께 리다이렉트
     return res.redirect(

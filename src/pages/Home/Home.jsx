@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import './Home.css';
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
       if (currentUser) {
         setUser(currentUser);
 
-        // 🌟 1. 유저 정보 & 관리자 권한 한 번에 체크! (과거 admins 컬렉션 코드 완전 삭제)
+        // 🌟 1. 파이어베이스 이메일 유저 DB 동기화
         try {
           const userRef = doc(db, "users", currentUser.uid);
           const userSnap = await getDoc(userRef);
@@ -27,7 +27,7 @@ export default function Home() {
           if (userSnap.exists()) {
             const data = userSnap.data();
             setUserNickname(data.nickname || currentUser.email.split("@")[0]);
-            setIsAdmin(data.role === "admin"); // ✨ 단 한 줄로 관리자 검사 끝!
+            setIsAdmin(data.role === "admin"); // 단 한 줄로 관리자 검사 끝!
           } else {
             setUserNickname(currentUser.email.split("@")[0]);
             setIsAdmin(false);
@@ -36,17 +36,45 @@ export default function Home() {
           console.error("유저 정보 불러오기 에러:", error);
         }
       } else {
-        // ✅ 디스코드 로그인 fallback
-        const discordUser = localStorage.getItem("user");
-        if (discordUser) {
-          const parsedUser = JSON.parse(discordUser);
+        // ✅ 2. 디스코드 로그인 fallback 및 DB 동기화
+        const discordUserStr = localStorage.getItem("user");
+        if (discordUserStr) {
+          const parsedUser = JSON.parse(discordUserStr);
           setUser(parsedUser);
-          setUserNickname(parsedUser.username);
+          
+          const discordUid = parsedUser.id || parsedUser.uid; // 디스코드 고유 ID
+          
+          try {
+            const userRef = doc(db, "users", discordUid);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+              // 이미 DB에 있는 디스코드 유저면 정보 가져오기
+              const data = userSnap.data();
+              setUserNickname(data.nickname || parsedUser.username);
+              setIsAdmin(data.role === "admin");
+            } else {
+              // 🔰 처음 온 디스코드 유저라면 DB에 프로필 및 role 생성!
+              await setDoc(userRef, {
+                uid: discordUid,
+                nickname: parsedUser.username,
+                photoUrl: parsedUser.avatar 
+                  ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
+                  : "https://cdn.discordapp.com/embed/avatars/0.png",
+                role: "user", // ✨ 여기서 디스코드 유저에게도 역할 부여!
+                createdAt: new Date(),
+              });
+              setUserNickname(parsedUser.username);
+              setIsAdmin(false);
+            }
+          } catch (error) {
+            console.error("디스코드 DB 동기화 에러:", error);
+          }
         } else {
           setUser(null);
           setUserNickname("");
+          setIsAdmin(false);
         }
-        setIsAdmin(false);
       }
     });
 
@@ -64,7 +92,6 @@ export default function Home() {
     }
   };
 
-  // 🌟 2. 로그아웃 기능도 밖으로 빼서 깔끔하게 정리
   const handleLogout = async () => {
     await auth.signOut();
     localStorage.removeItem("user");
@@ -77,7 +104,6 @@ export default function Home() {
         <h1 className="home-title">OW Watch</h1>
         <p className="home-subtitle">오버워치 커뮤니티 신고 플랫폼</p>
 
-        {/* 🌟 3. 조건부 렌더링(UI) 구조 단순화 */}
         {!user ? (
           <>
             <Link to="/login"><button className="btn-action">로그인</button></Link>
@@ -97,6 +123,7 @@ export default function Home() {
               </div>
             )}
 
+            {/* ✅ 유저님의 설정대로 /Profile 로 연결 */}
             <Link to="/Profile" className="profile-link">
               <button className="btn-profile-setting">⚙️ 내 프로필 설정</button>
             </Link>

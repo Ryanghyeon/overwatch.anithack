@@ -7,7 +7,7 @@ import './Home.css';
 
 export default function Home() {
   const [user, setUser] = useState(null);
-  const [userNickname, setUserNickname] = useState("");
+  const [userName, setUserName] = useState(""); // ✨ userNickname -> userName으로 변경!
   const [isAdmin, setIsAdmin] = useState(false);
   const [reportCount, setReportCount] = useState(0);
   const [battleTagCount, setBattleTagCount] = useState(0);
@@ -32,8 +32,7 @@ export default function Home() {
             if (!data.role) updates.role = "user";
             if (!data.createdAt) updates.createdAt = new Date();
             
-            // 디스코드 백엔드는 'username'으로 저장하므로, 우리 시스템에 맞게 'nickname'으로 복사
-            if (!data.nickname && data.username) updates.nickname = data.username;
+            // ✨ (삭제됨) 더 이상 nickname으로 복사하는 땜질 코드가 필요 없습니다!
             
             // 디스코드 프로필 사진 URL 생성 (백엔드가 avatar 해시값만 줬을 경우 방어)
             if (!data.photoUrl && data.avatar) {
@@ -45,9 +44,9 @@ export default function Home() {
               await setDoc(userRef, updates, { merge: true });
             }
 
-            // 화면에 띄울 닉네임 결정 (우선순위 적용)
-            const displayNickname = data.nickname || updates.nickname || data.username || (currentUser.email ? currentUser.email.split("@")[0] : "유저");
-            setUserNickname(displayNickname);
+            // ✨ 화면에 띄울 이름 결정 (DB의 username 우선, 없으면 이메일 앞부분)
+            const displayUsername = data.username || (currentUser.email ? currentUser.email.split("@")[0] : "유저");
+            setUserName(displayUsername);
             setIsAdmin(data.role === "admin" || updates.role === "admin");
             
           } else {
@@ -55,12 +54,12 @@ export default function Home() {
             const defaultName = currentUser.email ? currentUser.email.split("@")[0] : "유저";
             await setDoc(userRef, {
               uid: currentUser.uid,
-              nickname: defaultName,
+              username: defaultName, // ✨ nickname 대신 username으로 저장!
               photoUrl: "https://cdn.discordapp.com/embed/avatars/0.png",
               role: "user",
               createdAt: new Date(),
             });
-            setUserNickname(defaultName);
+            setUserName(defaultName);
             setIsAdmin(false);
           }
         } catch (error) {
@@ -81,7 +80,7 @@ export default function Home() {
 
             const defaultData = {
               uid: discordUid,
-              nickname: parsedUser.username,
+              username: parsedUser.username, // ✨ nickname 대신 username으로 저장!
               photoUrl: parsedUser.avatar 
                 ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
                 : "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -98,7 +97,7 @@ export default function Home() {
                 await setDoc(userRef, updates, { merge: true });
               }
 
-              setUserNickname(data.nickname || parsedUser.username);
+              setUserName(data.username || parsedUser.username); // ✨ 데이터 불러올 때도 username
               setIsAdmin(data.role === "admin" || updates.role === "admin");
             } else {
               await setDoc(userRef, {
@@ -106,7 +105,7 @@ export default function Home() {
                 role: "user",
                 createdAt: new Date(),
               });
-              setUserNickname(parsedUser.username);
+              setUserName(parsedUser.username);
               setIsAdmin(false);
             }
           } catch (error) {
@@ -114,7 +113,7 @@ export default function Home() {
           }
         } else {
           setUser(null);
-          setUserNickname("");
+          setUserName("");
           setIsAdmin(false);
         }
       }
@@ -157,11 +156,11 @@ export default function Home() {
             {isAdmin ? (
               <div className="admin-greeting">
                 <span className="admin-badge">👑 </span> 
-                <span className="admin-nickname">{userNickname}</span> 관리자 계정 작동 중
+                <span className="admin-nickname">{userName}</span> 관리자 계정 작동 중
               </div>
             ) : (
               <div className="user-greeting">
-                반갑습니다, <span className="user-nickname">{userNickname}</span> 님!
+                반갑습니다, <span className="user-nickname">{userName}</span> 님!
               </div>
             )}
 
@@ -187,11 +186,11 @@ export default function Home() {
 
         <div className="stats-container">
           <div>
-            <div className="stat-label">총 신고</div>
+            <div className="stat-label">누적 신고 수</div>
             <div className="stat-value report-val">{reportCount}</div>
           </div>
           <div>
-            <div className="stat-label">배틀태그</div>
+            <div className="stat-label">누적 배틀태그 수</div>
             <div className="stat-value battletag-val">{battleTagCount}</div>
           </div>
         </div>

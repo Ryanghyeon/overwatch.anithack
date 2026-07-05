@@ -6,7 +6,7 @@ import { doc, setDoc } from "firebase/firestore";
 import './Register.css'; // 🔥 CSS 파일 연결
 
 export default function Register() {
-  const [nickname, setNickname] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,7 +28,7 @@ export default function Register() {
 
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        nickname,
+        username,
         email,
         role: "user",
         createdAt: new Date(),
@@ -50,8 +50,8 @@ export default function Register() {
         <input
           type="text"
           placeholder="닉네임 입력"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className="input-field"
         />
 

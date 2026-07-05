@@ -1,0 +1,91 @@
+.mypage-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.mypage-box {
+  width: 100%;
+  max-width: 450px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.mypage-title {
+  text-align: center;
+  font-size: 24px;
+  color: var(--text-main);
+  margin-bottom: 30px;
+}
+
+/* 프로필 사진 미리보기 영역 */
+.profile-preview-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.profile-preview-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--ow-orange);
+  box-shadow: 0 0 15px rgba(255, 156, 42, 0.3);
+}
+
+.mypage-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.mypage-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.mypage-input:focus {
+  border-color: var(--ow-orange);
+}
+
+.mypage-tip {
+  font-size: 12px;
+  color: #38bdf8;
+  margin-top: -15px;
+  margin-bottom: 25px;
+}
+
+.btn-save {
+  width: 100%;
+  background: var(--ow-orange);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background: #e68a26;
+  transform: translateY(-2px);
+}

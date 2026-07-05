@@ -1,98 +1,163 @@
 /* src/pages/Home/Home.css */
 
-/* 전체 배경 (가운데 정렬 포함) */
 .home-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--bg-main); /* index.css 변수 */
-  color: var(--text-main);          /* index.css 변수 */
-  font-family: sans-serif;
+  padding: 20px;
 }
 
-/* 중앙 메인 박스 */
+/* 반투명 유리 박스 효과 */
 .home-box {
-  width: 420px;
-  background-color: var(--bg-box);  /* index.css 변수 */
-  border-radius: 20px;
-  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);         /* 뒤쪽 배경을 흐리게 (핵심!) */
+  -webkit-backdrop-filter: blur(20px); 
+  border: 1px solid var(--card-border); /* 얇고 은은한 테두리 */
+  border-radius: 24px;
+  padding: 50px 40px;
   text-align: center;
-  box-shadow: var(--shadow);        /* index.css 변수 */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* 메인 타이틀 */
+/* 그라데이션 타이틀 */
 .home-title {
-  font-size: 48px;
-  margin-bottom: 10px;
-  color: var(--accent);             /* index.css 변수 */
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  
+  /* 글씨에 그라데이션 넣기 */
+  background: linear-gradient(135deg, var(--ow-orange), var(--ow-red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* 글씨 뒤에 은은한 빛 번짐 */
+  filter: drop-shadow(0 4px 12px rgba(249, 158, 26, 0.3));
 }
 
-/* 서브 타이틀 */
 .home-subtitle {
-  color: var(--text-sub);           /* index.css 변수 */
-  margin-bottom: 30px;
-}
-
-/* 로그인된 유저 정보 박스 */
-.user-info {
-  background-color: var(--bg-main);
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-/* 공통 액션 버튼 */
-.btn-action {
-  background-color: var(--accent);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+  color: var(--text-sub);
   font-size: 15px;
-  min-width: 180px;
-  margin: 8px 0;
-  transition: background-color 0.2s ease;
+  font-weight: 500;
+  margin-bottom: 45px;
 }
 
+/* 힙한 고스트 버튼 스타일 */
+.btn-action {
+  width: 100%;
+  background: rgba(249, 158, 26, 0.08); /* 평소엔 투명하게 */
+  color: var(--ow-orange);
+  border: 1px solid rgba(249, 158, 26, 0.3);
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 쫀득한 애니메이션 */
+  margin-bottom: 12px;
+}
+
+/* 마우스 올렸을 때 채워지며 빛나는 효과 */
 .btn-action:hover {
-  background-color: var(--accent-hover);
+  background: var(--ow-orange);
+  color: #000;
+  box-shadow: 0 8px 24px var(--btn-glow);
+  transform: translateY(-2px); /* 살짝 위로 떠오름 */
 }
 
-/* 하단 통계 영역 */
+/* 하단 통계 영역 - 대시보드 느낌 */
 .stats-container {
   display: flex;
-  justify-content: space-between;
-  margin-top: 35px;
-  padding-top: 20px;
-  border-top: 1px solid var(--text-sub);
+  justify-content: space-around;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--card-border);
 }
 
 .stat-label {
   color: var(--text-sub);
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  display: block;
 }
 
 .stat-value {
-  font-size: 30px;
+  font-size: 32px;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.report-val { color: var(--ow-orange); }
+.battletag-val { color: #38bdf8; } /* 사이버틱한 블루 */
+
+/* 사용자 환영 메시지 영역 */
+.user-greeting {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: var(--text-main); /* 텍스트 기본 색상 */
+}
+
+/* 닉네임 강조 포인트 */
+.user-nickname {
+  color: var(--ow-orange);
+  font-weight: 800;
+  font-size: 20px; /* 닉네임만 살짝 더 크게! */
+}
+
+/* 관리자 환영 메시지 박스 */
+.admin-greeting {
+  margin-bottom: 25px;
+  font-size: 18px;
   font-weight: bold;
+  color: #f8fafc; /* 밝은 화이트 단색 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.report-val {
-  color: var(--accent);
+/* 관리자 배지 (빨간색 포인트) */
+.admin-badge {
+  background: rgba(255, 78, 0, 0.15);
+  color: var(--ow-red);
+  border: 1px solid rgba(255, 78, 0, 0.4);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
 }
 
-.battletag-val {
-  color: #38bdf8; /* 파란색 고정 포인트 */
+/* 관리자 이름 강조 */
+.admin-nickname {
+  color: #38bdf8; /* 신뢰감을 주는 파란색 닉네임 */
+  font-weight: 800;
 }
 
-/* 우측 하단 관리자 상태 */
-.admin-indicator {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-  color: var(--text-sub);
+/* 프로필 설정 링크 및 버튼 */
+.profile-link {
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.btn-profile-setting {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid var(--card-border);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
   font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.btn-profile-setting:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--text-sub);
 }

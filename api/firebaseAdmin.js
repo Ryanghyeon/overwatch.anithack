@@ -5,7 +5,7 @@ let app;
 
 export function getAdminAuth() {
   if (!app) {
-    const config = JSON.parse(process.env.FIREBASE_DISCORD);
+    const config = JSON.parse(process.env.firebase_discord);
 
     app = initializeApp({
       credential: cert({

@@ -1,4 +1,4 @@
-import { getAdmin } from "../../firebaseAdmin.js";
+import admin from "../../firebaseAdmin.js";
 export default async function handler(req, res) {
    const { code } = req.query;
 
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     const user = await userResponse.json();
 
      // Firebase Custom Token 생성
-     const admin = await getAdmin();
+
      
 const customToken = await admin.auth().createCustomToken(user.id, {
   username: user.username,

@@ -1,11 +1,9 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: #0f172a;
-  color: white;
-  font-family: Arial, sans-serif;
+:root {
+  --bg-main: #f8fafc;       /* 전체 배경: 밝은 회색 */
+  --bg-box: #ffffff;        /* 박스 배경: 완전 흰색 */
+  --text-main: #0f172a;     /* 기본 글씨: 진한 남색/검정 */
+  --text-sub: #64748b;      /* 서브 글씨: 중간 회색 */
+  --accent: #f97316;        /* 포인트: 오버워치 시그니처 주황색 */
+  --accent-hover: #ea580c;  /* 버튼 호버 색상 */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 밝은 테마용 연한 그림자 */
 }

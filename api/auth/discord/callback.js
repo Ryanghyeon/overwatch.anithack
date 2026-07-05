@@ -1,4 +1,4 @@
-import admin from "../../firebaseAdmin.js";
+import { getAdmin } from "../../firebaseAdmin.js";
 export default async function handler(req, res) {
    const { code } = req.query;
 
@@ -46,11 +46,12 @@ export default async function handler(req, res) {
     const user = await userResponse.json();
 
      // Firebase Custom Token 생성
-const customToken = await admin.auth.createCustomToken(user.id, {
+     const admin = await getAdmin();
+     
+const customToken = await admin.auth().createCustomToken(user.id, {
   username: user.username,
   avatar: user.avatar,
 });
-
  return res.redirect(
   `https://overwatch-anithack-otzm.vercel.app/login?token=${encodeURIComponent(customToken)}`
 );

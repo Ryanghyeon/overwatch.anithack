@@ -123,7 +123,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* ✅ 유저님의 설정대로 /Profile 로 연결 */}
             <Link to="/Profile" className="profile-link">
               <button className="btn-profile-setting">⚙️ 내 프로필 설정</button>
             </Link>

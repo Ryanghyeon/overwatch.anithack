@@ -5,9 +5,10 @@ export async function getAdmin() {
   if (!admin) {
     const firebaseAdmin = await import("firebase-admin");
 
-    admin = firebaseAdmin.default;
+    // ✅ 핵심 (이 줄)
+    admin = firebaseAdmin.default || firebaseAdmin;
 
-    if (!admin.apps.length) {
+    if (!admin.apps || admin.apps.length === 0) {
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,

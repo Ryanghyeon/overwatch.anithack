@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     if (!code) {
     return res.status(400).send("No authorization code received.");
   }
-
   try {
     const params = new URLSearchParams({
       client_id: process.env.DISCORD_CLIENT_ID,
@@ -58,6 +57,7 @@ const customToken = await auth.createCustomToken(user.id, {
   `https://overwatch-anithack-otzm.vercel.app/login?token=${encodeURIComponent(customToken)}`
 );
 
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -65,4 +65,21 @@ const customToken = await auth.createCustomToken(user.id, {
       error: err.message,
     });
   }
+}
+console.log("STEP1: code", code);
+console.log("STEP2: tokenData", tokenData);
+console.log("STEP3: user", user);
+
+try {
+  console.log("STEP1: code", code);
+
+  const configRaw = process.env.FIREBASE_DISCORD;
+  console.log("ENV RAW:", configRaw);
+
+  const config = JSON.parse(configRaw);
+  console.log("STEP2: JSON OK");
+
+} catch (e) {
+  console.error("🔥 JSON ERROR:", e);
+  return res.status(500).json({ error: e.message });
 }

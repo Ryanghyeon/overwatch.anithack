@@ -1,5 +1,5 @@
 /* 전체 배경을 덮는 래퍼 */
-.login-wrapper {
+.register-wrapper {
   min-height: 100vh;
   background-color: #0f172a;
   display: flex;
@@ -7,8 +7,8 @@
   align-items: center;
 }
 
-/* 중앙 로그인 박스 */
-.login-box {
+/* 중앙 회원가입 박스 */
+.register-box {
   width: 400px;
   padding: 40px;
   background-color: #1e293b;
@@ -17,36 +17,14 @@
 }
 
 /* 제목 */
-.login-title {
+.register-title {
   text-align: center;
   margin-bottom: 30px;
 }
 
-/* 디스코드 로그인 버튼 */
-.btn-discord {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-  background-color: #5865F2;
-  color: white;
-  transition: background-color 0.2s ease;
-}
-
-.btn-discord:hover {
-  background-color: #4752C4; /* 마우스 올렸을 때 살짝 어두워짐 */
-}
-
-/* 입력창 라벨 (이메일, 비밀번호 글씨) */
+/* 입력창 라벨 (닉네임, 이메일, 비밀번호 글씨) */
 .input-label {
   display: block;
-}
-
-.auth-label {
-  margin-top: 20px;
 }
 
 /* 입력창 (Input) */
@@ -57,27 +35,27 @@
   margin-bottom: 20px;
   border-radius: 8px;
   border: none;
-  outline: none; /* 클릭했을 때 생기는 기본 테두리 제거 */
+  outline: none; /* 클릭 시 기본으로 생기는 테두리 제거 */
 }
 
-/* 기본 로그인 버튼 */
-.btn-login {
+/* 회원가입 버튼 */
+.btn-register {
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  background-color: #3b82f6;
+  background-color: #3b82f6; /* Login 페이지와 동일한 파란색 테마 적용 */
   color: white;
   transition: background-color 0.2s ease;
 }
 
-.btn-login:hover {
+.btn-register:hover {
   background-color: #2563eb; /* 마우스 올렸을 때 살짝 어두워짐 */
 }
 
-/* 하단 링크들을 감싸는 영역 */
+/* 하단 링크 영역 */
 .link-wrapper {
   text-align: center;
   margin-top: 20px;

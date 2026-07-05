@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 import { auth, db } from "../../firebase/firebase";
-
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import './Home.css'; // 🔥 CSS 파일 연결
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -17,46 +11,33 @@ export default function Home() {
   const [reportCount, setReportCount] = useState(0);
   const [battleTagCount, setBattleTagCount] = useState(0);
 
-  const buttonStyle = {
-    backgroundColor: "#f59e0b",
-    color: "white",
-    border: "none",
-    padding: "12px 24px",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    fontSize: "15px",
-    minWidth: "180px",
-    margin: "8px 0",
-  };
+  useEffect(() => {
+    loadStats();
 
-useEffect(() => {
-  loadStats();
-
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    if (currentUser) {
-      // ✅ Firebase 로그인
-      setUser(currentUser);
-    } else {
-      // ✅ 디스코드 로그인 fallback
-      const discordUser = localStorage.getItem("user");
-
-      if (discordUser) {
-        setUser(JSON.parse(discordUser));
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // ✅ Firebase 로그인
+        setUser(currentUser);
       } else {
-        setUser(null);
+        // ✅ 디스코드 로그인 fallback
+        const discordUser = localStorage.getItem("user");
+
+        if (discordUser) {
+          setUser(JSON.parse(discordUser));
+        } else {
+          setUser(null);
+        }
       }
-    }
 
-    // ✅ 관리자 체크는 Firebase만
-    if (!currentUser) {
-      setIsAdmin(false);
-      return;
-    }
-  });
+      // ✅ 관리자 체크는 Firebase만
+      if (!currentUser) {
+        setIsAdmin(false);
+        return;
+      }
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
   const loadStats = async () => {
     try {
@@ -71,168 +52,80 @@ useEffect(() => {
   };
 
   return (
-  <div
-    style={{
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f172a, #1e293b)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      color: "white",
-      fontFamily: "sans-serif",
-    }}
-  >
-    <div
-      style={{
-        width: "420px",
-        background: "#1e293b",
-        borderRadius: "20px",
-        padding: "40px",
-        textAlign: "center",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "48px",
-          marginBottom: "10px",
-          color: "#f59e0b",
-        }}
-      >
-        OW Watch
-      </h1>
+    <div className="home-wrapper">
+      <div className="home-box">
+        <h1 className="home-title">OW Watch</h1>
+        <p className="home-subtitle">오버워치 커뮤니티 신고 플랫폼</p>
 
-      <p
-        style={{
-          color: "#94a3b8",
-          marginBottom: "30px",
-        }}
-      >
-        오버워치 커뮤니티 신고 플랫폼
-      </p>
-
-      {!user ? (
-        <Link to="/login">
-          <button style={buttonStyle}>로그인</button>
-        </Link>
-      ) : (
-        <>
-          <div
-            style={{
-              background: "#334155",
-              padding: "15px",
-              borderRadius: "10px",
-              marginBottom: "20px",
-            }}
-          >
-           <strong>{user.email || user.username}</strong>
-          </div>
-
-          <Link to="/report">
-            <button style={buttonStyle}>🚨 신고하기</button>
+        {!user ? (
+          <Link to="/login">
+            <button className="btn-action">로그인</button>
           </Link>
+        ) : (
+          <>
+            <div className="user-info">
+              <strong>{user.email || user.username}</strong>
+            </div>
 
-          <br />
+            <Link to="/report">
+              <button className="btn-action">🚨 신고하기</button>
+            </Link>
 
-          <Link to="/ranking">
-            <button style={buttonStyle}>🏆 신고 랭킹</button>
-          </Link>
+            <br />
 
-          <br />
+            <Link to="/ranking">
+              <button className="btn-action">🏆 신고 랭킹</button>
+            </Link>
 
-          {isAdmin && (
-            <>
-              <Link to="/admin">
-                <button style={buttonStyle}>🛠 관리자</button>
-              </Link>
-              <br />
-            </>
-          )}
+            <br />
 
-          <button
-            style={buttonStyle}
-            onClick={async () => {
-  await auth.signOut();
-  localStorage.removeItem("user"); // ✅ 디코도 같이 로그아웃
-  window.location.reload();
-}}
-          >
-            로그아웃
-          </button>
-        </>
-      )}
+            {isAdmin && (
+              <>
+                <Link to="/admin">
+                  <button className="btn-action">🛠 관리자</button>
+                </Link>
+                <br />
+              </>
+            )}
 
-      {!user && (
-        <>
-          <br />
-          <Link to="/ranking">
-            <button style={buttonStyle}>🏆 신고 랭킹</button>
-          </Link>
-        </>
-      )}
+            <button
+              className="btn-action"
+              onClick={async () => {
+                await auth.signOut();
+                localStorage.removeItem("user"); // ✅ 디코도 같이 로그아웃
+                window.location.reload();
+              }}
+            >
+              로그아웃
+            </button>
+          </>
+        )}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "35px",
-          paddingTop: "20px",
-          borderTop: "1px solid #475569",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              color: "#94a3b8",
-              fontSize: "14px",
-            }}
-          >
-            총 신고
+        {!user && (
+          <>
+            <br />
+            <Link to="/ranking">
+              <button className="btn-action">🏆 신고 랭킹</button>
+            </Link>
+          </>
+        )}
+
+        <div className="stats-container">
+          <div>
+            <div className="stat-label">총 신고</div>
+            <div className="stat-value report-val">{reportCount}</div>
           </div>
-          <div
-            style={{
-              fontSize: "30px",
-              fontWeight: "bold",
-              color: "#f59e0b",
-            }}
-          >
-            {reportCount}
-          </div>
-        </div>
 
-        <div>
-          <div
-            style={{
-              color: "#94a3b8",
-              fontSize: "14px",
-            }}
-          >
-            배틀태그
-          </div>
-          <div
-            style={{
-              fontSize: "30px",
-              fontWeight: "bold",
-              color: "#38bdf8",
-            }}
-          >
-            {battleTagCount}
+          <div>
+            <div className="stat-label">배틀태그</div>
+            <div className="stat-value battletag-val">{battleTagCount}</div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div
-      style={{
-        position: "fixed",
-        bottom: "15px",
-        right: "15px",
-        color: "#94a3b8",
-        fontSize: "13px",
-      }}
-    >
-      관리자 : {isAdmin ? "YES" : "NO"}
+      <div className="admin-indicator">
+        관리자 : {isAdmin ? "YES" : "NO"}
+      </div>
     </div>
-  </div>
-);
+  );
 }

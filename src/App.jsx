@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "./Register";
-import Home from "./Home/Home";
-import Login from "./Login/Login";
-import Report from "./Report";
-import Ranking from "./Ranking";
-import Admin from "./pages/Admin";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Report from "./pages/Report/Report";
+import Ranking from "./pages/Ranking/Ranking";
+import Admin from "./pages/Admin/Admin";
 
 function App() {
   return (

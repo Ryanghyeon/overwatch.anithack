@@ -1,0 +1,100 @@
+/* 전체 배경 (그라데이션) */
+.home-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+/* 중앙 메인 박스 */
+.home-box {
+  width: 420px;
+  background: #1e293b;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* 메인 타이틀 */
+.home-title {
+  font-size: 48px;
+  margin-bottom: 10px;
+  color: #f59e0b;
+}
+
+/* 서브 타이틀 (설명글) */
+.home-subtitle {
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
+
+/* 로그인된 유저 정보 박스 */
+.user-info {
+  background: #334155;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* 공통 액션 버튼 (기존 buttonStyle 대응) */
+.btn-action {
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  min-width: 180px;
+  margin: 8px 0;
+  transition: background-color 0.2s ease; /* 부드러운 색상 전환 효과 */
+}
+
+.btn-action:hover {
+  background-color: #d97706; /* 마우스를 올렸을 때 조금 더 진해짐 */
+}
+
+/* 하단 통계 영역 컨테이너 */
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 35px;
+  padding-top: 20px;
+  border-top: 1px solid #475569;
+}
+
+/* 통계 라벨 (총 신고, 배틀태그) */
+.stat-label {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* 통계 숫자 공통 설정 */
+.stat-value {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+/* 총 신고 숫자 색상 */
+.report-val {
+  color: #f59e0b;
+}
+
+/* 배틀태그 숫자 색상 */
+.battletag-val {
+  color: #38bdf8;
+}
+
+/* 우측 하단 관리자 상태 표시 */
+.admin-indicator {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  color: #94a3b8;
+  font-size: 13px;
+}

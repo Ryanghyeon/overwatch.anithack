@@ -27,7 +27,7 @@ export default function Home() {
           if (userSnap.exists()) {
             const data = userSnap.data();
             setUserNickname(data.nickname || currentUser.email.split("@")[0]);
-            setIsAdmin(data.role === "admin"); // 단 한 줄로 관리자 검사 끝!
+            setIsAdmin(data.role === "admin");
           } else {
             setUserNickname(currentUser.email.split("@")[0]);
             setIsAdmin(false);
@@ -36,7 +36,7 @@ export default function Home() {
           console.error("유저 정보 불러오기 에러:", error);
         }
       } else {
-        // ✅ 2. 디스코드 로그인 fallback 및 DB 동기화
+        // ✅ 2. 디스코드 로그인 fallback 및 DB 자동 복구 동기화
         const discordUserStr = localStorage.getItem("user");
         if (discordUserStr) {
           const parsedUser = JSON.parse(discordUserStr);
@@ -48,20 +48,35 @@ export default function Home() {
             const userRef = doc(db, "users", discordUid);
             const userSnap = await getDoc(userRef);
 
+            // 기본 데이터 세팅
+            const defaultData = {
+              uid: discordUid,
+              nickname: parsedUser.username,
+              photoUrl: parsedUser.avatar 
+                ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
+                : "https://cdn.discordapp.com/embed/avatars/0.png",
+            };
+
             if (userSnap.exists()) {
-              // 이미 DB에 있는 디스코드 유저면 정보 가져오기
+              // 🛡️ [자동 복구 로직] 기존 유저지만 role이나 createdAt이 없다면?
               const data = userSnap.data();
+              const updates = {};
+              
+              if (!data.role) updates.role = "user";
+              if (!data.createdAt) updates.createdAt = new Date();
+
+              // 누락된 필드가 하나라도 있으면 DB에 병합(merge)하여 업데이트!
+              if (Object.keys(updates).length > 0) {
+                await setDoc(userRef, updates, { merge: true });
+              }
+
               setUserNickname(data.nickname || parsedUser.username);
-              setIsAdmin(data.role === "admin");
+              setIsAdmin(data.role === "admin" || updates.role === "admin");
             } else {
-              // 🔰 처음 온 디스코드 유저라면 DB에 프로필 및 role 생성!
+              // 🔰 완전 처음 가입하는 유저는 모든 정보 생성!
               await setDoc(userRef, {
-                uid: discordUid,
-                nickname: parsedUser.username,
-                photoUrl: parsedUser.avatar 
-                  ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
-                  : "https://cdn.discordapp.com/embed/avatars/0.png",
-                role: "user", // ✨ 여기서 디스코드 유저에게도 역할 부여!
+                ...defaultData,
+                role: "user",
                 createdAt: new Date(),
               });
               setUserNickname(parsedUser.username);

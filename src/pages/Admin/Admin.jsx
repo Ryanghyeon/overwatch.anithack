@@ -28,13 +28,14 @@ export default function Admin() {
       }
 
       try {
-        const adminRef = doc(db, "admins", "masterAdmin");
-        const adminSnap = await getDoc(adminRef);
+        // 🌟 [권한 검사 다이어트] 이제 users 컬렉션에서 내 role 필드만 확인합니다!
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
 
-        if (adminSnap.exists() && adminSnap.data()[user.email] !== undefined) {
-          loadReports();
+        if (userSnap.exists() && userSnap.data().role === "admin") {
+          loadReports(); // 🟢 관리자 확인 완료되면 신고 리스트 로딩
         } else {
-          alert("관리자만 접근 가능합니다.");
+          alert("관리자 권한이 없습니다.");
           navigate("/");
         }
       } catch (error) {
@@ -48,7 +49,6 @@ export default function Admin() {
 
   const loadReports = async () => {
     try {
-      // ✅ reports 컬렉션을 'createdAt' 기준으로 내림차순(desc) 정렬해서 가져와라!
       const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
 
@@ -67,10 +67,8 @@ export default function Admin() {
     if (!window.confirm("정말로 이 신고 내역을 삭제하시겠습니까?")) return;
 
     try {
-      // 1. [reports] 장부에서 해당 신고 내역 삭제
       await deleteDoc(doc(db, "reports", reportId));
 
-      // 2. [battletags] 장부에서 해당 배틀태그 검색
       const q = query(
         collection(db, "battletags"),
         where("battletag", "==", targetBattletag)
@@ -78,15 +76,12 @@ export default function Admin() {
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
-        // 해당 배틀태그 문서를 찾았다면
         const tagDoc = snapshot.docs[0];
         const currentCount = tagDoc.data().count || 1;
 
         if (currentCount <= 1) {
-          // 카운트가 1이었는데 방금 지웠으니, 아예 명단에서 삭제!
           await deleteDoc(doc(db, "battletags", tagDoc.id));
         } else {
-          // 카운트가 2 이상이면 1 빼고 업데이트!
           await updateDoc(doc(db, "battletags", tagDoc.id), {
             count: currentCount - 1,
           });
@@ -126,7 +121,6 @@ export default function Admin() {
             <strong>사유 : </strong> {report.reason}
           </p>
           
-          {/* ✅ 세부사항이 있을 때만 화면에 그려주는 조건부 렌더링! */}
           {report.details && (
             <div className="report-details-box">
               <span className="report-details-title">📝 세부사항</span>
@@ -134,20 +128,13 @@ export default function Admin() {
             </div>
           )}
 
-          <div style={{ marginTop: "15px", display: "flex", alignItems: "center", gap: "10px" }}>
-            <p className="report-uid" style={{ margin: 0 }}>
+          {/* ✨ 인라인 스타일을 완벽하게 제거하고 클래스명으로 교체했습니다! */}
+          <div className="report-footer-info">
+            <p className="report-uid">
               신고자 UID : {report.reporterUid}
             </p>
             <Link to={`/profile/${report.reporterUid}`}>
-              <button style={{
-                background: "rgba(56, 189, 248, 0.1)",
-                color: "#38bdf8",
-                border: "1px solid rgba(56, 189, 248, 0.3)",
-                padding: "4px 10px",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "12px"
-              }}>
+              <button className="btn-view-profile">
                 🔍 프로필(기록) 보기
               </button>
             </Link>

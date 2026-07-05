@@ -55,7 +55,6 @@
   flex-direction: column;
   gap: 12px;
 }
-/* src/pages/Admin/Admin.css 추가 부분 */
 
 /* 카드 상단 (배틀태그와 시간을 양옆으로 배치) */
 .report-header {
@@ -64,7 +63,6 @@
   align-items: flex-start;
 }
 
-/* 기존에 있던 report-battletag를 이걸로 교체하세요 */
 .report-battletag {
   font-size: 22px;
   font-weight: 700;
@@ -87,33 +85,9 @@
   color: var(--text-main);
 }
 
-.report-uid {
-  font-size: 13px;
-  color: var(--text-sub);
-}
-
-/* 삭제 버튼 (위험한 행동이므로 붉은 톤으로 경고 느낌) */
-.btn-delete {
-  align-self: flex-end; /* 카드의 오른쪽 아래로 구석으로 보내기 */
-  background: rgba(255, 78, 0, 0.1);
-  color: var(--ow-red);
-  border: 1px solid rgba(255, 78, 0, 0.3);
-  padding: 8px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 10px;
-}
-
-.btn-delete:hover {
-  background: var(--ow-red);
-  color: white;
-}
-
 /* 세부사항 박스 스타일 */
 .report-details-box {
-  background: rgba(0, 0, 0, 0.2); /* 배경보다 살짝 더 어두운 박스 */
+  background: rgba(0, 0, 0, 0.2);
   padding: 16px;
   border-radius: 8px;
   margin-top: 5px;
@@ -132,6 +106,56 @@
   font-size: 14px;
   color: var(--text-main);
   line-height: 1.5;
-  white-space: pre-wrap; /* 사용자가 엔터(줄바꿈) 친 것을 그대로 유지해 줌 */
-  word-break: break-all; /* 긴 텍스트가 박스를 뚫고 나가지 않게 방지 */
+  white-space: pre-wrap; 
+  word-break: break-all; 
+}
+
+/* 🌟 추가된 신고카드 하단 영역 (신고자 UID + 버튼 정렬) */
+.report-footer-info {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-footer-info .report-uid {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+/* 프로필(기록) 보기 버튼 */
+.btn-view-profile {
+  background: rgba(56, 189, 248, 0.08);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-view-profile:hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: #38bdf8;
+}
+
+/* 삭제 버튼 (위험한 행동이므로 붉은 톤으로 경고 느낌) */
+.btn-delete {
+  align-self: flex-end; 
+  background: rgba(255, 78, 0, 0.1);
+  color: var(--ow-red);
+  border: 1px solid rgba(255, 78, 0, 0.3);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-delete:hover {
+  background: var(--ow-red);
+  color: white;
 }

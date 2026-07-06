@@ -15,8 +15,17 @@ export function useRegister() {
 
     // ✨ Register.jsx에서 넘겨준 캡챠 토큰을 파라미터로 쏙 받습니다.
     const executeRegister = async (captchaToken) => {
+
         // 1. 군더더기 없는 입력값 컷오프 (Early Return)
         if (!username || !email || !password) return alert("모든 항목을 입력해 주세요.");
+
+        // 닉네임 생성 규칙 체크 (한글, 영어, 숫자만 허용, 2~10자리)
+        const usernameRegex = /^[가-힣a-zA-Z0-9]{2,10}$/;
+        if (!usernameRegex.test(username)) {
+            return alert("닉네임은 한글, 영어, 숫자만 허용하며 2~10자리여야 합니다.");
+        }
+
+        // 비밀번호 길이 체크
         if (password.length < 6) return alert("비밀번호는 최소 6자리 이상이어야 합니다.");
         if (!captchaToken) return alert("로봇이 아님을 인증해 주세요.");
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { db } from "@/firebase/firebase";
 import { collection, addDoc, query, where, getDocs, doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { isValidBattletag } from "@/utils";
+import { isValidBattletag, textSanitizer } from "@/utils";
 
 export function useReport(user) {
     const navigate = useNavigate();
@@ -24,7 +24,6 @@ export function useReport(user) {
             return;
         }
 
-        // ✨ 복잡한 정규식 대신 우리가 만든 깔끔한 유틸리티 사용!
         if (!isValidBattletag(battleTag)) {
             alert("올바른 배틀태그 형식이 아닙니다. (예: 비매너유저#12345)");
             return;
@@ -51,11 +50,14 @@ export function useReport(user) {
                 return;
             }
 
-            // 2. 신고 내역 추가
+            //텍스트소독기
+            const safeDetails = textSanitizer(details);
+
+            // 파이어베이스에 신고 내역 추가
             await addDoc(collection(db, "reports"), {
                 battletag: battleTag,
                 reason: reason,
-                details: details,
+                details: safeDetails,
                 reporterUid: user.uid || user.id,
                 createdAt: new Date(),
             });

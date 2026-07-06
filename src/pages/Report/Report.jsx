@@ -5,6 +5,7 @@ export default function Report() {
   // 1. 로그인 유저 정보 가져오기
   const { user } = useAuth();
 
+
   // 2. 신고 관련 로직과 상태 가져오기 (user 정보를 넘겨줌)
   const {
     battleTag, setBattleTag,

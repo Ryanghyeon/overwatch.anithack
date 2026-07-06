@@ -15,12 +15,11 @@
   padding: 50px 40px;
   width: 100%;
   max-width: 500px;
-  /* 너무 넓지 않게 조정 */
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* 날아갔던 타이틀 복구 (안전한 단색 오렌지로 변경) */
+/* 상단 타이틀 영역 */
 .home-title {
   font-size: 3rem;
   font-weight: 900;
@@ -35,44 +34,11 @@
   margin-bottom: 40px;
 }
 
-.search-form {
-  margin-bottom: 20px;
-}
+/* =========================================
+   (여기 있던 검색 폼 관련 코드는 SearchForm.css로 이사 갔습니다! 🚚)
+   ========================================= */
 
-.search-input-wrapper {
-  display: flex;
-  gap: 10px;
-  height: 54px;
-}
-
-.search-input {
-  flex: 1;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0 20px;
-  color: var(--text-main);
-  font-size: 1rem;
-  outline: none;
-}
-
-.search-input:focus {
-  border-color: var(--accent-primary);
-}
-
-.btn-search {
-  background-color: var(--accent-primary);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0 24px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* 인사말 영역 */
+/* 인사말 영역 (HomeMenu) */
 .admin-greeting,
 .user-greeting {
   font-size: 1.1rem;
@@ -86,7 +52,7 @@
   font-weight: bold;
 }
 
-/* ✨ 버튼들을 세로로 예쁘게 정렬해 주는 마법의 상자 */
+/* 메뉴 버튼 영역 (HomeMenu) */
 .menu-buttons {
   display: flex;
   flex-direction: column;
@@ -115,7 +81,7 @@
   background-color: var(--border-color);
 }
 
-/* 눈에 띄어야 하는 강조 버튼 (신고하기) */
+/* 강조 버튼 (신고하기) */
 .btn-action.highlight {
   background-color: var(--accent-primary);
   color: white;
@@ -126,7 +92,7 @@
   background-color: var(--accent-hover);
 }
 
-/* 덜 튀어야 하는 버튼 (로그아웃) */
+/* 아웃라인 버튼 (로그아웃) */
 .btn-action.outline {
   background-color: transparent;
   color: var(--text-muted);
@@ -138,7 +104,7 @@
   color: var(--color-danger);
 }
 
-/* 통계 창 */
+/* 하단 통계 창 (HomeStats) */
 .stats-container {
   display: flex;
   justify-content: space-around;

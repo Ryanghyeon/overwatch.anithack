@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "../../firebase/firebase";
-import { signInWithEmailAndPassword, signInWithCustomToken } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithCustomToken, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
 import './Login.css';
 
 export default function Login() {
@@ -9,10 +9,24 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [params] = useSearchParams();
+  
+  const [keepLoggedIn, setKeepLoggedIn] = useState(true);
+  // ✨ 에러 1 해결: State는 반드시 컴포넌트 안에 위치!
+  const [rememberEmail, setRememberEmail] = useState(false); 
 
+  // ✨ 에러 2 해결: 이메일 불러오기는 디스코드 로그인과 분리해서 별도의 useEffect로 독립!
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberEmail(true); 
+    }
+  }, []);
+
+  // 디스코드 로그인 콜백 처리
   useEffect(() => {
     const token = params.get("token");
-    if (!token) return;
+    if (!token) return; // 토큰이 없으면 여기서 멈춤
 
     async function login() {
       try {
@@ -34,11 +48,10 @@ export default function Login() {
     window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20email`;
   };
 
-  // 🔥 핵심 로그인 로직 (e가 넘어오면 무조건 브라우저 기본 동작부터 차단)
   const executeLogin = async (e) => {
     if (e) {
       e.preventDefault();
-      e.stopPropagation(); // 이벤트가 상위 레이아웃으로 퍼져서 씹히는 것 방지
+      e.stopPropagation();
     }
 
     if (!email.trim() || !password.trim()) {
@@ -47,7 +60,17 @@ export default function Login() {
     }
 
     try {
+      const persistenceType = keepLoggedIn ? browserLocalPersistence : browserSessionPersistence;
+      await setPersistence(auth, persistenceType);
+
       await signInWithEmailAndPassword(auth, email, password);
+
+      if (rememberEmail) {
+        localStorage.setItem("savedEmail", email);
+      } else {
+        localStorage.removeItem("savedEmail");
+      }
+
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -55,22 +78,15 @@ export default function Login() {
     }
   };
 
-  // ✨ 방어막 1: PC 브라우저에서 엔터키를 직접 낚아채는 함수
   const handleFormKeyDown = (e) => {
     if (e.key === "Enter") {
-      // 엔터키 고유의 브라우저 기본 서브밋 동작을 여기서 미리 차단하고
       e.preventDefault(); 
-      // 우리가 만든 로그인 로직을 직접 강제 호출합니다.
       executeLogin(e);
     }
   };
 
   return (
     <div className="login-wrapper">
-      {/* ✨ 방어막 2 & 3 통합 
-        - onSubmit: 마우스 클릭 및 모바일 키보드 '이동/완료' 버튼 대응
-        - onKeyDown: PC에서 탭키나 인풋창 엔터키가 씹히는 현상 철저히 방어
-      */}
       <form 
         onSubmit={executeLogin} 
         onKeyDown={handleFormKeyDown} 
@@ -100,6 +116,34 @@ export default function Login() {
           placeholder="비밀번호 입력" 
           className="input-field" 
         />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input 
+              type="checkbox" 
+              id="keepLogin" 
+              checked={keepLoggedIn}
+              onChange={(e) => setKeepLoggedIn(e.target.checked)}
+              style={{ marginRight: '6px', cursor: 'pointer' }}
+            />
+            <label htmlFor="keepLogin" style={{ color: '#94a3b8', fontSize: '13px', cursor: 'pointer', userSelect: 'none' }}>
+              로그인 상태 유지
+            </label>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input 
+              type="checkbox" 
+              id="saveEmail" 
+              checked={rememberEmail}
+              onChange={(e) => setRememberEmail(e.target.checked)}
+              style={{ marginRight: '6px', cursor: 'pointer' }}
+            />
+            <label htmlFor="saveEmail" style={{ color: '#94a3b8', fontSize: '13px', cursor: 'pointer', userSelect: 'none' }}>
+              이메일 저장
+            </label>
+          </div>
+        </div>
 
         <button type="submit" className="btn-login">
           로그인

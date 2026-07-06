@@ -1,13 +1,14 @@
 // src/pages/Register/Register.jsx
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import { Turnstile } from '@marsidev/react-turnstile'; // ✨ 턴스타일 임포트
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useRegister } from "@/hooks";
+import { isValidBattletag } from "@/utils"; // ✨ 배틀태그 무결성 검증 유틸 소환!
 import './Register.css';
 
 export function Register() {
-  // ✨ 캡챠 통과 시 발급받을 '통행증'을 보관하는 공간
   const [captchaToken, setCaptchaToken] = useState(null);
+  const [battletag, setBattletag] = useState(""); // ✨ 배틀태그 상태 추가
 
   const {
     username, setUsername,
@@ -16,15 +17,21 @@ export function Register() {
     isRegistering, executeRegister
   } = useRegister();
 
-  // ✨ 버튼 클릭 시 캡챠 통과 여부를 먼저 검사하는 방패 함수
   const handleRegisterClick = () => {
+    // ✨ 1순위: 배틀태그를 입력했다면 무결성 검사부터 진행! (빈칸이면 통과)
+    if (battletag.trim() && !isValidBattletag(battletag)) {
+      alert("올바른 배틀태그 형식이 아닙니다. (예: 트레이서#1234)");
+      return;
+    }
+
+    // 2순위: 캡챠 검사
     if (!captchaToken) {
       alert("로봇이 아님을 인증해 주세요!");
       return;
     }
 
-    // 검증을 통과했다면, 원래 있던 가입 함수를 실행하면서 토큰도 같이 넘겨줍니다!
-    executeRegister(captchaToken);
+    // ✨ 검증을 모두 통과했다면, executeRegister에 캡챠 토큰과 '배틀태그'를 같이 넘겨줍니다!
+    executeRegister(captchaToken, battletag.trim());
   };
 
   return (
@@ -59,15 +66,25 @@ export function Register() {
           className="input-field"
         />
 
-        {/* ✨ 가입 버튼 바로 위에 캡챠 위젯 등판! */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        {/* ✨ 배틀태그 선택 입력창 추가 ✨ */}
+        <label className="input-label">오버워치 배틀태그 (선택)</label>
+        <input
+          type="text"
+          placeholder="트레이서#1234"
+          value={battletag}
+          onChange={(e) => setBattletag(e.target.value)}
+          className="input-field"
+          style={{ marginBottom: "5px" }} /* 팁 문구와 간격 조절 */
+        />
+        <p className="input-tip">💡 가입 후 마이페이지에서도 등록/수정할 수 있습니다.</p>
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginTop: '15px' }}>
           <Turnstile
             siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
             onSuccess={(token) => setCaptchaToken(token)}
           />
         </div>
 
-        {/* ✨ 실행 함수를 handleRegisterClick 으로 교체 */}
         <button
           onClick={handleRegisterClick}
           className="btn-register"

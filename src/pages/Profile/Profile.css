@@ -1,3 +1,5 @@
+/* src/pages/Profile/Profile.css */
+
 /* 전체 배경 및 가운데 정렬 */
 .profile-wrapper {
   min-height: 100vh;
@@ -124,8 +126,6 @@
   font-size: 18px;
 }
 
-/* 기존 Profile.css 아래에 이어서 추가하세요 */
-
 .profile-header {
   text-align: center;
   margin-bottom: 30px;
@@ -220,44 +220,6 @@
   color: #38bdf8;
 }
 
-/* 나중에 업데이트 될 게임 전적 박스 */
-.coming-soon-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: repeating-linear-gradient(45deg,
-      rgba(0, 0, 0, 0.2),
-      rgba(0, 0, 0, 0.2) 10px,
-      rgba(255, 255, 255, 0.03) 10px,
-      rgba(255, 255, 255, 0.03) 20px);
-  border: 1px dashed var(--text-sub);
-  padding: 30px 20px;
-  border-radius: 8px;
-  color: var(--text-sub);
-  text-align: center;
-}
-
-.coming-soon-icon {
-  font-size: 32px;
-  margin-bottom: 10px;
-  opacity: 0.5;
-}
-
-.coming-soon-box p {
-  margin: 0 0 10px 0;
-  font-weight: bold;
-}
-
-.coming-soon-badge {
-  background: var(--text-sub);
-  color: var(--bg-dark);
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 20px;
-  font-weight: bold;
-}
-
 /* 위험 구역 (회원 탈퇴 등) */
 .danger-zone {
   margin-top: 30px;
@@ -283,45 +245,6 @@
   background: rgba(255, 78, 0, 0.1);
   color: var(--ow-red);
   border-color: var(--ow-red);
-}
-
-/* 오버워치 연동 정보 섹션 */
-.ow-api-section {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-
-.ow-api-loading {
-  color: #ccc;
-}
-
-.ow-api-error {
-  color: #ff4d4d;
-  font-size: 14px;
-}
-
-.ow-api-info-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.ow-api-avatar {
-  width: 60px;
-  border-radius: 10px;
-}
-
-.ow-api-username {
-  margin: 0;
-  color: #fff;
-}
-
-.ow-api-title {
-  margin: 5px 0 0 0;
-  color: #aaa;
-  font-size: 14px;
 }
 
 /* 내 프로필 설정 인풋 및 버튼 마진값 */

@@ -1,0 +1,204 @@
+/* src/components/OverwatchCard/OverwatchCard.css */
+
+.ow-api-section {
+    background-color: #212530;
+    padding: 24px;
+    border-radius: 16px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    position: relative;
+    min-height: 140px;
+    text-align: left;
+}
+
+.ow-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+.ow-section-title {
+    font-size: 18px;
+    color: var(--text-sub);
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.btn-detail-stats {
+    background: rgba(249, 115, 22, 0.8);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(5px);
+}
+
+.btn-detail-stats:hover {
+    background: #f97316;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4);
+}
+
+.ow-api-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+
+.ow-profile-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* 추천 레벨이 빠져서 깔끔해진 아바타 */
+.ow-avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ow-api-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.ow-api-text-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ✨ 위로 올라간 상태 뱃지 영역 */
+.ow-status-row {
+    margin-bottom: 6px;
+}
+
+.ow-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: bold;
+    backdrop-filter: blur(5px);
+}
+
+.ow-badge.public {
+    background: rgba(46, 213, 115, 0.2);
+    color: #2ed573;
+}
+
+.ow-badge.private {
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+}
+
+/* 닉네임과 추천 레벨 가로 배치 */
+.ow-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* 닉네임과 추천레벨 사이 간격 */
+    margin-bottom: 4px;
+}
+
+.ow-api-username {
+    margin: 0;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 900;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* ✨ 닉네임 옆에 자연스럽게 붙는 추천 레벨 스타일 */
+.ow-endorsement-inline {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+}
+
+.ow-endorsement-frame {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+.ow-endorsement-level {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+    margin-top: 1px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.ow-api-title {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 15px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.ow-tier-right {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+    max-width: 50%;
+}
+
+.ow-tier-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    min-width: 140px;
+}
+
+.ow-tier-icon-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ow-role-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+}
+
+.ow-rank-icon {
+    width: 36px;
+    height: 36px;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+}
+
+.ow-tier-text {
+    font-size: 14px;
+    font-weight: 900;
+    color: #f8fafc;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+}

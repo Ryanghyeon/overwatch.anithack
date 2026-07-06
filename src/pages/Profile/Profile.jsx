@@ -1,11 +1,11 @@
+// src/pages/Profile/Profile.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { deleteUser } from "firebase/auth";
 
-// 👇 지저분한 임포트 대신 바렐 패턴과 절대 경로(@)로 훅/유틸 싹쓸이!
 import { auth, db } from "@/firebase/firebase";
-import { useAuth, useOverwatch } from "@/hooks";
+import { useAuth } from "@/hooks";
 import { isValidBattletag } from "@/utils";
 
 import "./Profile.css";
@@ -14,7 +14,6 @@ export function Profile() {
   const { uid: urlUid } = useParams();
   const navigate = useNavigate();
 
-  // ✨ 1. 길었던 로그인 코드가 단 두 줄로 끝납니다.
   const { user, isAuthLoading, isAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +23,6 @@ export function Profile() {
   const [battletagInput, setBattletagInput] = useState("");
   const [userReportCount, setUserReportCount] = useState(0);
 
-  // ✨ 2. 유저 정보 세팅 로직 (인증이 끝난 후 실행)
   useEffect(() => {
     if (isAuthLoading) return;
 
@@ -69,24 +67,20 @@ export function Profile() {
     fetchTargetData();
   }, [user, isAuthLoading, urlUid, navigate]);
 
-  // ✨ 3. 오버워치 API 코드는 훅 하나로 종결!
-  const { owData, apiLoading, apiError } = useOverwatch(targetUserData?.battletag);
-
   const handleSave = async () => {
     if (!editUsername.trim()) {
       alert("유저네임을 입력해 주세요.");
       return;
     }
 
-    // ✨ 4. 정규식 덩어리 대신 깔끔한 유틸리티 함수 사용!
     if (battletagInput.trim() && !isValidBattletag(battletagInput)) {
-      alert("올바른 배틀태그 형식이 아닙니다. (예: 비매너유저#1234)");
+      alert("올바른 배틀태그 형식이 아닙니다.");
       return;
     }
 
     try {
       const myUid = user.uid || user.id;
-      let finalPhotoUrl = targetUserData?.photoUrl; // 현재 타겟 데이터 기반으로 수정
+      let finalPhotoUrl = targetUserData?.photoUrl;
 
       if (!finalPhotoUrl || finalPhotoUrl.includes("ui-avatars.com")) {
         finalPhotoUrl = `https://ui-avatars.com/api/?name=${editUsername}&background=random&color=fff`;
@@ -143,7 +137,6 @@ export function Profile() {
 
   const displayPhoto = targetUserData.photoUrl || `https://ui-avatars.com/api/?name=${targetUserData.username || "유저"}&background=random&color=fff`;
 
-  // UI (return 문) 부분은 기존 코드와 완벽하게 동일하므로 그대로 유지됩니다!
   return (
     <div className="profile-wrapper">
       <div className="profile-box">
@@ -160,23 +153,6 @@ export function Profile() {
           </p>
         </div>
 
-        {targetUserData.battletag && (
-          <div className="profile-section ow-api-section">
-            <h3 className="section-title">🎮 오버워치 연동 정보</h3>
-            {apiLoading && <p className="ow-api-loading">데이터를 불러오는 중...</p>}
-            {!apiLoading && apiError && <p className="ow-api-error">🚨 {apiError}</p>}
-            {!apiLoading && owData && (
-              <div className="ow-api-info-container">
-                <img src={owData.avatar} alt="ow-avatar" className="ow-api-avatar" />
-                <div className="ow-api-text-wrap">
-                  <h4 className="ow-api-username">{owData.username}</h4>
-                  <p className="ow-api-title">{owData.title || "칭호 없음"}</p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
         {isMe && (
           <div className="profile-section section-me">
             <h3 className="section-title">⚙️ 내 프로필 설정</h3>
@@ -184,7 +160,7 @@ export function Profile() {
             <input type="text" value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="profile-input profile-username-input" placeholder="변경할 닉네임을 입력하세요" />
             <label className="profile-label">오버워치 배틀태그 (선택)</label>
             <input type="text" value={battletagInput} onChange={(e) => setBattletagInput(e.target.value)} className="profile-input profile-battletag-input" placeholder="배틀태그 입력" />
-            <p className="profile-tip battletag-tip">💡 프로필이 공개된 배틀태그만 연동됩니다.</p>
+            <p className="profile-tip battletag-tip">💡 입력하신 배틀태그는 마이페이지에서 연동 정보로 활용됩니다.</p>
             <button onClick={handleSave} className="btn-save btn-profile-save">변경사항 저장</button>
             <div className="danger-zone">
               <button onClick={handleDeleteAccount} className="btn-delete-account">회원 탈퇴</button>
@@ -208,12 +184,6 @@ export function Profile() {
               <span className="stats-label">활동 점수 (신고 기여도)</span>
               <span className="stats-value">{userReportCount} 건</span>
             </div>
-            {!targetUserData.battletag && (
-              <div className="coming-soon-box">
-                <span className="coming-soon-icon">🎮</span>
-                <p>오버워치 전적 비공개 또는 미연동 계정입니다.</p>
-              </div>
-            )}
           </div>
         )}
       </div>

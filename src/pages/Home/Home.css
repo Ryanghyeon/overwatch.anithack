@@ -1,336 +1,165 @@
 /* src/pages/Home/Home.css */
 
 .home-wrapper {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
   padding: 20px;
 }
 
-/* 반투명 유리 박스 효과 */
 .home-box {
-  width: 100%;
-  max-width: 440px;
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);         /* 뒤쪽 배경을 흐리게 (핵심!) */
-  -webkit-backdrop-filter: blur(20px); 
-  border: 1px solid var(--card-border); /* 얇고 은은한 테두리 */
-  border-radius: 24px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   padding: 50px 40px;
+  width: 100%;
+  max-width: 500px;
+  /* 너무 넓지 않게 조정 */
   text-align: center;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* 그라데이션 타이틀 */
+/* 날아갔던 타이틀 복구 (안전한 단색 오렌지로 변경) */
 .home-title {
-  font-size: 52px;
-  font-weight: 800;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  margin-bottom: 5px;
   letter-spacing: -1px;
-  margin-bottom: 8px;
-  
-  /* 글씨에 그라데이션 넣기 */
-  background: linear-gradient(135deg, var(--ow-orange), var(--ow-red));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  
-  /* 글씨 뒤에 은은한 빛 번짐 */
-  filter: drop-shadow(0 4px 12px rgba(249, 158, 26, 0.3));
 }
 
 .home-subtitle {
-  color: var(--text-sub);
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 45px;
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 40px;
 }
 
-/* 힙한 고스트 버튼 스타일 */
-.btn-action {
-  width: 100%;
-  background: rgba(249, 158, 26, 0.08); /* 평소엔 투명하게 */
-  color: var(--ow-orange);
-  border: 1px solid rgba(249, 158, 26, 0.3);
-  padding: 16px 24px;
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 700;
+.search-form {
+  margin-bottom: 20px;
+}
+
+.search-input-wrapper {
+  display: flex;
+  gap: 10px;
+  height: 54px;
+}
+
+.search-input {
+  flex: 1;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 20px;
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.btn-search {
+  background-color: var(--accent-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 24px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 쫀득한 애니메이션 */
-  margin-bottom: 12px;
+  white-space: nowrap;
 }
 
-/* 마우스 올렸을 때 채워지며 빛나는 효과 */
+/* 인사말 영역 */
+.admin-greeting,
+.user-greeting {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: var(--text-main);
+}
+
+.user-nickname,
+.admin-nickname {
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+/* ✨ 버튼들을 세로로 예쁘게 정렬해 주는 마법의 상자 */
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* 공통 버튼 디자인 */
+.btn-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
 .btn-action:hover {
-  background: var(--ow-orange);
-  color: #000;
-  box-shadow: 0 8px 24px var(--btn-glow);
-  transform: translateY(-2px); /* 살짝 위로 떠오름 */
+  background-color: var(--border-color);
 }
 
-/* 하단 통계 영역 - 대시보드 느낌 */
+/* 눈에 띄어야 하는 강조 버튼 (신고하기) */
+.btn-action.highlight {
+  background-color: var(--accent-primary);
+  color: white;
+  border: none;
+}
+
+.btn-action.highlight:hover {
+  background-color: var(--accent-hover);
+}
+
+/* 덜 튀어야 하는 버튼 (로그아웃) */
+.btn-action.outline {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.btn-action.outline:hover {
+  background-color: var(--bg-input);
+  color: var(--color-danger);
+}
+
+/* 통계 창 */
 .stats-container {
   display: flex;
   justify-content: space-around;
   margin-top: 40px;
   padding-top: 30px;
-  border-top: 1px solid var(--card-border);
+  border-top: 1px solid var(--border-color);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .stat-label {
-  color: var(--text-sub);
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  display: block;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .stat-value {
-  font-size: 32px;
-  font-weight: 800;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-.report-val { color: var(--ow-orange); }
-.battletag-val { color: #38bdf8; } /* 사이버틱한 블루 */
-
-/* 사용자 환영 메시지 영역 */
-.user-greeting {
-  margin-bottom: 20px;
-  font-size: 18px;
-  color: var(--text-main); /* 텍스트 기본 색상 */
-}
-
-/* 닉네임 강조 포인트 */
-.user-nickname {
-  color: var(--ow-orange);
-  font-weight: 800;
-  font-size: 20px; /* 닉네임만 살짝 더 크게! */
-}
-
-/* 관리자 환영 메시지 박스 */
-.admin-greeting {
-  margin-bottom: 25px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #f8fafc; /* 밝은 화이트 단색 */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* 관리자 배지 (빨간색 포인트) */
-.admin-badge {
-  background: rgba(255, 78, 0, 0.15);
-  color: var(--ow-red);
-  border: 1px solid rgba(255, 78, 0, 0.4);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  font-size: 2rem;
   font-weight: 900;
-  letter-spacing: 1px;
-}
-
-/* 관리자 이름 강조 */
-.admin-nickname {
-  color: #38bdf8; /* 신뢰감을 주는 파란색 닉네임 */
-  font-weight: 800;
-}
-
-/* 프로필 설정 링크 및 버튼 */
-.profile-link {
-  text-decoration: none;
-  display: inline-block;
-  margin-bottom: 20px;
-}
-
-.btn-profile-setting {
-  background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
-  border: 1px solid var(--card-border);
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s ease;
-}
-
-.btn-profile-setting:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: var(--text-sub);
-}
-
-.search-form {
-  margin: 25px 0;
-  width: 100%;
-}
-
-.search-input-wrapper {
-  display: flex;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 4px;
-  transition: all 0.2s ease;
-}
-
-.search-input-wrapper:focus-within {
-  border-color: #38bdf8;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
-}
-
-.search-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text-main);
-  padding: 12px 16px;
-  font-size: 16px;
-}
-
-.search-input::placeholder {
-  color: var(--text-sub);
-  opacity: 0.6;
-}
-
-.btn-search {
-  background: #38bdf8;
-  color: var(--bg-dark);
-  border: none;
-  padding: 0 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-
-.btn-search:hover {
-  background: #0ea5e9;
-}
-
-.btn-search:disabled {
-  background: var(--card-border);
-  color: var(--text-sub);
-  cursor: not-allowed;
-}
-
-/* 검색 결과 창 스타일 */
-.search-result-box {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed var(--card-border);
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 25px;
-  text-align: center;
-  font-size: 14px;
-  animation: fadeIn 0.3s ease;
-}
-
-.result-clean {
-  color: #4ade80;
-  margin: 0;
-}
-
-.result-danger {
-  color: var(--text-main);
-}
-
-.result-danger p {
-  margin: 0 0 12px 0;
-}
-
-.danger-count {
-  color: var(--ow-red);
-  font-weight: bold;
-  font-size: 16px;
-  margin: 0 2px;
-}
-
-/* 상세 전과 기록 보기 버튼 */
-.btn-go-detail {
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-go-detail:hover {
-  background: #38bdf8;
-  color: var(--bg-dark);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================================
-   ✨ 1. 검색창 래퍼 (부모)
-========================================================== */
-.search-input-wrapper {
-  display: flex;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 4px;
-  width: 100%; /* 부모 넓이에 딱 맞추기 */
-  box-sizing: border-box; /* 패딩 때문에 삐져나가는 것 방지 */
-  transition: all 0.2s ease;
-}
-
-/* ==========================================================
-   ✨ 2. 입력창 (범인 검거!)
-========================================================== */
-.search-input {
-  flex: 1;
-  min-width: 0; /* 🚨 핵심 기강 잡기: 내 덩치를 고집하지 말고 부모 크기에 맞춰 줄어들어라! */
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text-main);
-  padding: 12px 16px;
-  font-size: 15px; /* 모바일에서는 16px보다 15px이 예쁩니다 */
-}
-
-/* ==========================================================
-   ✨ 3. 검색 버튼 (피해자 보호)
-========================================================== */
-.btn-search {
-  flex-shrink: 0; /* 🚨 방어막: 아무리 화면이 좁아져도 내 형태(버튼 크기)는 찌그러지지 마라! */
-  background: #38bdf8;
-  color: var(--bg-dark);
-  border: none;
-  padding: 0 18px; /* 모바일을 위해 패딩 살짝 다이어트 */
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-
-/* ==========================================================
-   🎁 보너스: 찌그러진 '관리자 계정 작동 중' 텍스트 구출 작전
-========================================================== */
-.admin-greeting {
-  display: flex;
-  flex-direction: column; /* 좁은 모바일에서는 가로 배치 대신 세로로 깔끔하게! */
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 15px;
-  text-align: center;
-  word-break: keep-all; /* 단어가 이상하게 쪼개지는 것 방지 */
-  line-height: 1.4;
 }

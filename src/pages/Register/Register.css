@@ -1,72 +1,233 @@
-/* 전체 배경을 덮는 래퍼 */
+/* src/pages/Register/Register.css */
+
+/* 1. 전체 배경을 덮는 래퍼 */
 .register-wrapper {
-  min-height: 100vh;
-  background-color: #0f172a;
+  /* 껍데기(Layout)가 넘겨준 공간을 꽉 채우도록 flex 적용 */
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  /* 모바일에서도 화면 벽에 달라붙지 않게 여백 추가 */
 }
 
-/* 중앙 회원가입 박스 */
+/* 2. 중앙 회원가입 박스 (로그인 박스와 완벽하게 통일) */
 .register-box {
-  width: 400px;
+  width: 100%;
+  max-width: 420px;
   padding: 40px;
-  background-color: #1e293b;
-  border-radius: 12px;
-  color: white;
+  background: var(--bg-card);
+  /* 글로벌 카드 배경 변수 */
+  border: 1px solid var(--border-color);
+  /* 글로벌 테두리 변수 */
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  color: var(--text-main);
 }
 
-/* 제목 */
+/* 3. 제목 */
 .register-title {
   text-align: center;
+  font-size: 28px;
+  font-weight: 800;
   margin-bottom: 30px;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
 }
 
-/* 입력창 라벨 (닉네임, 이메일, 비밀번호 글씨) */
+/* 4. 입력창 라벨 (닉네임, 이메일, 비밀번호) */
 .input-label {
   display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  /* 눈이 편안한 서브 텍스트 컬러 */
+  margin-bottom: 8px;
 }
 
-/* 입력창 (Input) */
+/* 5. 입력창 (Input) */
 .input-field {
   width: 100%;
-  padding: 12px;
-  margin-top: 8px;
+  padding: 12px 16px;
   margin-bottom: 20px;
-  border-radius: 8px;
-  border: none;
-  outline: none; /* 클릭 시 기본으로 생기는 테두리 제거 */
+  background: var(--bg-main);
+  /* 입력창이 살짝 들어가 보이게 */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
-/* 회원가입 버튼 */
+/* 클릭(포커스) 시 Owtics 주황색으로 은은하게 빛남 */
+.input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(255, 136, 0, 0.15);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* 6. 회원가입 버튼 */
 .btn-register {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
-  background-color: #3b82f6; /* Login 페이지와 동일한 파란색 테마 적용 */
-  color: white;
-  transition: background-color 0.2s ease;
+  font-size: 16px;
+  background-color: var(--accent-primary);
+  /* 포인트 오렌지 컬러 */
+  color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 136, 0, 0.2);
+  margin-top: 10px;
 }
 
 .btn-register:hover {
-  background-color: #2563eb; /* 마우스 올렸을 때 살짝 어두워짐 */
+  filter: brightness(1.1);
+  /* 마우스 올리면 살짝 더 밝아지게 */
+  transform: translateY(-1px);
 }
 
-/* 하단 링크 영역 */
+/* 7. 하단 링크 영역 */
 .link-wrapper {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
-/* 하단 텍스트 링크 */
+/* 8. 하단 텍스트 링크 */
 .text-link {
-  color: #60a5fa;
+  color: var(--text-muted);
+  font-size: 13px;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .text-link:hover {
-  text-decoration: underline; /* 마우스 올렸을 때 밑줄 효과 */
+  color: var(--accent-primary);
+  /* 마우스 올리면 주황색으로 하이라이트 */
+  text-decoration: underline;
+}
+
+/* src/pages/Register/Register.css */
+
+/* 1. 전체 배경을 덮는 래퍼 */
+.register-wrapper {
+  /* 껍데기(Layout)가 넘겨준 공간을 꽉 채우도록 flex 적용 */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  /* 모바일에서도 화면 벽에 달라붙지 않게 여백 추가 */
+}
+
+/* 2. 중앙 회원가입 박스 (로그인 박스와 완벽하게 통일) */
+.register-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  background: var(--bg-card);
+  /* 글로벌 카드 배경 변수 */
+  border: 1px solid var(--border-color);
+  /* 글로벌 테두리 변수 */
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  color: var(--text-main);
+}
+
+/* 3. 제목 */
+.register-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
+}
+
+/* 4. 입력창 라벨 (닉네임, 이메일, 비밀번호) */
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  /* 눈이 편안한 서브 텍스트 컬러 */
+  margin-bottom: 8px;
+}
+
+/* 5. 입력창 (Input) */
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background: var(--bg-main);
+  /* 입력창이 살짝 들어가 보이게 */
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-main);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* 클릭(포커스) 시 Owtics 주황색으로 은은하게 빛남 */
+.input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(255, 136, 0, 0.15);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* 6. 회원가입 버튼 */
+.btn-register {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: var(--accent-primary);
+  /* 포인트 오렌지 컬러 */
+  color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 136, 0, 0.2);
+  margin-top: 10px;
+}
+
+.btn-register:hover {
+  filter: brightness(1.1);
+  /* 마우스 올리면 살짝 더 밝아지게 */
+  transform: translateY(-1px);
+}
+
+/* 7. 하단 링크 영역 */
+.link-wrapper {
+  text-align: center;
+  margin-top: 25px;
+}
+
+/* 8. 하단 텍스트 링크 */
+.text-link {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.text-link:hover {
+  color: var(--accent-primary);
+  /* 마우스 올리면 주황색으로 하이라이트 */
+  text-decoration: underline;
 }

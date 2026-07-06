@@ -1,5 +1,5 @@
+// src/pages/Login/Login.jsx
 import { Link } from "react-router-dom";
-// 👇 정말 숨 막히게 깔끔해진 단 한 줄의 임포트!
 import { useLogin } from "@/hooks";
 import './Login.css';
 
@@ -51,41 +51,40 @@ export default function Login() {
           className="input-field"
         />
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="checkbox-group-wrapper">
+          <div className="checkbox-item">
             <input
               type="checkbox"
               id="keepLogin"
               checked={keepLoggedIn}
               onChange={(e) => setKeepLoggedIn(e.target.checked)}
-              style={{ marginRight: '6px', cursor: 'pointer' }}
+              className="checkbox-input"
             />
-            <label htmlFor="keepLogin" style={{ color: '#94a3b8', fontSize: '13px', cursor: 'pointer', userSelect: 'none' }}>
+            <label htmlFor="keepLogin" className="checkbox-label">
               로그인 상태 유지
             </label>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="checkbox-item">
             <input
               type="checkbox"
               id="saveEmail"
               checked={rememberEmail}
               onChange={(e) => setRememberEmail(e.target.checked)}
-              style={{ marginRight: '6px', cursor: 'pointer' }}
+              className="checkbox-input"
             />
-            <label htmlFor="saveEmail" style={{ color: '#94a3b8', fontSize: '13px', cursor: 'pointer', userSelect: 'none' }}>
+            <label htmlFor="saveEmail" className="checkbox-label">
               이메일 저장
             </label>
           </div>
         </div>
 
-        {/* ✨ 로그인 중일 때 버튼 비활성화 (따닥 방지) */}
         <button type="submit" className="btn-login" disabled={isLoggingIn}>
           {isLoggingIn ? "로그인 중..." : "로그인"}
         </button>
 
-        <div className="link-wrapper" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
-          <Link to="/register" className="text-link">회원가입</Link>
+        <div className="link-wrapper">
+          <Link to="/register" className="text-link">회원가입(이메일 인증)</Link>
           <Link to="/" className="text-link">홈으로 돌아가기</Link>
         </div>
       </form>

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.3",
+    "axios": "^1.18.1",
     "firebase": "^12.15.0",
     "firebase-admin": "^13.4.0",
     "react": "^19.2.6",

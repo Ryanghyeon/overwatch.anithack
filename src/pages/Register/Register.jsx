@@ -1,16 +1,31 @@
+// src/pages/Register/Register.jsx
+import { useState } from 'react';
 import { Link } from "react-router-dom";
-// 👇 임포트가 예술적으로 단 한 줄!
+import { Turnstile } from '@marsidev/react-turnstile'; // ✨ 턴스타일 임포트
 import { useRegister } from "@/hooks";
 import './Register.css';
 
 export default function Register() {
-  // 상태와 함수들을 통째로 가져옵니다.
+  // ✨ 캡챠 통과 시 발급받을 '통행증'을 보관하는 공간
+  const [captchaToken, setCaptchaToken] = useState(null);
+
   const {
     username, setUsername,
     email, setEmail,
     password, setPassword,
     isRegistering, executeRegister
   } = useRegister();
+
+  // ✨ 버튼 클릭 시 캡챠 통과 여부를 먼저 검사하는 방패 함수
+  const handleRegisterClick = () => {
+    if (!captchaToken) {
+      alert("로봇이 아님을 인증해 주세요!");
+      return;
+    }
+
+    // 검증을 통과했다면, 원래 있던 가입 함수를 실행하면서 토큰도 같이 넘겨줍니다!
+    executeRegister(captchaToken);
+  };
 
   return (
     <div className="register-wrapper">
@@ -44,9 +59,17 @@ export default function Register() {
           className="input-field"
         />
 
-        {/* ✨ 로딩 중(isRegistering)일 때 버튼을 비활성화하여 중복 클릭 완벽 차단 */}
+        {/* ✨ 가입 버튼 바로 위에 캡챠 위젯 등판! */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <Turnstile
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setCaptchaToken(token)}
+          />
+        </div>
+
+        {/* ✨ 실행 함수를 handleRegisterClick 으로 교체 */}
         <button
-          onClick={executeRegister}
+          onClick={handleRegisterClick}
           className="btn-register"
           disabled={isRegistering}
         >

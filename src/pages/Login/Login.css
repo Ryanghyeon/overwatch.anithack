@@ -1,41 +1,37 @@
-/* 전체 배경을 덮는 래퍼 */
+/* src/pages/Login/Login.css */
+
+/* 1. 전체 배경을 덮는 래퍼 */
 .login-wrapper {
-  min-height: 100vh;
-  background-color: #0f172a; /* 홈페이지와 동일한 딥 다크 배경 */
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
 
-/* 중앙 로그인 박스 (홈페이지 박스 스타일과 통일 - 유리 질감 효과) */
+/* 2. 중앙 로그인 박스 (글로벌 카드 배경 변수 사용) */
 .login-box {
   width: 100%;
   max-width: 420px;
   padding: 40px;
-  background: rgba(30, 41, 59, 0.7); /* 반투명 다크 */
-  backdrop-filter: blur(10px); /* 블러 처리로 유리 느낌 */
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08); /* 은은한 테두리 */
-  border-radius: 16px; /* 조금 더 부드러운 라운딩 */
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  color: #f8fafc;
+  color: var(--text-main);
 }
 
-/* 제목 (오버워치 느낌의 볼드 텍스트) */
+/* 3. 제목 (오버워치 느낌의 볼드 텍스트) */
 .login-title {
   text-align: center;
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 30px;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-main);
 }
 
-/* 디스코드 로그인 버튼 */
+/* 4. 디스코드 로그인 버튼 (브랜드 고유 컬러는 그대로 유지) */
 .btn-discord {
   width: 100%;
   padding: 14px;
@@ -46,7 +42,7 @@
   font-size: 15px;
   background-color: #5865F2;
   color: white;
-  margin-bottom: 25px; /* 이메일 폼과의 간격 확보 */
+  margin-bottom: 25px;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2);
 }
@@ -56,46 +52,44 @@
   transform: translateY(-1px);
 }
 
-/* 입력창 라벨 (이메일, 비밀번호 글씨 - 홈페이지 서브 텍스트 컬러) */
+/* 5. 입력창 라벨 */
 .input-label {
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #94a3b8; /* 차분한 그레이 */
+  color: var(--text-muted);
   margin-bottom: 8px;
 }
 
 .auth-label {
-  /* 디스코드 버튼 아래 경계선 효과 뒤에 위치하게 설정 */
   position: relative;
 }
 
-/* 입력창 (Input - 홈페이지 검색창과 동일한 반응형 네온 블루 스타일) */
+/* 6. 입력창 (Input) */
 .input-field {
   width: 100%;
   padding: 12px 16px;
   margin-bottom: 20px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
-  color: white;
+  color: var(--text-main);
   font-size: 15px;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .input-field:focus {
-  border-color: #38bdf8; /* 오버워치 포인트 블루 */
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
-  background: rgba(0, 0, 0, 0.35);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(255, 136, 0, 0.15);
 }
 
 .input-field::placeholder {
-  color: #64748b;
+  color: var(--text-muted);
   opacity: 0.7;
 }
 
-/* 기본 로그인 버튼 (포인트 네온 블루 스타일) */
+/* 7. 기본 로그인 버튼 (포인트 오렌지 스타일로 변경) */
 .btn-login {
   width: 100%;
   padding: 14px;
@@ -104,26 +98,29 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 16px;
-  background-color: #38bdf8; /* 홈페이지 검색/액션 버튼 연동 블루 */
-  color: #0f172a; /* 밝은 버튼엔 어두운 글씨가 가독성 갑 */
+  background-color: var(--accent-primary);
+  color: #ffffff;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 136, 0, 0.2);
   margin-top: 5px;
 }
 
 .btn-login:hover {
-  background-color: #0ea5e9;
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
-/* 하단 링크들을 감싸는 영역 (가로 분할 배치 대응) */
+/* 8. 하단 링크들을 감싸는 영역 */
 .link-wrapper {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
 }
 
-/* 하단 텍스트 링크 */
+/* 9. 하단 텍스트 링크 */
 .text-link {
-  color: #94a3b8; /* 기본적으론 차분하게 보였다가 */
+  color: var(--text-muted);
   font-size: 13px;
   text-decoration: none;
   font-weight: 500;
@@ -131,6 +128,34 @@
 }
 
 .text-link:hover {
-  color: #38bdf8; /* 마우스 올리면 네온 블루로 하이라이트 */
+  color: var(--accent-primary);
   text-decoration: underline;
+}
+
+/* 10. 체크박스 그룹 전체 래퍼 */
+.checkbox-group-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 11. 개별 체크박스 항목 (체크박스 + 라벨) */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+}
+
+/* 12. 체크박스 인풋 */
+.checkbox-input {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+/* 13. 체크박스 라벨 (글로벌 변수로 색상 통일) */
+.checkbox-label {
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
 }

@@ -1,4 +1,3 @@
-// src/hooks/index.js
-export * from './useAuth';
-export * from './useSearch';
-export * from './useStats';
+// src/components/index.js
+export * from './Layout/Layout';
+export * from './Footer/Footer';

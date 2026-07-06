@@ -17,7 +17,7 @@
   border: 1px solid var(--card-border);
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
@@ -123,6 +123,7 @@
   margin-top: 50px;
   font-size: 18px;
 }
+
 /* 기존 Profile.css 아래에 이어서 추가하세요 */
 
 .profile-header {
@@ -160,7 +161,7 @@
   font-size: 16px;
   color: var(--text-sub);
   margin-bottom: 15px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 8px;
 }
 
@@ -225,13 +226,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.2) 10px,
-    rgba(255, 255, 255, 0.03) 10px,
-    rgba(255, 255, 255, 0.03) 20px
-  );
+  background: repeating-linear-gradient(45deg,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2) 10px,
+      rgba(255, 255, 255, 0.03) 10px,
+      rgba(255, 255, 255, 0.03) 20px);
   border: 1px dashed var(--text-sub);
   padding: 30px 20px;
   border-radius: 8px;
@@ -284,4 +283,56 @@
   background: rgba(255, 78, 0, 0.1);
   color: var(--ow-red);
   border-color: var(--ow-red);
+}
+
+/* 오버워치 연동 정보 섹션 */
+.ow-api-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.ow-api-loading {
+  color: #ccc;
+}
+
+.ow-api-error {
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+.ow-api-info-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.ow-api-avatar {
+  width: 60px;
+  border-radius: 10px;
+}
+
+.ow-api-username {
+  margin: 0;
+  color: #fff;
+}
+
+.ow-api-title {
+  margin: 5px 0 0 0;
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* 내 프로필 설정 인풋 및 버튼 마진값 */
+.profile-username-input {
+  margin-bottom: 15px;
+}
+
+.battletag-tip {
+  margin-top: 5px;
+}
+
+.btn-profile-save {
+  margin-top: 15px;
 }

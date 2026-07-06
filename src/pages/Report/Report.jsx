@@ -1,96 +1,17 @@
-import { useState } from "react";
-import { auth, db } from "../../firebase/firebase";
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  increment,
-} from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
-import './Report.css'; 
+import { useAuth, useReport } from "@/hooks";
+import './Report.css';
 
 export default function Report() {
-  const navigate = useNavigate();
-  const [battleTag, setBattleTag] = useState("");
-  const [reason, setReason] = useState("");
-  const [details, setDetails] = useState(""); 
+  // 1. 로그인 유저 정보 가져오기
+  const { user } = useAuth();
 
-  const handleReport = async () => {
-    try {
-      const user = auth.currentUser;
-
-      if (!user) {
-        alert("로그인이 필요합니다.");
-        return;
-      }
-
-      if (!battleTag.trim()) {
-        alert("배틀태그를 입력해 주세요.");
-        return;
-      }
-
-      const battleTagRegex = /^[a-zA-Z0-9가-힣]+#\d{4,5}$/;
-      
-      if (!battleTagRegex.test(battleTag)) {
-        alert("올바른 배틀태그 형식이 아닙니다. (예: 비매너유저#12345)");
-        return;
-      }
-
-      if (!reason) {
-        alert("신고 사유를 선택해 주세요.");
-        return;
-      }
-
-      const reportQuery = query(
-        collection(db, "reports"),
-        where("reporterUid", "==", user.uid),
-        where("battletag", "==", battleTag)
-      );
-      const existingReports = await getDocs(reportQuery);
-      if (!existingReports.empty) {
-        alert("이미 신고한 배틀태그입니다.");
-        return;
-      }
-      
-      await addDoc(collection(db, "reports"), {
-        battletag: battleTag,
-        reason: reason,
-        details: details, 
-        reporterUid: user.uid,
-        createdAt: new Date(),
-      });
-      
-      // ✨ battletags 장부 업데이트 로직 (reportCount -> count 로 이름 통일!)
-      const battletagRef = doc(db, "battletags", battleTag);
-      const battletagSnap = await getDoc(battletagRef);
-
-      if (!battletagSnap.exists()) {
-        await setDoc(battletagRef, {
-          battletag: battleTag,
-          count: 1, // ✨ 여기 수정됨!
-          lastReportedAt: new Date(),
-        });
-      } else {
-        await updateDoc(battletagRef, {
-          count: increment(1), // ✨ 여기 수정됨!
-          lastReportedAt: new Date(),
-        });
-      }
-      
-      alert(`${battleTag} 신고가 접수되었습니다.`);
-      navigate("/");
-      
-    } catch (error) {
-      console.error(error);
-      alert("신고 접수 중 오류가 발생했습니다.");
-    }
-  };
+  // 2. 신고 관련 로직과 상태 가져오기 (user 정보를 넘겨줌)
+  const {
+    battleTag, setBattleTag,
+    reason, setReason,
+    details, setDetails,
+    submitReport, isSubmitting
+  } = useReport(user);
 
   return (
     <div className="report-wrapper">
@@ -118,7 +39,6 @@ export default function Report() {
           <option value="기타 사유">기타 사유</option>
         </select>
 
-      
         <textarea
           placeholder="핵 사용 정황이나 발생 시간 등 세부사항을 적어주세요. (선택)"
           value={details}
@@ -126,8 +46,13 @@ export default function Report() {
           className="report-input report-textarea"
         ></textarea>
 
-        <button onClick={handleReport} className="btn-report">
-          신고 접수하기
+        {/* ✨ 제출 중일 때는 버튼을 비활성화하여 중복 클릭 방지! */}
+        <button
+          onClick={submitReport}
+          className="btn-report"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "접수 중..." : "신고 접수하기"}
         </button>
       </div>
     </div>

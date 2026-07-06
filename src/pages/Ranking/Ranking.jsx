@@ -1,35 +1,11 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { db } from "../../firebase/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+// 👇 파이어베이스 임포트 없이 훅 하나로 깔끔하게 데이터 로드
+import { useRanking } from "@/hooks";
 import './Ranking.css';
 
 export default function Ranking() {
-  const [ranking, setRanking] = useState([]);
-
-  useEffect(() => {
-    loadRanking();
-  }, []);
-
-  const loadRanking = async () => {
-    try {
-      const q = query(
-        collection(db, "battletags"),
-        orderBy("reportCount", "desc")
-      );
-
-      const snapshot = await getDocs(q);
-
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setRanking(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // 상태와 데이터를 훅에서 쏙 빼옵니다.
+  const { ranking, isLoading } = useRanking();
 
   return (
     <div className="ranking-wrapper">
@@ -43,21 +19,27 @@ export default function Ranking() {
       </div>
 
       <div className="ranking-list">
-        {ranking.map((player, index) => (
-          <div key={player.id} className="ranking-card">
-            <div className="ranking-medal">
-              {index === 0 && "🥇"}
-              {index === 1 && "🥈"}
-              {index === 2 && "🥉"}
-              {index > 2 && `#${index + 1}`}
-            </div>
+        {/* 로딩 중일 때 텅 빈 화면 대신 안내 문구 표시 */}
+        {isLoading ? (
+          <div className="loading-text">랭킹 데이터를 불러오는 중입니다...</div>
+        ) : (
+          ranking.map((player, index) => (
+            <div key={player.id} className="ranking-card">
+              <div className="ranking-medal">
+                {index === 0 && "🥇"}
+                {index === 1 && "🥈"}
+                {index === 2 && "🥉"}
+                {index > 2 && `#${index + 1}`}
+              </div>
 
-            <div className="ranking-info">
-              <h2 className="battletag-name">{player.battletag}</h2>
-              <p className="report-count">🚨 신고 {player.reportCount}회</p>
+              <div className="ranking-info">
+                <h2 className="battletag-name">{player.battletag}</h2>
+                {/* ✨ 예외 처리 우회 코드를 다 지우고 reportCount로 다이렉트 연결! */}
+                <p className="report-count">🚨 신고 {player.reportCount}회</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

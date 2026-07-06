@@ -1,46 +1,16 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { auth, db } from "../../firebase/firebase";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+// 👇 임포트가 예술적으로 단 한 줄!
+import { useRegister } from "@/hooks";
 import './Register.css';
 
 export default function Register() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleRegister = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      const user = userCredential.user;
-
-      console.log("회원가입 성공:", user.email);
-
-      await sendEmailVerification(user);
-
-      console.log("인증메일 발송 성공");
-
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        username,
-        email,
-        photoUrl: `https://ui-avatars.com/api/?name=${username}&background=random&color=fff`,
-        role: "user",
-        createdAt: new Date(),
-      });
-
-      alert("인증 메일을 발송했습니다.");
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
-  };
+  // 상태와 함수들을 통째로 가져옵니다.
+  const {
+    username, setUsername,
+    email, setEmail,
+    password, setPassword,
+    isRegistering, executeRegister
+  } = useRegister();
 
   return (
     <div className="register-wrapper">
@@ -68,14 +38,19 @@ export default function Register() {
         <label className="input-label">비밀번호</label>
         <input
           type="password"
-          placeholder="비밀번호 입력"
+          placeholder="최소 6자리 이상"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="input-field"
         />
 
-        <button onClick={handleRegister} className="btn-register">
-          회원가입
+        {/* ✨ 로딩 중(isRegistering)일 때 버튼을 비활성화하여 중복 클릭 완벽 차단 */}
+        <button
+          onClick={executeRegister}
+          className="btn-register"
+          disabled={isRegistering}
+        >
+          {isRegistering ? "가입 처리 중..." : "회원가입"}
         </button>
 
         <div className="link-wrapper">

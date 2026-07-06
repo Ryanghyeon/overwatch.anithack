@@ -1,165 +1,17 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { auth, db } from "../../firebase/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, doc, getDoc, setDoc, query, where } from "firebase/firestore";
+// ✨ 상태 관리(useState)와 파이어베이스 관련 임포트는 이제 전혀 필요 없습니다!
+import { useAuth, useSearch, useStats } from "@/hooks";
 import './Home.css';
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-  const [userName, setUserName] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [reportCount, setReportCount] = useState(0);
-  const [battleTagCount, setBattleTagCount] = useState(0);
+  // 1. 로그인 로직 
+  const { user, userName, isAdmin, handleLogout } = useAuth();
 
-  // ✨ 검색 관련 상태 추가
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState(null); // null: 검색 안함, false: 클린 유저, object: 전과 유저
-  const [isSearching, setIsSearching] = useState(false);
+  // 2. 검색 로직
+  const { searchQuery, setSearchQuery, searchResult, isSearching, executeSearch } = useSearch();
 
-  useEffect(() => {
-    loadStats();
-
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-
-        try {
-          const userRef = doc(db, "users", currentUser.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const data = userSnap.data();
-            const updates = {};
-            
-            if (!data.role) updates.role = "user";
-            if (!data.createdAt) updates.createdAt = new Date();
-            
-            if (!data.photoUrl && data.avatar) {
-              updates.photoUrl = `https://cdn.discordapp.com/avatars/${data.uid}/${data.avatar}.png`;
-            }
-
-            if (Object.keys(updates).length > 0) {
-              await setDoc(userRef, updates, { merge: true });
-            }
-
-            const displayUsername = data.username || (currentUser.email ? currentUser.email.split("@")[0] : "유저");
-            setUserName(displayUsername);
-            setIsAdmin(data.role === "admin" || updates.role === "admin");
-            
-          } else {
-            const defaultName = currentUser.email ? currentUser.email.split("@")[0] : "유저";
-            await setDoc(userRef, {
-              uid: currentUser.uid,
-              username: defaultName,
-              photoUrl: "https://cdn.discordapp.com/embed/avatars/0.png",
-              role: "user",
-              createdAt: new Date(),
-            });
-            setUserName(defaultName);
-            setIsAdmin(false);
-          }
-        } catch (error) {
-          console.error("유저 정보 불러오기 에러:", error);
-        }
-      } else {
-        const discordUserStr = localStorage.getItem("user");
-        if (discordUserStr) {
-          const parsedUser = JSON.parse(discordUserStr);
-          setUser(parsedUser);
-          
-          const discordUid = parsedUser.id || parsedUser.uid;
-          
-          try {
-            const userRef = doc(db, "users", discordUid);
-            const userSnap = await getDoc(userRef);
-
-            const defaultData = {
-              uid: discordUid,
-              username: parsedUser.username,
-              photoUrl: parsedUser.avatar 
-                ? `https://cdn.discordapp.com/avatars/${parsedUser.id}/${parsedUser.avatar}.png` 
-                : "https://cdn.discordapp.com/embed/avatars/0.png",
-            };
-
-            if (userSnap.exists()) {
-              const data = userSnap.data();
-              const updates = {};
-              
-              if (!data.role) updates.role = "user";
-              if (!data.createdAt) updates.createdAt = new Date();
-
-              if (Object.keys(updates).length > 0) {
-                await setDoc(userRef, updates, { merge: true });
-              }
-
-              setUserName(data.username || parsedUser.username);
-              setIsAdmin(data.role === "admin" || updates.role === "admin");
-            } else {
-              await setDoc(userRef, {
-                ...defaultData,
-                role: "user",
-                createdAt: new Date(),
-              });
-              setUserName(parsedUser.username);
-              setIsAdmin(false);
-            }
-          } catch (error) {
-            console.error("디스코드 DB 동기화 에러:", error);
-          }
-        } else {
-          setUser(null);
-          setUserName("");
-          setIsAdmin(false);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const loadStats = async () => {
-    try {
-      const reportsSnapshot = await getDocs(collection(db, "reports"));
-      const battletagsSnapshot = await getDocs(collection(db, "battletags"));
-      setReportCount(reportsSnapshot.size);
-      setBattleTagCount(battletagsSnapshot.size);
-    } catch (error) {
-      console.error("통계 로딩 에러:", error);
-    }
-  };
-
-  // ✨ 통합 검색 함수 (battletags 요약 장부만 1번 조회하므로 비용/속도 최적화 완벽)
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-
-    setIsSearching(true);
-    try {
-      const q = query(collection(db, "battletags"), where("battletag", "==", searchQuery.trim()));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        // 전과가 있는 배틀태그인 경우
-        const tagDoc = querySnapshot.docs[0];
-        setSearchResult({ id: tagDoc.id, ...tagDoc.data() });
-      } else {
-        // 전과가 없는 깨끗한 유저인 경우
-        setSearchResult(false);
-      }
-    } catch (error) {
-      console.error("검색 중 에러 발생:", error);
-      alert("검색 중 오류가 발생했습니다.");
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    await auth.signOut();
-    localStorage.removeItem("user");
-    window.location.reload();
-  };
+  // 3. 통계 로직
+  const { reportCount, battleTagCount } = useStats();
 
   return (
     <div className="home-wrapper">
@@ -167,12 +19,12 @@ export default function Home() {
         <h1 className="home-title">OW Watch</h1>
         <p className="home-subtitle">오버워치 커뮤니티 신고 플랫폼</p>
 
-        {/* ✨ [추가] 통합 검색창 UI */}
-        <form onSubmit={handleSearch} className="search-form">
+        {/* 검색 폼 */}
+        <form onSubmit={executeSearch} className="search-form">
           <div className="search-input-wrapper">
             <input
               type="text"
-              placeholder="배틀태그 검색"
+              placeholder="배틀태그 검색 (예: 트레이서#1234)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
@@ -183,6 +35,7 @@ export default function Home() {
           </div>
         </form>
 
+        {/* 검색 결과 창 */}
         {searchResult !== null && (
           <div className="search-result-box">
             {searchResult === false ? (
@@ -191,18 +44,19 @@ export default function Home() {
               </p>
             ) : (
               <div className="result-danger">
-              <p>
-                🚨 <strong>{searchResult.battletag}</strong> 유저는 현재까지 
-                <span className="danger-count"> {searchResult.count || searchResult.reportCount || 0}번</span> 신고되었습니다!
-              </p>
-              <button className="btn-go-detail" onClick={() => alert("상세 신고 기록실 타임라인은 업데이트 예정입니다!")}>
-              🔍 상세 전과 기록 보기
-              </button>
-            </div>
+                <p>
+                  🚨 <strong>{searchResult.battletag}</strong> 유저는 현재까지
+                  <span className="danger-count"> {searchResult.count || searchResult.reportCount || 0}번</span> 신고되었습니다!
+                </p>
+                <button className="btn-go-detail" onClick={() => alert("상세 신고 기록실 타임라인은 업데이트 예정입니다!")}>
+                  🔍 상세 전과 기록 보기
+                </button>
+              </div>
             )}
           </div>
         )}
 
+        {/* 로그인 메뉴 */}
         {!user ? (
           <div className="auth-buttons" style={{ marginTop: "30px" }}>
             <Link to="/login"><button className="btn-action">로그인</button></Link>
@@ -213,7 +67,7 @@ export default function Home() {
           <div className="user-menu" style={{ marginTop: "30px" }}>
             {isAdmin ? (
               <div className="admin-greeting">
-                <span className="admin-badge">👑 </span> 
+                <span className="admin-badge">👑 </span>
                 <span className="admin-nickname">{userName}</span> 관리자 계정 작동 중
               </div>
             ) : (
@@ -242,6 +96,7 @@ export default function Home() {
           </div>
         )}
 
+        {/* 통계 창 */}
         <div className="stats-container">
           <div>
             <div className="stat-label">누적 신고</div>

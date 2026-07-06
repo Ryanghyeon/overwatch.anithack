@@ -109,3 +109,52 @@
     padding: 5px 12px;
     border-radius: 20px;
 }
+
+/* src/pages/MyPage/MyPage.css (하단 덮어쓰기) */
+
+/* =========================================
+   오버워치 연동 상태 배너 (가벼운 띠 형태)
+   ========================================= */
+.ow-link-banner {
+    display: flex;
+    justify-content: space-between;
+    /* 양쪽으로 찢기 */
+    align-items: center;
+    background-color: rgba(33, 37, 48, 0.4);
+    /* 아주 은은한 배경만 */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 20px;
+    /* 기존보다 훨씬 얇게 */
+    margin-bottom: 20px;
+    /* 카드와의 간격 */
+}
+
+.ow-account-label {
+    font-size: 0.9rem;
+    color: #7b8398;
+    font-weight: 600;
+}
+
+.ow-account-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* 배틀태그와 뱃지 사이 간격 */
+}
+
+.ow-battletag {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #f97316;
+    letter-spacing: 0.5px;
+}
+
+.ow-status {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #2ed573;
+    background-color: rgba(46, 213, 115, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+}

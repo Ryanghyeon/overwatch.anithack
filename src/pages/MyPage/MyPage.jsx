@@ -66,8 +66,8 @@ export function MyPage() {
                 <h1 className="mypage-title">My Page</h1>
                 <p className="mypage-subtitle">{userName} 님의 전용 공간입니다</p>
 
-                {/* ✨ 오버워치 연동 정보 카드 ✨ */}
-                <div className="ow-account-card">
+                {/* ✨ 1. 얇고 세련된 연동 상태 배너 */}
+                <div className="ow-link-banner">
                     <div className="ow-account-label">블리자드 연동 계정</div>
                     <div className="ow-account-info">
                         {myBattletag ? (
@@ -78,10 +78,9 @@ export function MyPage() {
                         ) : (
                             <>
                                 <span className="ow-battletag" style={{ color: "#7b8398" }}>연동된 계정이 없습니다</span>
-                                {/* 연동 안 된 사람은 프로필 설정 창으로 보내버리기! */}
                                 <button
                                     className="btn-action highlight small"
-                                    style={{ height: "32px", width: "auto", padding: "0 15px", fontSize: "0.85rem" }}
+                                    style={{ height: "32px", width: "auto", padding: "0 15px", fontSize: "0.85rem", margin: "0" }}
                                     onClick={() => navigate('/Profile')}
                                 >
                                     연동하러 가기
@@ -89,14 +88,12 @@ export function MyPage() {
                             </>
                         )}
                     </div>
-
-                    {/* ✨ 진짜 오버워치 API 정보를 그려주는 컴포넌트 등판! (배틀태그가 있을 때만 렌더링) */}
-                    {myBattletag && (
-                        <div style={{ marginTop: "15px", borderTop: "1px solid #3a3f50", paddingTop: "5px" }}>
-                            <OverwatchCard battletag={myBattletag} />
-                        </div>
-                    )}
                 </div>
+
+                {/* ✨ 2. 밖으로 꺼내어 시원해진 오버워치 전적 카드! (배틀태그가 있을 때만 렌더링) */}
+                {myBattletag && (
+                    <OverwatchCard battletag={myBattletag} />
+                )}
 
                 <div className="mypage-menu">
                     <Link to="/my-reports" className="btn-action highlight">📜 내 신고 내역 보기</Link>

@@ -158,7 +158,7 @@ export function Profile() {
             <h3 className="section-title">⚙️ 내 프로필 설정</h3>
             <label className="profile-label">유저네임</label>
             <input type="text" value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="profile-input profile-username-input" placeholder="변경할 닉네임을 입력하세요" />
-            <label className="profile-label">오버워치 배틀태그 (선택)</label>
+            <label className="profile-label">Battletag</label>
             <input type="text" value={battletagInput} onChange={(e) => setBattletagInput(e.target.value)} className="profile-input profile-battletag-input" placeholder="배틀태그 입력" />
             <p className="profile-tip battletag-tip">💡 입력하신 배틀태그는 마이페이지에서 연동 정보로 활용됩니다.</p>
             <button onClick={handleSave} className="btn-save btn-profile-save">변경사항 저장</button>

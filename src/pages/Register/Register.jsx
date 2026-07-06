@@ -67,7 +67,7 @@ export function Register() {
         />
 
         {/* ✨ 배틀태그 선택 입력창 추가 ✨ */}
-        <label className="input-label">오버워치 배틀태그 (선택)</label>
+        <label className="input-label">Battletag (선택)</label>
         <input
           type="text"
           placeholder="트레이서#1234"

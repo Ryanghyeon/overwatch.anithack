@@ -1,0 +1,63 @@
+/* src/pages/MyPage/MyPage.css */
+
+.mypage-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 모바일 주소창 꿀렁임 방지 적용! */
+    min-height: calc(100dvh - 160px);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.mypage-box {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.mypage-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent-primary);
+    margin-bottom: 5px;
+    letter-spacing: -1px;
+}
+
+.mypage-subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+/* 마이페이지 전용 메뉴 박스 */
+.mypage-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: 30px;
+}
+
+/* =========================================
+   📱 모바일 환경 최적화
+   ========================================= */
+@media (max-width: 768px) {
+    .mypage-box {
+        padding: 35px 20px;
+        border-radius: 12px;
+    }
+
+    .mypage-title {
+        font-size: 2.2rem;
+    }
+
+    .mypage-subtitle {
+        margin-bottom: 30px;
+    }
+}

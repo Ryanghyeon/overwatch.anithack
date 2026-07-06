@@ -7,7 +7,7 @@ export function SearchForm({ searchQuery, setSearchQuery, executeSearch, isSearc
             <div className="search-input-wrapper">
                 <input
                     type="text"
-                    placeholder="배틀태그 검색 (예: 트레이서#1234)"
+                    placeholder="배틀태그 검색.."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="search-input"

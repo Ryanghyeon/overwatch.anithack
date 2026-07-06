@@ -1,5 +1,5 @@
 // src/routes.jsx
-import { Home, Login, Register, Report, Ranking, Admin, Profile } from "@/pages";
+import { Home, Login, Register, Report, Ranking, Admin, Profile, MyPage, MyReports } from "@/pages";
 
 export const routeList = [
     { path: "/", element: <Home /> },
@@ -10,4 +10,6 @@ export const routeList = [
     { path: "/admin", element: <Admin /> },
     { path: "/profile", element: <Profile /> },
     { path: "/profile/:uid", element: <Profile /> },
+    { path: "/mypage", element: <MyPage /> },
+    { path: "/my-reports", element: <MyReports /> }
 ];

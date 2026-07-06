@@ -1,7 +1,7 @@
 import { useAuth, useReport } from "@/hooks";
 import './Report.css';
 
-export default function Report() {
+export function Report() {
   // 1. 로그인 유저 정보 가져오기
   const { user } = useAuth();
 

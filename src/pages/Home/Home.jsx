@@ -3,7 +3,7 @@ import { useAuth, useSearch, useStats } from "@/hooks";
 import { SearchForm, SearchResult, HomeMenu, HomeStats } from "@/components"; // ✨ 4개의 부품을 한 번에 가져옴!
 import './Home.css';
 
-export default function Home() {
+export function Home() {
   // 1. 필요한 주방 도구(Hook)들 가져오기
   const { user, userName, isAdmin, handleLogout } = useAuth();
   const { searchQuery, setSearchQuery, searchResult, isSearching, executeSearch, searchedTag, searchError } = useSearch();

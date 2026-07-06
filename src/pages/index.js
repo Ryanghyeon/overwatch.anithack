@@ -1,9 +1,11 @@
 // src/pages/index.js
 
-export { default as Home } from './Home/Home';
-export { default as Login } from './Login/Login';
-export { default as Register } from './Register/Register';
-export { default as Report } from './Report/Report';
-export { default as Ranking } from './Ranking/Ranking';
-export { default as Admin } from './Admin/Admin';
-export { default as Profile } from './Profile/Profile';
+export * from './Home/Home';
+export * from './Login/Login';
+export * from './Register/Register';
+export * from './Report/Report';
+export * from './Ranking/Ranking';
+export * from './Admin/Admin';
+export * from './Profile/Profile';
+export * from './MyPage/MyPage';
+export * from './MyReports/MyReports';

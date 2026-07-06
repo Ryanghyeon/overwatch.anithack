@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAdmin } from "@/hooks";
 import "./Admin.css";
 
-export default function Admin() {
+export function Admin() {
   const navigate = useNavigate();
 
   // ✨ 1. 기존에 만들어둔 훅으로 로그인 및 관리자 권한 확인 끝!

@@ -10,7 +10,7 @@ import { isValidBattletag } from "@/utils";
 
 import "./Profile.css";
 
-export default function Profile() {
+export function Profile() {
   const { uid: urlUid } = useParams();
   const navigate = useNavigate();
 

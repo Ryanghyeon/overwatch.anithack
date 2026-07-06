@@ -5,7 +5,7 @@ import { Turnstile } from '@marsidev/react-turnstile'; // ✨ 턴스타일 임�
 import { useRegister } from "@/hooks";
 import './Register.css';
 
-export default function Register() {
+export function Register() {
   // ✨ 캡챠 통과 시 발급받을 '통행증'을 보관하는 공간
   const [captchaToken, setCaptchaToken] = useState(null);
 

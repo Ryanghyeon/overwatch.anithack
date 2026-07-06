@@ -29,7 +29,7 @@ export function HomeMenu({ user, userName, isAdmin, handleLogout }) {
             <div className="menu-buttons">
                 <Link to="/report" className="btn-action highlight">🚨 신고하기</Link>
                 <Link to="/ranking" className="btn-action">🏆 신고 랭킹</Link>
-                <Link to="/Profile" className="btn-action">⚙️ 내 프로필 설정</Link>
+                <Link to="/mypage" className="btn-action">👤 마이페이지</Link>
 
                 {isAdmin && (
                     <Link to="/admin" className="btn-action admin-btn">🛠 관리자 대시보드</Link>

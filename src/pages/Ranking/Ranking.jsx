@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useRanking } from "@/hooks";
 import './Ranking.css';
 
-export default function Ranking() {
+export function Ranking() {
   // 상태와 데이터를 훅에서 쏙 빼옵니다.
   const { ranking, isLoading } = useRanking();
 

@@ -4,8 +4,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+
+  /* ✨ 구형 브라우저 대비용 (Fallback) */
+  min-height: calc(100vh - 160px);
+  /* ✨ 최신 모바일 브라우저 주소창 꿀렁임 완벽 대응! (dvh) */
+  min-height: calc(100dvh - 160px);
+
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .home-box {
@@ -33,10 +39,6 @@
   font-size: 1rem;
   margin-bottom: 40px;
 }
-
-/* =========================================
-   (여기 있던 검색 폼 관련 코드는 SearchForm.css로 이사 갔습니다! 🚚)
-   ========================================= */
 
 /* 인사말 영역 (HomeMenu) */
 .admin-greeting,
@@ -128,4 +130,61 @@
   font-size: 2rem;
   font-weight: 900;
   color: var(--text-main);
+}
+
+
+@media (max-width: 768px) {
+  .home-box {
+    padding: 35px 20px;
+    /* 폰에서는 뚱뚱한 좌우 여백을 줄여서 공간 확보 */
+    border-radius: 12px;
+    /* 모서리도 살짝 덜 둥글게 */
+  }
+
+  .home-title {
+    font-size: 2.2rem;
+    /* 제목이 너무 커서 줄바꿈되지 않도록 축소 */
+  }
+
+  .home-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    /* 검색창과의 간격 살짝 좁힘 */
+  }
+
+  .btn-action {
+    height: 44px;
+    /* 모바일에서는 터치하기 좋게 버튼 높이 살짝 다이어트 */
+    font-size: 0.95rem;
+  }
+
+  .stats-container {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+    /* 숫자도 폰 화면에 맞게 축소 */
+  }
+}
+
+@media (max-width: 480px) {
+  .search-input-wrapper {
+    flex-direction: column;
+    /* ✨ 핵심: 가로(row) 배치를 세로(column) 배치로 바꿉니다! */
+    gap: 8px;
+    /* 위아래 간격 살짝 좁힘 */
+  }
+
+  .search-input,
+  .btn-search {
+    width: 100%;
+    /* ✨ 인풋창과 버튼 둘 다 모바일 화면 가로길이를 100% 꽉 채우게 만듭니다 */
+  }
+
+  .btn-search {
+    height: 50px;
+    /* 폰에서는 버튼 높이를 살짝 줄여서 너무 뚱뚱해 보이지 않게 조절 */
+  }
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useLogin } from "@/hooks";
 import './Login.css';
 
-export default function Login() {
+export function Login() {
   const {
     email, setEmail,
     password, setPassword,

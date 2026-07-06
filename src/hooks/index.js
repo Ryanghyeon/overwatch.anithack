@@ -8,3 +8,4 @@ export * from './useRegister';
 export * from './useLogin';
 export * from './useRanking';
 export * from './useAdmin';
+export * from './useAutoLogout';

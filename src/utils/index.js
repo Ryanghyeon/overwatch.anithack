@@ -1,3 +1,3 @@
 // src/utils/index.js
-export * from './battletag';
+export * from './validations';
 export * from './textSanitizer';

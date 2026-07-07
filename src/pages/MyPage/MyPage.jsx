@@ -1,72 +1,43 @@
 // src/pages/MyPage/MyPage.jsx
-import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-
-import { db } from "@/firebase/firebase";
-import { useAuth } from "@/hooks";
-import { OverwatchCard } from "@/components"; // ✨ 프로필에서 쫓겨났던 부품 소환!
+import { useAuth, useMyProfile } from "@/hooks"; // ✨ 새로 만든 훅 쏙!
+import { OverwatchCard } from "@/components";
 import './MyPage.css';
+
+// ✨ 1. 예외 화면(로딩, 비로그인)을 전담하는 미니 컴포넌트로 분리!
+const MyPageFallback = ({ type, onLogin }) => (
+    <div className="mypage-wrapper">
+        <div className="mypage-box">
+            {type === "loading" && <h2 style={{ color: "white" }}>데이터를 불러오는 중... 🏃‍♂️💨</h2>}
+            {type === "no-auth" && (
+                <>
+                    <h2>로그인이 필요한 페이지입니다.</h2>
+                    <button className="btn-action highlight" onClick={onLogin}>로그인 하러 가기</button>
+                </>
+            )}
+        </div>
+    </div>
+);
 
 export function MyPage() {
     const { user, userName } = useAuth();
     const navigate = useNavigate();
 
-    // DB에서 진짜 내 배틀태그를 가져와서 저장할 State
-    const [myBattletag, setMyBattletag] = useState("");
-    const [loading, setLoading] = useState(true);
+    // ✨ 2. 파이어베이스 통신 로직이 단 한 줄로 깔끔하게 압축되었습니다!
+    const { myBattletag, profileLoading } = useMyProfile(user);
 
-    // ✨ 화면이 켜지면 파이어베이스에서 내 프로필 정보를 스윽 가져옵니다.
-    useEffect(() => {
-        if (!user) return;
+    // ✨ 3. 예외 상황 처리도 단 두 줄로 끝!
+    if (!user) return <MyPageFallback type="no-auth" onLogin={() => navigate('/login')} />;
+    if (profileLoading) return <MyPageFallback type="loading" />;
 
-        const fetchMyProfile = async () => {
-            try {
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    // DB에 배틀태그가 있으면 넣고, 없으면 빈 문자열("")로 세팅
-                    setMyBattletag(docSnap.data().battletag || "");
-                }
-            } catch (error) {
-                console.error("내 정보 불러오기 에러:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchMyProfile();
-    }, [user]);
-
-    if (!user) {
-        return (
-            <div className="mypage-wrapper">
-                <div className="mypage-box">
-                    <h2>로그인이 필요한 페이지입니다.</h2>
-                    <button className="btn-action highlight" onClick={() => navigate('/login')}>로그인 하러 가기</button>
-                </div>
-            </div>
-        );
-    }
-
-    if (loading) {
-        return (
-            <div className="mypage-wrapper">
-                <div className="mypage-box">
-                    <h2 style={{ color: "white" }}>데이터를 불러오는 중...</h2>
-                </div>
-            </div>
-        );
-    }
-
+    // ✨ 4. 아래부터는 순수한 View 영역 (데이터를 어떻게 가져왔는지 알 필요 없이 예쁘게 그리기만 합니다)
     return (
         <div className="mypage-wrapper">
             <div className="mypage-box">
                 <h1 className="mypage-title">My Page</h1>
                 <p className="mypage-subtitle">{userName} 님의 전용 공간입니다</p>
 
-                {/* ✨ 1. 얇고 세련된 연동 상태 배너 */}
+                {/* 얇고 세련된 연동 상태 배너 */}
                 <div className="ow-link-banner">
                     <div className="ow-account-label">블리자드 연동 계정</div>
                     <div className="ow-account-info">
@@ -90,11 +61,10 @@ export function MyPage() {
                     </div>
                 </div>
 
-                {/* ✨ 2. 밖으로 꺼내어 시원해진 오버워치 전적 카드! (배틀태그가 있을 때만 렌더링) */}
-                {myBattletag && (
-                    <OverwatchCard battletag={myBattletag} />
-                )}
+                {/* 오버워치 전적 카드 */}
+                {myBattletag && <OverwatchCard battletag={myBattletag} />}
 
+                {/* 하단 메뉴 */}
                 <div className="mypage-menu">
                     <Link to="/my-reports" className="btn-action highlight">📜 내 신고 내역 보기</Link>
                     <Link to="/Profile" className="btn-action">⚙️ 내 프로필 설정</Link>

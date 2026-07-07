@@ -1,10 +1,12 @@
 // src/hooks/useRegister.js
+// 유저 회원가입 검증 훅
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import axios from "axios";
+import { useCheckDuplicate } from "@/hooks/useCheckDuplicate";
 
 export function useRegister() {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ export function useRegister() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
+    const { checkUsername } = useCheckDuplicate();
 
     // ✨ Register.jsx에서 넘겨준 캡챠 토큰을 파라미터로 쏙 받습니다.
     const executeRegister = async (captchaToken) => {
@@ -32,8 +35,14 @@ export function useRegister() {
         setIsRegistering(true);
 
         try {
-            // 2. 서버에 "이 통행증 진짜인지 확인해줘!" 요청 (실패하면 catch로 던져짐)
-            // 주의: 백엔드 주소는 유저님의 실제 검증 API 주소로 맞춰주세요!
+            // 닉네임 중복 체크
+            const isTaken = await checkUsername(username);
+            if (isTaken) {
+                setIsRegistering(false);
+                return alert("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.");
+            }
+
+            // 서버에 캡챠 토큰을 보내 검증
             await axios.post('/api/verify-captcha', { captchaToken });
 
             // 3. 캡챠 무사 통과! 파이어베이스 회원가입 진행

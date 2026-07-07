@@ -1,22 +1,40 @@
 // src/components/OverwatchCard/OverwatchCard.jsx
-import { useNavigate } from "react-router-dom";
 import { useOverwatch } from "@/hooks";
 import './OverwatchCard.css';
 
 export function OverwatchCard({ battletag }) {
     const { owData, owStats, heroImages, apiLoading, apiError } = useOverwatch(battletag);
-    const navigate = useNavigate();
 
     if (!battletag) return null;
 
-    const topHeroes = owStats?.heroes
-        ? Object.entries(owStats.heroes)
-            .map(([hero, stats]) => ({ hero, value: stats.time_played || 0 }))
-            .sort((a, b) => b.value - a.value)
-            .slice(0, 3)
-        : [];
+    const hasCompetitive = owStats?.competitive && Object.keys(owStats.competitive).length > 0;
+    const hasQuickplay = owStats?.quickplay && Object.keys(owStats.quickplay).length > 0;
+    const isPublic = hasCompetitive || hasQuickplay;
 
-    const isPublic = owStats && Object.keys(owStats).length > 0;
+    // ✨ 마이페이지는 무조건 '이번 시즌 경쟁전' 우선! (경쟁전을 아예 안 했으면 빠대)
+    const currentStats = hasCompetitive ? owStats.competitive : owStats?.quickplay;
+
+    // ✨ 현재 띄워주는 데이터가 경쟁전인지 여부를 저장해둡니다.
+    const isShowingComp = hasCompetitive;
+
+    let topHeroes = [];
+
+    if (currentStats && currentStats.heroes) {
+        const heroesArray = Object.entries(currentStats.heroes).map(([heroName, stats]) => ({
+            hero: heroName,
+            value: stats.time_played || 0
+        }));
+        heroesArray.sort((a, b) => b.value - a.value);
+        topHeroes = heroesArray.slice(0, 3);
+    }
+
+    // ✨ 0시간 문제 해결: 1시간 미만이면 분 단위로, 그 이상이면 시간 단위로!
+    const formatPlayTime = (seconds) => {
+        if (seconds < 3600) {
+            return `${Math.round(seconds / 60)}분`;
+        }
+        return `${Math.round(seconds / 3600)}시간`;
+    };
 
     return (
         <div
@@ -30,14 +48,6 @@ export function OverwatchCard({ battletag }) {
             <div className="ow-section-header">
                 <h3 className="ow-section-title">🎮 오버워치 연동 정보</h3>
 
-                {isPublic && (
-                    <button
-                        className="btn-detail-stats"
-                        onClick={() => navigate(`/ow-stats/${battletag.replace('#', '-')}`)}
-                    >
-                        상세 전적 📊
-                    </button>
-                )}
             </div>
 
             {apiLoading && <p className="ow-api-loading">데이터를 불러오는 중...</p>}
@@ -53,13 +63,12 @@ export function OverwatchCard({ battletag }) {
                             </div>
 
                             <div className="ow-api-text-wrap">
-                                <div className="ow-status-row">
-                                    {isPublic ? (
-                                        <span className="ow-badge public">🔓 공개 프로필</span>
-                                    ) : (
-                                        <span className="ow-badge private">🔒 비공개 (상세불가)</span>
-                                    )}
-                                </div>
+                                {/* ✨ isPublic이 '거짓(비공개)'일 때만 뱃지가 렌더링되도록 수정! */}
+                                {!isPublic && (
+                                    <div className="ow-status-row">
+                                        <span className="ow-badge private">🔒 비공개 프로필</span>
+                                    </div>
+                                )}
                                 <div className="ow-name-row">
                                     <h4 className="ow-api-username">{owData.username}</h4>
                                     {owData.endorsement && (
@@ -95,11 +104,13 @@ export function OverwatchCard({ battletag }) {
 
                     {topHeroes.length > 0 && (
                         <div className="ow-most-heroes-section">
-                            <div className="most-heroes-title">🔥 Most Top 3</div>
+                            {/* ✨ 고정되어 있던 글씨 대신, 조건에 따라 타이틀이 바뀝니다! */}
+                            <div className="most-heroes-title">
+                                {isShowingComp ? "🏆 이번 시즌 경쟁전" : "⚡ 빠른 대전 기록"} 모스트 3
+                            </div>
                             <div className="most-heroes-list">
                                 {topHeroes.map((hero) => (
                                     <div key={hero.hero} className="most-hero-item">
-                                        {/* ✨ 숫자 뱃지(most-hero-rank) 완전히 제거됨 */}
                                         <div className="most-hero-portrait">
                                             {heroImages && heroImages[hero.hero] ? (
                                                 <img
@@ -112,8 +123,9 @@ export function OverwatchCard({ battletag }) {
                                                 hero.hero.toUpperCase()
                                             )}
                                         </div>
+                                        {/* ✨ '0시간' 문제 해결: 1시간 미만은 n분, 1시간 이상은 n시간 표기 */}
                                         <span className="most-hero-time">
-                                            {Math.round(hero.value / 3600)} Hours
+                                            {formatPlayTime(hero.value)}
                                         </span>
                                     </div>
                                 ))}

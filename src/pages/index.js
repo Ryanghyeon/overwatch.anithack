@@ -9,3 +9,4 @@ export * from './Admin/Admin';
 export * from './Profile/Profile';
 export * from './MyPage/MyPage';
 export * from './MyReports/MyReports';
+export * from './MyReports/MyReports';

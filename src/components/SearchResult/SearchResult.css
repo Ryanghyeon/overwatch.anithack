@@ -1,5 +1,16 @@
 /* src/components/SearchResult/SearchResult.css */
 
+/* ✨ 꿀렁임 방지용 투명 껍데기 (높이 미리 확보) */
+.search-result-wrapper {
+    min-height: 110px;
+    /* 에러나 결과가 없을 때도 이만큼의 빈 공간을 유지합니다 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+}
+
 .search-result-box {
     width: 100%;
     margin-top: -5px;

@@ -1,5 +1,15 @@
-// src/routes.jsx
-import { Home, Login, Register, Report, Ranking, Admin, Profile, MyPage, MyReports } from "@/pages";
+// src/routes.jsx 
+import {
+    Home,
+    Login,
+    Register,
+    Report,
+    Ranking,
+    Admin,
+    Profile,
+    MyPage,
+    MyReports
+} from "@/pages";
 
 export const routeList = [
     { path: "/", element: <Home /> },

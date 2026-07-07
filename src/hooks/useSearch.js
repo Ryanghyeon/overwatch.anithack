@@ -35,16 +35,20 @@ export function useSearch() {
         setIsSearching(true);
 
         try {
-            // 파이어베이스 쿼리 실행
             const q = query(collection(db, "battletags"), where("battletag", "==", targetTag));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
                 // 악성 유저 발견
                 const tagDoc = querySnapshot.docs[0];
-                setSearchResult({ id: tagDoc.id, ...tagDoc.data() });
+                const data = tagDoc.data();
+
+                setSearchResult({
+                    id: tagDoc.id,
+                    ...data,
+                    reportCount: data.count
+                });
             } else {
-                // 클린 유저 (결과 없음)
                 setSearchResult(false);
             }
         } catch (error) {
@@ -57,6 +61,7 @@ export function useSearch() {
         }
     };
 
+    // 3. 상태와 함수 밖으로 꺼내주기
     return {
         searchQuery,
         setSearchQuery,

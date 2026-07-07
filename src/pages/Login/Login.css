@@ -159,3 +159,89 @@
   cursor: pointer;
   user-select: none;
 }
+
+/* ✨ 비밀번호 찾기 모달 배경 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* ✨ 비밀번호 찾기 모달 박스 */
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  width: 90%;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* ✨ 캡챠 컨테이너 (중앙 정렬 및 여백) */
+.captcha-container {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+  min-height: 65px;
+  /* 캡챠 로딩 전 레이아웃 덜컹거림 방지 */
+}
+
+/* ✨ 인라인 에러 메시지 텍스트 */
+.error-text {
+  color: #ff4757;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: -10px;
+  /* 위쪽 인풋창과의 여백 줄이기 */
+  margin-bottom: 15px;
+  text-align: center;
+  animation: shake 0.3s ease-in-out;
+  /* 등장할 때 살짝 흔들리는 효과 (선택) */
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  75% {
+    transform: translateX(4px);
+  }
+}

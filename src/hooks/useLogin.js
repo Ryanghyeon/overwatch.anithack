@@ -13,7 +13,10 @@ export function useLogin() {
     const [password, setPassword] = useState("");
     const [keepLoggedIn, setKeepLoggedIn] = useState(true);
     const [rememberEmail, setRememberEmail] = useState(false);
-    const [isLoggingIn, setIsLoggingIn] = useState(false); // ✨ 따닥(중복 클릭) 방지용 로딩 상태
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [failedAttempts, setFailedAttempts] = useState(0);
+
+    const [loginError, setLoginError] = useState(""); // 로그인 에러 상태 추가
 
     // 1. 저장된 이메일 불러오기
     useEffect(() => {
@@ -53,8 +56,9 @@ export function useLogin() {
     // 4. 이메일 로그인 실행
     const executeLogin = async (e) => {
         if (e) {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); // 폼 제출 기본 동작 방지
+            e.stopPropagation(); // 이벤트 버블링 방지
+            setLoginError(""); // 로그인 에러 초기화
         }
 
         if (!email.trim() || !password.trim()) {
@@ -79,7 +83,12 @@ export function useLogin() {
             navigate("/");
         } catch (error) {
             console.error(error);
-            alert("이메일이나 비밀번호가 올바르지 않습니다.");
+            setFailedAttempts((prev) => prev + 1);
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+                setLoginError("이메일 또는 비밀번호가 일치하지 않습니다.");
+            } else {
+                setLoginError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            }
         } finally {
             setIsLoggingIn(false); // 로딩 종료
         }
@@ -90,6 +99,8 @@ export function useLogin() {
         password, setPassword,
         keepLoggedIn, setKeepLoggedIn,
         rememberEmail, setRememberEmail,
-        isLoggingIn, handleDiscordLogin, executeLogin
+        isLoggingIn, handleDiscordLogin, executeLogin,
+        failedAttempts,
+        loginError, setLoginError
     };
 }

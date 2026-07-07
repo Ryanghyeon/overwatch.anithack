@@ -5,4 +5,4 @@ export * from './SearchResult/SearchResult';
 export * from './SearchForm/SearchForm';
 export * from './HomeMenu/HomeMenu';
 export * from './HomeStats/HomeStats';
-export * from './OverwawtchCard/OverwatchCard';
+export * from './OverwatchCard/OverwatchCard';

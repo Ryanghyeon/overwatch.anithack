@@ -14,6 +14,10 @@ dist-ssr
 
 # Editor directories and files
 .vscode/*
+# 새로 clone된 환경에서 파일 네스팅을 위해 추가
+!.vscode/settings.json
+
+# 현재는 공통 익스텐션이 없으나 추후 협업을 위해 남겨둠
 !.vscode/extensions.json
 .idea
 .DS_Store

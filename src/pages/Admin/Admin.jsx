@@ -1,4 +1,5 @@
-// src/pages/Admin/Admin.jsx
+/* src/pages/Admin/Admin.jsx */
+
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth, useAdmin } from "@/hooks";
@@ -11,7 +12,7 @@ const AdminReportCard = ({ report, onDelete }) => (
       <h3 className="report-battletag">{report.battletag}</h3>
       <span className="report-time">
         {report.createdAt
-          ? report.createdAt.toDate().toLocaleString('ko-KR')
+          ? report.createdAt.toDate().toLocaleString("ko-KR")
           : "시간 정보 없음"}
       </span>
     </div>
@@ -28,13 +29,9 @@ const AdminReportCard = ({ report, onDelete }) => (
     )}
 
     <div className="report-footer-info">
-      <p className="report-uid">
-        신고자 UID : {report.reporterUid}
-      </p>
+      <p className="report-uid">신고자 UID : {report.reporterUid}</p>
       <Link to={`/profile/${report.reporterUid}`}>
-        <button className="btn-view-profile">
-          🔍 프로필(기록) 보기
-        </button>
+        <button className="btn-view-profile">🔍 프로필(기록) 보기</button>
       </Link>
     </div>
 
@@ -68,7 +65,11 @@ export function Admin() {
 
   // 로딩 화면 처리
   if (isAuthLoading || isLoading) {
-    return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>데이터를 불러오는 중...</div>;
+    return (
+      <div style={{ color: "white", textAlign: "center", marginTop: "50px" }}>
+        데이터를 불러오는 중...
+      </div>
+    );
   }
 
   // ✨ 2. 메인 컴포넌트의 화면 렌더링 영역이 예술적으로 깔끔해졌습니다!

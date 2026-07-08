@@ -1,3 +1,5 @@
+/* src/App.jsx */
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAutoLogout } from "@/hooks";
 import { routeList } from "./routes.jsx";

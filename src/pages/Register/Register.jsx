@@ -1,14 +1,27 @@
-// src/pages/Register/Register.jsx
+/* src/pages/Register/Register.jsx */
 
-import { useState } from 'react';
+import { useState } from "react";
 // ✨ 1. 페이지 이동을 위해 useNavigate를 수입해 옵니다!
 import { Link, useNavigate } from "react-router-dom";
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useRegister } from "@/hooks";
-import { isValidEmail, isValidUsername, isValidPassword, isValidBattletag } from "@/utils";
-import './Register.css';
+import {
+  isValidEmail,
+  isValidUsername,
+  isValidPassword,
+  isValidBattletag,
+} from "@/utils";
+import "./Register.css";
 
-const InputGroup = ({ label, type = "text", placeholder, value, onChange, tip, error }) => (
+const InputGroup = ({
+  label,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  tip,
+  error,
+}) => (
   <div style={{ marginBottom: "15px" }}>
     <label className="input-label">{label}</label>
     <input
@@ -16,14 +29,29 @@ const InputGroup = ({ label, type = "text", placeholder, value, onChange, tip, e
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`input-field ${error ? 'input-error' : ''}`}
+      className={`input-field ${error ? "input-error" : ""}`}
       style={{ marginBottom: "4px" }}
     />
-    <div style={{ minHeight: "18px", display: "flex", alignItems: "flex-start" }}>
+    <div
+      style={{ minHeight: "18px", display: "flex", alignItems: "flex-start" }}
+    >
       {error ? (
-        <p style={{ color: '#ef4444', fontSize: '12px', margin: 0, fontWeight: 'bold' }}>🚨 {error}</p>
+        <p
+          style={{
+            color: "#ef4444",
+            fontSize: "12px",
+            margin: 0,
+            fontWeight: "bold",
+          }}
+        >
+          🚨 {error}
+        </p>
       ) : (
-        tip && <p className="input-tip" style={{ margin: 0 }}>{tip}</p>
+        tip && (
+          <p className="input-tip" style={{ margin: 0 }}>
+            {tip}
+          </p>
+        )
       )}
     </div>
   </div>
@@ -42,8 +70,14 @@ export function Register() {
   const [battletagError, setBattletagError] = useState("");
 
   const {
-    username, setUsername, email, setEmail,
-    password, setPassword, isRegistering, executeRegister
+    username,
+    setUsername,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isRegistering,
+    executeRegister,
   } = useRegister();
 
   // ✨ 3. 함수를 비동기(async)로 변경합니다.
@@ -81,7 +115,9 @@ export function Register() {
     }
 
     if (battletag.trim() && !isValidBattletag(battletag)) {
-      setBattletagError("Battletag 형식이 올바르지 않습니다. 예: 트레이서#1234");
+      setBattletagError(
+        "Battletag 형식이 올바르지 않습니다. 예: 트레이서#1234",
+      );
       hasError = true;
     } else {
       setBattletagError("");
@@ -111,40 +147,78 @@ export function Register() {
         <h1 className="register-title">회원가입</h1>
 
         <InputGroup
-          label="닉네임" placeholder="특수문자 제외 2~12자" value={username}
-          onChange={(val) => { setUsername(val); if (usernameError) setUsernameError(""); }}
+          label="닉네임"
+          placeholder="특수문자 제외 2~12자"
+          value={username}
+          onChange={(val) => {
+            setUsername(val);
+            if (usernameError) setUsernameError("");
+          }}
           error={usernameError}
         />
 
         <InputGroup
-          label="이메일" type="email" placeholder="example@email.com" value={email}
-          onChange={(val) => { setEmail(val); if (emailError) setEmailError(""); }}
+          label="이메일"
+          type="email"
+          placeholder="example@email.com"
+          value={email}
+          onChange={(val) => {
+            setEmail(val);
+            if (emailError) setEmailError("");
+          }}
           error={emailError}
         />
 
         <InputGroup
-          label="비밀번호" type="password" placeholder="최소 6자리 이상" value={password}
-          onChange={(val) => { setPassword(val); if (passwordError) setPasswordError(""); }}
+          label="비밀번호"
+          type="password"
+          placeholder="최소 6자리 이상"
+          value={password}
+          onChange={(val) => {
+            setPassword(val);
+            if (passwordError) setPasswordError("");
+          }}
           error={passwordError}
         />
 
         <InputGroup
-          label="Battletag (선택)" placeholder="트레이서#1234" value={battletag}
-          onChange={(val) => { setBattletag(val); if (battletagError) setBattletagError(""); }}
+          label="Battletag (선택)"
+          placeholder="트레이서#1234"
+          value={battletag}
+          onChange={(val) => {
+            setBattletag(val);
+            if (battletagError) setBattletagError("");
+          }}
           tip="💡 가입 후 마이페이지에서도 등록/수정할 수 있습니다."
           error={battletagError}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', marginTop: '15px' }}>
-          <Turnstile siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY} onSuccess={(token) => setCaptchaToken(token)} />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+            marginTop: "15px",
+          }}
+        >
+          <Turnstile
+            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setCaptchaToken(token)}
+          />
         </div>
 
-        <button onClick={handleRegisterClick} className="btn-register" disabled={isRegistering}>
+        <button
+          onClick={handleRegisterClick}
+          className="btn-register"
+          disabled={isRegistering}
+        >
           {isRegistering ? "가입 처리 중..." : "회원가입"}
         </button>
 
         <div className="link-wrapper">
-          <Link to="/login" className="text-link">로그인 하러가기</Link>
+          <Link to="/login" className="text-link">
+            로그인 하러가기
+          </Link>
         </div>
       </div>
     </div>

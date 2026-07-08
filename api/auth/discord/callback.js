@@ -1,4 +1,10 @@
-import admin from 'firebase-admin';
+/* api/auth/discord/callback.js */
+
+
+// ESLint 에러 방지용: 서버 환경(Node.js) 변수인 process를 쓰기 위해 강제 선언
+/* global process */
+
+import admin from "firebase-admin";
 
 // Vercel(서버리스) 환경에서 파이어베이스 앱이 중복 초기화되는 것을 방지합니다.
 if (!admin.apps.length) {
@@ -6,7 +12,7 @@ if (!admin.apps.length) {
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
     }),
   });
 }
@@ -38,7 +44,9 @@ export default async function handler(req, res) {
 
     if (!tokenData.access_token) {
       console.error("🚨 디스코드 토큰 에러:", tokenData);
-      return res.status(400).json({ message: "토큰 발급 거절", error: tokenData });
+      return res
+        .status(400)
+        .json({ message: "토큰 발급 거절", error: tokenData });
     }
 
     // 2. 디스코드 사용자 정보 조회
@@ -51,19 +59,24 @@ export default async function handler(req, res) {
     // 3. 파이어베이스 커스텀 토큰 생성
     const firebaseToken = await admin.auth().createCustomToken(user.id);
     const db = admin.firestore();
-    await db.collection('users').doc(user.id).set({
-      uid: user.id,
-      username: user.username,
-      email: user.email || "", // 디스코드 이메일 정보
-      avatar: user.avatar || "",
-      lastLogin: admin.firestore.FieldValue.serverTimestamp() // 접속 시간 기록
-    }, { merge: true }); 
+    await db
+      .collection("users")
+      .doc(user.id)
+      .set(
+        {
+          uid: user.id,
+          username: user.username,
+          email: user.email || "", // 디스코드 이메일 정보
+          avatar: user.avatar || "",
+          lastLogin: admin.firestore.FieldValue.serverTimestamp(), // 접속 시간 기록
+        },
+        { merge: true },
+      );
 
     // 4. 프론트엔드 로그인 페이지로 파이어베이스 토큰과 함께 리다이렉트
     return res.redirect(
-      `https://overwatch-anithack-otzm.vercel.app/login?token=${firebaseToken}`
+      `https://overwatch-anithack-otzm.vercel.app/login?token=${firebaseToken}`,
     );
-
   } catch (err) {
     console.error("🚨 서버 에러:", err);
     return res.status(500).json({ success: false, error: err.message });

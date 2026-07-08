@@ -1,3 +1,4 @@
-// src/utils/index.js
-export * from './validations';
-export * from './textSanitizer';
+/* src/utils/index.js */
+
+export * from "./validations";
+export * from "./textSanitizer";

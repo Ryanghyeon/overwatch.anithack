@@ -1,3 +1,5 @@
+/* src/utils/validations.js */
+
 // 1. 배틀태그 검증 (블리자드 오피셜 정규식 적용)
 export const isValidBattletag = (tag) => {
   if (!tag) return false;

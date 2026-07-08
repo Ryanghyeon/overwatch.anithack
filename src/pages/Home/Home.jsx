@@ -1,12 +1,21 @@
-// src/pages/Home/Home.jsx
+/* src/pages/Home/Home.jsx */
+
 import { useAuth, useSearch, useStats } from "@/hooks";
 import { SearchForm, SearchResult, HomeMenu, HomeStats } from "@/components"; // ✨ 4개의 부품을 한 번에 가져옴!
-import './Home.css';
+import "./Home.css";
 
 export function Home() {
   // 1. 필요한 주방 도구(Hook)들 가져오기
   const { user, userName, isAdmin, handleLogout } = useAuth();
-  const { searchQuery, setSearchQuery, searchResult, isSearching, executeSearch, searchedTag, searchError } = useSearch();
+  const {
+    searchQuery,
+    setSearchQuery,
+    searchResult,
+    isSearching,
+    executeSearch,
+    searchedTag,
+    searchError,
+  } = useSearch();
   const { reportCount, battleTagCount } = useStats();
 
   // 2. 뼈대 조립하기 (엄청나게 깔끔해짐!)
@@ -39,10 +48,7 @@ export function Home() {
         />
 
         {/* 하단 통계 구역 */}
-        <HomeStats
-          reportCount={reportCount}
-          battleTagCount={battleTagCount}
-        />
+        <HomeStats reportCount={reportCount} battleTagCount={battleTagCount} />
       </div>
     </div>
   );

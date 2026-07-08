@@ -1,113 +1,113 @@
 /* src/pages/MyPage/MyPage.css */
 
 .mypage-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* 모바일 주소창 꿀렁임 방지 적용! */
-    min-height: calc(100dvh - 160px);
-    padding: 20px;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 모바일 주소창 꿀렁임 방지 적용! */
+  min-height: calc(100dvh - 160px);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .mypage-box {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 50px 40px;
-    width: 100%;
-    max-width: 800px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 50px 40px;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .mypage-title {
-    font-size: 3rem;
-    font-weight: 900;
-    color: var(--accent-primary);
-    margin-bottom: 5px;
-    letter-spacing: -1px;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  margin-bottom: 5px;
+  letter-spacing: -1px;
 }
 
 .mypage-subtitle {
-    color: var(--text-muted);
-    font-size: 1rem;
-    margin-bottom: 40px;
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 40px;
 }
 
 /* 마이페이지 전용 메뉴 박스 */
 .mypage-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-    margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 30px;
 }
 
 /* =========================================
    📱 모바일 환경 최적화
    ========================================= */
 @media (max-width: 768px) {
-    .mypage-box {
-        padding: 35px 20px;
-        border-radius: 12px;
-    }
+  .mypage-box {
+    padding: 35px 20px;
+    border-radius: 12px;
+  }
 
-    .mypage-title {
-        font-size: 2.2rem;
-    }
+  .mypage-title {
+    font-size: 2.2rem;
+  }
 
-    .mypage-subtitle {
-        margin-bottom: 30px;
-    }
+  .mypage-subtitle {
+    margin-bottom: 30px;
+  }
 }
 
 /* =========================================
    오버워치 연동 정보 카드
    ========================================= */
 .ow-account-card {
-    background-color: #212530;
-    /* 기존 배경보다 한 톤 더 어두워서 파여있는 느낌 */
-    border: 1px solid #3a3f50;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 30px;
-    /* 아래 메뉴 버튼들과의 간격 */
-    text-align: left;
-    /* 카드는 좌측 정렬이 예쁩니다 */
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-    /* 안쪽 그림자로 디테일 업! */
+  background-color: #212530;
+  /* 기존 배경보다 한 톤 더 어두워서 파여있는 느낌 */
+  border: 1px solid #3a3f50;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  /* 아래 메뉴 버튼들과의 간격 */
+  text-align: left;
+  /* 카드는 좌측 정렬이 예쁩니다 */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* 안쪽 그림자로 디테일 업! */
 }
 
 .ow-account-label {
-    font-size: 0.9rem;
-    color: #7b8398;
-    margin-bottom: 8px;
-    font-weight: 600;
+  font-size: 0.9rem;
+  color: #7b8398;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .ow-account-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .ow-battletag {
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: #f97316;
-    /* 오버워치 주황색 포인트 */
-    letter-spacing: 0.5px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #f97316;
+  /* 오버워치 주황색 포인트 */
+  letter-spacing: 0.5px;
 }
 
 .ow-status {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: #2ed573;
-    /* 안심되는 초록색 */
-    background-color: rgba(46, 213, 115, 0.1);
-    padding: 5px 12px;
-    border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #2ed573;
+  /* 안심되는 초록색 */
+  background-color: rgba(46, 213, 115, 0.1);
+  padding: 5px 12px;
+  border-radius: 20px;
 }
 
 /* src/pages/MyPage/MyPage.css (하단 덮어쓰기) */
@@ -116,45 +116,45 @@
    오버워치 연동 상태 배너 (가벼운 띠 형태)
    ========================================= */
 .ow-link-banner {
-    display: flex;
-    justify-content: space-between;
-    /* 양쪽으로 찢기 */
-    align-items: center;
-    background-color: rgba(33, 37, 48, 0.4);
-    /* 아주 은은한 배경만 */
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 12px 20px;
-    /* 기존보다 훨씬 얇게 */
-    margin-bottom: 20px;
-    /* 카드와의 간격 */
+  display: flex;
+  justify-content: space-between;
+  /* 양쪽으로 찢기 */
+  align-items: center;
+  background-color: rgba(33, 37, 48, 0.4);
+  /* 아주 은은한 배경만 */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px 20px;
+  /* 기존보다 훨씬 얇게 */
+  margin-bottom: 20px;
+  /* 카드와의 간격 */
 }
 
 .ow-account-label {
-    font-size: 0.9rem;
-    color: #7b8398;
-    font-weight: 600;
+  font-size: 0.9rem;
+  color: #7b8398;
+  font-weight: 600;
 }
 
 .ow-account-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    /* 배틀태그와 뱃지 사이 간격 */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  /* 배틀태그와 뱃지 사이 간격 */
 }
 
 .ow-battletag {
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: #f97316;
-    letter-spacing: 0.5px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #f97316;
+  letter-spacing: 0.5px;
 }
 
 .ow-status {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #2ed573;
-    background-color: rgba(46, 213, 115, 0.1);
-    padding: 4px 10px;
-    border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #2ed573;
+  background-color: rgba(46, 213, 115, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
 }

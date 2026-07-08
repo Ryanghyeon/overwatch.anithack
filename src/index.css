@@ -2,29 +2,29 @@
 
 /* 1. Owtics 다크 테마 컬러 팔레트 (변수 선언) */
 :root {
-  --bg-main: #0B0E14;
+  --bg-main: #0b0e14;
   /* 아주 깊고 다크한 네이비 (배경) */
-  --bg-card: #151A23;
+  --bg-card: #151a23;
   /* 카드 박스 색상 */
-  --bg-input: #1F2633;
+  --bg-input: #1f2633;
   /* 입력창/버튼 배경색 */
 
-  --accent-primary: #FF7324;
+  --accent-primary: #ff7324;
   /* Owtics 시그니처 오렌지! 🍊 */
-  --accent-hover: #E55C13;
+  --accent-hover: #e55c13;
   /* 마우스 올렸을 때 어두운 오렌지 */
 
-  --text-main: #F8FAFC;
+  --text-main: #f8fafc;
   /* 기본 글씨 (눈 안 아픈 흰색) */
-  --text-muted: #8B9BB4;
+  --text-muted: #8b9bb4;
   /* 서브 글씨 (회색) */
 
-  --border-color: #2D3748;
+  --border-color: #2d3748;
   /* 은은한 테두리 색상 */
 
-  --color-danger: #EF4444;
+  --color-danger: #ef4444;
   /* 경고/위험 (빨강) */
-  --color-success: #22C55E;
+  --color-success: #22c55e;
   /* 안전 (초록) */
 }
 
@@ -39,7 +39,13 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   line-height: 1.5;
 }
 

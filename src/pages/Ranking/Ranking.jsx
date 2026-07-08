@@ -1,7 +1,9 @@
+/* src/pages/Ranking/Ranking.jsx */
+
 import { Link } from "react-router-dom";
 // 👇 파이어베이스 임포트 없이 훅 하나로 깔끔하게 데이터 로드
 import { useRanking } from "@/hooks";
-import './Ranking.css';
+import "./Ranking.css";
 
 export function Ranking() {
   // 상태와 데이터를 훅에서 쏙 빼옵니다.

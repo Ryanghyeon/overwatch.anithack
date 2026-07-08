@@ -1,3 +1,5 @@
+/* src/pages/Ranking/Ranking.css */
+
 /* 랭킹 전체 배경 */
 .ranking-wrapper {
   min-height: 100vh;
@@ -54,7 +56,9 @@
   margin-bottom: 18px;
   border-radius: 14px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* 부드러운 애니메이션 준비 */
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease; /* 부드러운 애니메이션 준비 */
 }
 
 /* 🔥 마우스 올렸을 때 살짝 떠오르는 효과 (기존 자바스크립트 로직 대체) */

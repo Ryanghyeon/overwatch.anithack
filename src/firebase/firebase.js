@@ -1,3 +1,5 @@
+/* src/firebase/firebase.js */
+
 self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 
 import { initializeApp } from "firebase/app";
@@ -18,8 +20,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 //initializeAppCheck(app, {
-  //provider: new ReCaptchaV3Provider("6LdNND4tAAAAAGd66UkZVfYcebdTz2JVBJYSkDto"),
-  //isTokenAutoRefreshEnabled: true,
+//provider: new ReCaptchaV3Provider("6LdNND4tAAAAAGd66UkZVfYcebdTz2JVBJYSkDto"),
+//isTokenAutoRefreshEnabled: true,
 //});
 
 export const db = getFirestore(app);

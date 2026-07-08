@@ -1,3 +1,5 @@
+/* src/pages/Report/Report.css */
+
 /* 전체 배경 */
 .report-wrapper {
   min-height: 100vh;
@@ -51,7 +53,9 @@
   font-size: 16px;
   background-color: #ef4444; /* 경고/신고 느낌의 빨간색 */
   color: white;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
   margin-top: 10px;
 }
 

@@ -50,7 +50,7 @@
   margin-bottom: 20px;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  
+
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -106,8 +106,8 @@
   font-size: 14px;
   color: var(--text-main);
   line-height: 1.5;
-  white-space: pre-wrap; 
-  word-break: break-all; 
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 /* 🌟 추가된 신고카드 하단 영역 (신고자 UID + 버튼 정렬) */
@@ -143,7 +143,7 @@
 
 /* 삭제 버튼 (위험한 행동이므로 붉은 톤으로 경고 느낌) */
 .btn-delete {
-  align-self: flex-end; 
+  align-self: flex-end;
   background: rgba(255, 78, 0, 0.1);
   color: var(--ow-red);
   border: 1px solid rgba(255, 78, 0, 0.3);

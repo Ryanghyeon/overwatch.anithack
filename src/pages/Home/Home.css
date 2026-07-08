@@ -132,7 +132,6 @@
   color: var(--text-main);
 }
 
-
 @media (max-width: 768px) {
   .home-box {
     padding: 35px 20px;

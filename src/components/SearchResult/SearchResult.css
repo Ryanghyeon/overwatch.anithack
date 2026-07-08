@@ -2,97 +2,99 @@
 
 /* ✨ 꿀렁임 방지용 투명 껍데기 (높이 미리 확보) */
 .search-result-wrapper {
-    min-height: 110px;
-    /* 에러나 결과가 없을 때도 이만큼의 빈 공간을 유지합니다 */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 15px;
+  min-height: 110px;
+  /* 에러나 결과가 없을 때도 이만큼의 빈 공간을 유지합니다 */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
 }
 
 .search-result-box {
-    width: 100%;
-    margin-top: -5px;
-    /* 검색 폼과 자연스럽게 이어지도록 살짝 위로 올림 */
-    margin-bottom: 25px;
-    padding: 20px;
-    background-color: #2a2e3d;
-    /* 폼보다 살짝 밝은 다크 배경으로 구분감 주기 */
-    border: 1px solid #3a3f50;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    /* 살짝 떠 있는 듯한 그림자 효과 */
+  width: 100%;
+  margin-top: -5px;
+  /* 검색 폼과 자연스럽게 이어지도록 살짝 위로 올림 */
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #2a2e3d;
+  /* 폼보다 살짝 밝은 다크 배경으로 구분감 주기 */
+  border: 1px solid #3a3f50;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  /* 살짝 떠 있는 듯한 그림자 효과 */
 }
 
 /* 에러 메시지 텍스트 */
 .result-error {
-    color: #ff4757;
-    /* 경고용 빨간색 */
-    font-weight: bold;
-    font-size: 1.05rem;
-    margin: 0;
+  color: #ff4757;
+  /* 경고용 빨간색 */
+  font-weight: bold;
+  font-size: 1.05rem;
+  margin: 0;
 }
 
 /* 신고 내역이 없는 클린 유저 텍스트 */
 .result-clean {
-    color: #2ed573;
-    /* 안심되는 초록색 */
-    font-size: 1.1rem;
-    margin: 0;
+  color: #2ed573;
+  /* 안심되는 초록색 */
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* 악성 유저 결과 박스 안쪽 정렬 */
 .result-danger {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    /* 글씨와 버튼 사이 간격 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  /* 글씨와 버튼 사이 간격 */
 }
 
 /* 악성 유저 텍스트 및 카운트 포인트 */
 .result-danger p {
-    font-size: 1.1rem;
-    color: #ffffff;
-    margin: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0;
 }
 
 .danger-count {
-    color: #ff4757;
-    font-weight: 900;
-    font-size: 1.3rem;
-    text-decoration: underline;
+  color: #ff4757;
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-decoration: underline;
 }
 
 /* 상세 보기 버튼 */
 .btn-go-detail {
-    padding: 10px 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #3742fa;
-    /* 눈에 띄는 파란색 */
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #3742fa;
+  /* 눈에 띄는 파란색 */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .btn-go-detail:hover {
-    background-color: #5352ed;
+  background-color: #5352ed;
 }
 
 .btn-go-detail:active {
-    transform: scale(0.96);
+  transform: scale(0.96);
 }
 
 /* 업데이트 안내 문구 */
 .update-notice {
-    color: #ffa502;
-    /* 주의를 끄는 노란색 */
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin: 0;
+  color: #ffa502;
+  /* 주의를 끄는 노란색 */
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 0;
 }

@@ -27,13 +27,13 @@ export function useLogin() {
   const [loginError, setLoginError] = useState(""); // 로그인 에러 상태 추가
 
   // 1. 저장된 이메일 불러오기
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("savedEmail");
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setRememberEmail(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedEmail = localStorage.getItem("savedEmail");
+  //   if (savedEmail) {
+  //     setEmail(savedEmail);
+  //     setRememberEmail(true);
+  //   }
+  // }, []);
 
   // 2. 디스코드 로그인 콜백 처리
   useEffect(() => {

@@ -1,5 +1,3 @@
-FirebaseProjectManagementError
-import { FirebaseProjectManagementError } from "firebase-admin/project-management";
 import { useState, useEffect } from "react";
 
 export function useOverwatch(battletag) {

@@ -1,7 +1,5 @@
 /* src/hooks/useAutoLogout.js */
 
-// 자동 로그아웃 훅
-
 import { useEffect } from "react";
 import { auth } from "@/firebase/firebase";
 import { signOut } from "firebase/auth";
@@ -25,8 +23,6 @@ export function useAutoLogout() {
     const resetTimer = () => {
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(performLogout, 30 * 60 * 1000); // 30분 타이머
-      // 테스트용 타이머 5초
-      // inactivityTimer = setTimeout(performLogout, 5000);
     };
 
     const events = [
@@ -36,9 +32,14 @@ export function useAutoLogout() {
       "touchstart",
       "scroll",
     ];
+
+    // 1. 이벤트 리스너 등록
     events.forEach((event) => window.addEventListener(event, resetTimer));
+
+    // 2. 초기 타이머 시작
     resetTimer();
 
+    // 3. 올바른 형태의 Cleanup 함수 반환 (에러 해결 핵심)
     return () => {
       clearTimeout(inactivityTimer);
       events.forEach((event) => window.removeEventListener(event, resetTimer));

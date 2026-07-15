@@ -1,8 +1,8 @@
 /* src/App.jsx */
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { useAutoLogout } from "@/hooks";
-import { routeList } from "./routes.jsx";
+import { AppRoutes } from "./routes.jsx";
 import { Layout } from "@/components";
 
 function App() {
@@ -11,11 +11,8 @@ function App() {
   return (
     <BrowserRouter>
       <Layout>
-        <Routes>
-          {routeList.map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
-          ))}
-        </Routes>
+        {/* 기존의 복잡한 <Routes>와 map 루프를 모두 날리고 단일 컴포넌트로 교체! */}
+        <AppRoutes />
       </Layout>
     </BrowserRouter>
   );

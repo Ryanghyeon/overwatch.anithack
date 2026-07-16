@@ -1,0 +1,7 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "package.json": "package-lock.json, .gitignore, vercel.json, jsconfig.json, eslint.config.js, vite.config.js, README.md, .env, .env.*"
+  }
+}

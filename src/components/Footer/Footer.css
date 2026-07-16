@@ -1,0 +1,90 @@
+/* src/components/Footer/Footer.css */
+
+.footer-container {
+  background-color: var(--bg-main);
+  /* 메인 배경과 동일한 다크 네이비 */
+  border-top: 1px solid var(--border-color);
+  /* 은은한 구분선 */
+  padding: 40px 20px;
+  margin-top: auto;
+  /* 화면 맨 아래로 밀어내기 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 800px;
+  width: 100%;
+}
+
+.footer-copyright {
+  color: var(--text-main);
+  /* 흰색으로 또렷하게 */
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* ✨ Owtics 오렌지 포인트! */
+.footer-brand {
+  color: var(--accent-primary);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.footer-disclaimer {
+  color: var(--text-muted);
+  /* 눈 안 아픈 회색 */
+  font-size: 0.85rem;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+/* ✨ 푸터 링크 구역 스타일 */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 7px;
+}
+
+.footer-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent-primary);
+}
+
+.footer-divider {
+  color: var(--border-color);
+  font-size: 0.8rem;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.btn-link.copied {
+  color: var(--color-success);
+  font-weight: bold;
+}

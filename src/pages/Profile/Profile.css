@@ -1,0 +1,354 @@
+/* src/pages/Profile/Profile.css */
+
+/* 전체 배경 및 가운데 정렬 */
+.profile-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* 프로필 설정 카드 박스 */
+.profile-box {
+  width: 100%;
+  max-width: 450px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* 뒤로 가기 버튼 */
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  transition: color 0.2s;
+}
+
+.btn-back:hover {
+  color: var(--text-main);
+}
+
+.profile-title {
+  text-align: center;
+  font-size: 24px;
+  color: var(--text-main);
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+/* 프로필 사진 미리보기 영역 */
+.profile-preview-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.profile-preview-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--ow-orange);
+  box-shadow: 0 0 15px rgba(249, 158, 26, 0.3);
+}
+
+/* ✨ 입력 필드 라벨 개선: 쨍한 흰색 대신 세련된 슬레이트 회색으로 분리 */
+.profile-label {
+  display: block;
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* ✨ 입력창 스타일 대폭 개선: 밝기, 테두리, 여백 조정 */
+.profile-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+
+/* ✨ 입력창 포커스 시 오버워치 주황색으로 확실한 피드백 */
+.profile-input:focus {
+  border-color: #f97316;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+.profile-tip {
+  font-size: 12px;
+  color: #38bdf8;
+  margin-top: -12px;
+  margin-bottom: 25px;
+}
+
+/* ✨ 저장 버튼 시인성 극대화 */
+.btn-save {
+  width: 100%;
+  background: transparent;
+  color: #f97316;
+  border: 2px solid #f97316;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.05);
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+}
+
+.profile-loading {
+  color: white;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 20px;
+}
+
+.profile-username {
+  font-size: 26px;
+  color: var(--text-main);
+  margin: 15px 0 5px 0;
+}
+
+.badge-admin {
+  margin-left: 8px;
+  font-size: 20px;
+}
+
+.profile-date {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* 섹션 공통 */
+.profile-section {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.section-title {
+  font-size: 16px;
+  color: var(--text-sub);
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+/* 관리자 모드 디자인 */
+.section-admin {
+  border: 1px solid rgba(255, 78, 0, 0.3);
+}
+
+.text-red {
+  color: var(--ow-red);
+}
+
+.admin-info {
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.btn-ban {
+  width: 100%;
+  background: rgba(255, 78, 0, 0.1);
+  color: var(--ow-red);
+  border: 1px solid var(--ow-red);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-ban:hover {
+  background: var(--ow-red);
+  color: white;
+}
+
+/* 일반 유저 (열람 모드) 디자인 */
+.stats-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.stats-label {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.stats-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+/* ✨ 위험 구역 (회원 탈퇴 등) - 얼라인 수정 완료! */
+.danger-zone {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 78, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  /* 가로(row) 정렬을 세로(column)로 바꿈 */
+  align-items: stretch;
+  /* 자식 요소들이 가로폭을 100% 꽉 채우도록 설정 */
+}
+
+/* 회원 탈퇴 버튼 */
+.btn-delete-account {
+  background: transparent;
+  color: var(--text-sub);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 16px;
+  /* 버튼 높이를 살짝 키워 터치감 개선 */
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  /* 부모에 맞춰 폭을 100%로 꽉 채움 */
+}
+
+.btn-delete-account:hover {
+  background: rgba(255, 78, 0, 0.1);
+  color: var(--ow-red);
+  border-color: var(--ow-red);
+}
+
+/* 내 프로필 설정 인풋 및 버튼 마진값 */
+.profile-username-input {
+  margin-bottom: 15px;
+}
+
+.battletag-tip {
+  margin-top: 5px;
+}
+
+.btn-profile-save {
+  margin-top: 15px;
+}
+
+/* ✨ 회원 탈퇴 (위험 구역) 인라인 스타일 분리 완료 */
+
+/* 삭제 확인 창 배경 및 테두리 */
+.delete-confirm-box {
+  background: rgba(255, 71, 87, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* 삭제 경고 텍스트 */
+.delete-warning-text {
+  color: #ff4757;
+  font-size: 0.9rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* 디스코드 유저 전용 경고 텍스트 (여백 조금 더 넓게) */
+.discord-warning {
+  margin-bottom: 15px;
+}
+
+/* 탈퇴용 비밀번호 입력창 */
+.delete-password-input {
+  margin-bottom: 15px;
+}
+
+/* 탈퇴/취소 버튼 그룹 (가로 정렬 및 간격) */
+.delete-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* 버튼 그룹 안의 버튼들이 정확히 반반(1:1) 비율을 차지하도록 설정 */
+.delete-btn-group button {
+  flex: 1;
+}
+
+/* ✨ 보안 설정 (비밀번호 변경) 영역 */
+.security-zone {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.security-title {
+  font-size: 15px;
+  color: #e2e8f0;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+}
+
+.password-change-box {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 취소, 일반 메뉴 등 다목적 아웃라인 버튼 */
+.btn-outline {
+  background: transparent;
+  color: var(--text-sub);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}

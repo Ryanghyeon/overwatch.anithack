@@ -1,0 +1,189 @@
+/* src/pages/MyReports/MyReports.css */
+
+.reports-wrapper {
+  min-height: calc(100dvh - 160px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.reports-box {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.reports-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  margin-bottom: 5px;
+}
+
+.reports-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  /* 요약 박스가 들어가므로 마진을 30px에서 20px로 줄였습니다 */
+  font-size: 0.95rem;
+}
+
+/* ✨ 새롭게 추가된 총 신고 횟수 박스 디자인 */
+.reports-summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 12px;
+  width: fit-content;
+  margin: 0 auto 30px auto;
+  /* 중앙 정렬 및 하단 여백 추가 */
+}
+
+.summary-label {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--text-muted);
+}
+
+.summary-count {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #38bdf8;
+  /* 시원한 포인트 블루 컬러 */
+}
+
+.reports-loading {
+  color: white;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* 리스트 컨테이너 */
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px 5px;
+}
+
+/* 스크롤바 디자인 */
+.reports-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reports-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* 빈 내역 디자인 */
+.empty-reports {
+  text-align: center;
+  padding: 50px 0;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px dashed var(--border-color);
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  display: block;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.btn-go-report {
+  margin-top: 15px;
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-go-report:hover {
+  background: rgba(255, 136, 0, 0.1);
+}
+
+/* 개별 신고 카드 디자인 */
+.report-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.report-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 136, 0, 0.3);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 10px;
+}
+
+.reported-tag {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #f97316;
+}
+
+.report-date {
+  font-size: 0.85rem;
+  color: #7b8398;
+}
+
+.report-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.report-reason-badge {
+  align-self: flex-start;
+  background: rgba(255, 71, 87, 0.15);
+  color: #ff4757;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.report-description {
+  margin: 0;
+  color: #d1d5db;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: 8px;
+  word-break: break-word;
+}

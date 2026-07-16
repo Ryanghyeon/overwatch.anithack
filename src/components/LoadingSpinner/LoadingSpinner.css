@@ -1,0 +1,29 @@
+/* src/components/LoadingSpinner/LoadingSpinner.css */
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.global-spinner {
+  width: 60px;
+  height: 60px;
+  /* ✨ 포인트 컬러 전역 변수 사용! (만약 변수가 없으면 #f97316을 쓰도록 안전장치까지) */
+  border: 6px solid
+    color-mix(in srgb, var(--primary-color, #f97316) 20%, transparent);
+  border-top: 6px solid var(--primary-color, #f97316);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px auto;
+}
+
+.global-spinner-text {
+  color: var(--primary-color, #f97316);
+  text-align: center;
+  margin-top: 0;
+}

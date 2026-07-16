@@ -1,0 +1,86 @@
+/* src/pages/Ranking/Ranking.css */
+
+/* 랭킹 전체 배경 */
+.ranking-wrapper {
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: white;
+  padding: 50px 20px;
+}
+
+/* 상단 제목 및 홈 버튼 영역 */
+.ranking-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.ranking-title {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.ranking-subtitle {
+  color: #94a3b8;
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+/* 홈으로 가기 버튼 */
+.btn-home {
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-home:hover {
+  background-color: #334155; /* 마우스 오버 시 살짝 밝아짐 */
+}
+
+/* 랭킹 리스트 컨테이너 */
+.ranking-list {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+/* 개별 랭킹 카드 */
+.ranking-card {
+  display: flex;
+  align-items: center;
+  background-color: #1e293b;
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease; /* 부드러운 애니메이션 준비 */
+}
+
+/* 🔥 마우스 올렸을 때 살짝 떠오르는 효과 (기존 자바스크립트 로직 대체) */
+.ranking-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+/* 왼쪽 등수(메달) 영역 */
+.ranking-medal {
+  width: 70px;
+  text-align: center;
+  font-size: 35px;
+}
+
+.battletag-name {
+  margin: 0;
+  font-size: 24px;
+}
+
+.report-count {
+  margin-top: 8px;
+  color: #cbd5e1;
+  font-size: 17px;
+}

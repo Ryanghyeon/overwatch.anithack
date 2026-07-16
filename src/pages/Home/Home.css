@@ -1,0 +1,189 @@
+/* src/pages/Home/Home.css */
+
+.home-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* ✨ 구형 브라우저 대비용 (Fallback) */
+  min-height: calc(100vh - 160px);
+  /* ✨ 최신 모바일 브라우저 주소창 꿀렁임 완벽 대응! (dvh) */
+  min-height: calc(100dvh - 160px);
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.home-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 50px 40px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 상단 타이틀 영역 */
+.home-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  margin-bottom: 5px;
+  letter-spacing: -1px;
+}
+
+.home-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 40px;
+}
+
+/* 인사말 영역 (HomeMenu) */
+.admin-greeting,
+.user-greeting {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: var(--text-main);
+}
+
+.user-nickname,
+.admin-nickname {
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+/* 메뉴 버튼 영역 (HomeMenu) */
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* 공통 버튼 디자인 */
+.btn-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background-color: var(--border-color);
+}
+
+/* 강조 버튼 (신고하기) */
+.btn-action.highlight {
+  background-color: var(--accent-primary);
+  color: white;
+  border: none;
+}
+
+.btn-action.highlight:hover {
+  background-color: var(--accent-hover);
+}
+
+/* 아웃라인 버튼 (로그아웃) */
+.btn-action.outline {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+}
+
+.btn-action.outline:hover {
+  background-color: var(--bg-input);
+  color: var(--color-danger);
+}
+
+/* 하단 통계 창 (HomeStats) */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-color);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+  .home-box {
+    padding: 35px 20px;
+    /* 폰에서는 뚱뚱한 좌우 여백을 줄여서 공간 확보 */
+    border-radius: 12px;
+    /* 모서리도 살짝 덜 둥글게 */
+  }
+
+  .home-title {
+    font-size: 2.2rem;
+    /* 제목이 너무 커서 줄바꿈되지 않도록 축소 */
+  }
+
+  .home-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    /* 검색창과의 간격 살짝 좁힘 */
+  }
+
+  .btn-action {
+    height: 44px;
+    /* 모바일에서는 터치하기 좋게 버튼 높이 살짝 다이어트 */
+    font-size: 0.95rem;
+  }
+
+  .stats-container {
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+    /* 숫자도 폰 화면에 맞게 축소 */
+  }
+}
+
+@media (max-width: 480px) {
+  .search-input-wrapper {
+    flex-direction: column;
+    /* ✨ 핵심: 가로(row) 배치를 세로(column) 배치로 바꿉니다! */
+    gap: 8px;
+    /* 위아래 간격 살짝 좁힘 */
+  }
+
+  .search-input,
+  .btn-search {
+    width: 100%;
+    /* ✨ 인풋창과 버튼 둘 다 모바일 화면 가로길이를 100% 꽉 채우게 만듭니다 */
+  }
+
+  .btn-search {
+    height: 50px;
+    /* 폰에서는 버튼 높이를 살짝 줄여서 너무 뚱뚱해 보이지 않게 조절 */
+  }
+}

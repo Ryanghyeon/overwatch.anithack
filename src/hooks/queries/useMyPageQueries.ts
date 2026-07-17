@@ -1,52 +1,76 @@
-// src/hooks/queries/useMyPageQueries.ts
+/* src/hooks/queries/useMyPageQueries.ts */
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { doc, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store';
 
-// [TODO] 신고 도메인 작업 시 파이어베이스 실데이터로 교체할 예정
-const fetchMyReports = async (uid: string) => {
-  console.log(`[Mock API] ${uid} 유저의 신고 내역을 불러오는 중...`);
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  return [
-    {
-      id: '1',
-      battletag: 'Hacker#1234',
-      reason: '비인가 프로그램 (자동 조준)',
-      details: '계속 벽 뒤에서 헤드라인 잡고 따라옴.',
-      createdAt: new Date(),
-    },
-    {
-      id: '2',
-      battletag: 'TrollUser#999',
-      reason: '고의적 게임 진행 방해',
-      details: '시작하자마자 우물로 계속 뛰어내림.',
-      createdAt: new Date(Date.now() - 86400000),
-    },
-  ];
-};
+// 신고 내역 타입 정의
+export interface Report {
+  id: string;
+  battletag: string;
+  reason: string;
+  details: string;
+  createdAt: Date;
+  reporterUid: string; // 신고를 작성한 유저의 UID
+}
 
+// Mock 함수 삭제: Firestore 실데이터 쿼리
 export const useMyReportsQuery = () => {
   const uid = useAuthStore((state) => state.uid);
 
   return useQuery({
     queryKey: ['myReports', uid],
-    queryFn: () => fetchMyReports(uid!),
-    enabled: !!uid,
+    queryFn: async (): Promise<Report[]> => {
+      if (!uid) throw new Error('인증 정보가 없습니다.');
+
+      // reports 컬렉션 참조
+      const reportsRef = collection(db, 'reports');
+
+      // 현재 로그인한 유저(uid)가 작성한 신고 내역만 필터링
+      const q = query(reportsRef, where('reporterUid', '==', uid));
+
+      // 데이터 가져오기
+      const snapshot = await getDocs(q);
+
+      // 컴포넌트가 사용하기 편하게 데이터 가공
+      return snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          battletag: data.battletag || '알 수 없음',
+          reason: data.reason || '기타',
+          details: data.details || '',
+          reporterUid: data.reporterUid || '',
+          // 파이어베이스 Timestamp 객체를 JavaScript Date 객체로 변환
+          createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
+        };
+      });
+    },
+    enabled: !!uid, // uid가 존재할 때만 쿼리 실행
   });
 };
 
-// Firestore 실제 연동
+// 서버 데이터 쓰기/수정
 export const useUpdateProfileMutation = () => {
   const { uid } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { username: string; battletag: string }) => {
+    mutationFn: async (data: {
+      username: string;
+      battletag?: string | null;
+    }) => {
       if (!uid) throw new Error('인증 정보가 없습니다.');
 
       const userRef = doc(db, 'users', uid);
-      // Firestore 문서 업데이트
       await updateDoc(userRef, {
         username: data.username,
         battletag: data.battletag || null,
@@ -54,7 +78,6 @@ export const useUpdateProfileMutation = () => {
       return true;
     },
     onSuccess: () => {
-      // 데이터 업데이트가 성공하면 최신 데이터를 다시 불러오게 강제함
       queryClient.invalidateQueries({ queryKey: ['user', uid] });
       alert('프로필이 성공적으로 변경되었습니다.');
     },

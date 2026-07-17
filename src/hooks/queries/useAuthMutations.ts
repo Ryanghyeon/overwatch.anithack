@@ -130,15 +130,15 @@ export const useEmailLoginMutation = () => {
     },
     onError: (error: AuthError) => {
       console.error('로그인 에러:', error);
-      if (
-        error.code === 'auth/wrong-password' ||
-        error.code === 'auth/invalid-credential' ||
-        error.code === 'auth/user-not-found'
-      ) {
-        alert('이메일 또는 비밀번호가 일치하지 않습니다.');
-      } else {
-        alert('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      }
+      // if (
+      //   error.code === 'auth/wrong-password' ||
+      //   error.code === 'auth/invalid-credential' ||
+      //   error.code === 'auth/user-not-found'
+      // ) {
+      //   alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+      // } else {
+      //   alert('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      // }
     },
   });
 };

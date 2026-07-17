@@ -8,6 +8,42 @@ import { useAuthStore } from '@/store';
 // import { auth } from '@/firebase/firebase';
 // import { signInWithEmailAndPassword, signInWithCustomToken } from 'firebase/auth';
 
+// Repository: 회원가입 API (Mock)
+const registerAPI = async ({
+  email,
+  password,
+  username,
+  battletag,
+  captchaToken,
+}: Record<string, string>) => {
+  /*
+  // 나중에 이식할 실제 Firebase 로직:
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  // Firestore에 유저 정보(username, battletag 등) 저장 로직 추가
+  return userCredential.user;
+  */
+
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  console.log('가입 데이터:', {
+    email,
+    password,
+    username,
+    battletag,
+    captchaToken,
+  });
+  return { uid: 'mock-uid-new', email, username };
+};
+
+// Custom Mutation Hook: 회원가입
+export const useRegisterMutation = () => {
+  return useMutation({
+    mutationFn: registerAPI,
+    onError: (error) => {
+      console.error('회원가입 실패:', error.message);
+    },
+  });
+};
+
 // Repository: 이메일 로그인 API
 const loginWithEmailAPI = async ({
   email,

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from '@/components';
-import { Home, Login, Report, Ranking, MyPage, Admin } from '@/pages';
+import { Home, Login, Report, Ranking, MyPage, Admin, Register } from '@/pages';
 
 // 페이지 추가 시 배열 안에 객체로 정리
 /*
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
       // div는 테스트용 placeholder 역할
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
-      { path: 'register', element: <div>[ Register Page ]</div> },
+      { path: 'register', element: <Register /> },
       { path: 'report', element: <Report /> },
       { path: 'ranking', element: <Ranking /> },
       { path: 'mypage', element: <MyPage /> },

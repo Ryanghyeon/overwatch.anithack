@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store';
-import { useLogout } from '@/hooks/queries'; // Phase 2에서 만든 로그아웃 행동대장
+import { useLogoutMutation } from '@/hooks/queries'; // Phase 2에서 만든 로그아웃 행동대장
 
 export const useAutoLogout = () => {
   const { isLoggedIn } = useAuthStore();
-  const { mutate: logout } = useLogout();
+  const { mutate: logout } = useLogoutMutation();
 
   useEffect(() => {
     // 최적화: 비로그인 상태일 때는 타이머 X (YAGNI)

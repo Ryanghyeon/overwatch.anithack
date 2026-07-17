@@ -1,112 +1,170 @@
-// src/hooks/queries/useAuthMutations.ts
+/* src/hooks/queries/useAuthMutations.ts */
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  signOut,
+} from 'firebase/auth';
+
+import {
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  collection,
+  where,
+} from 'firebase/firestore';
+
+import { auth, db } from '@/firebase/firebase';
 import { useAuthStore } from '@/store';
+import type { UserRole } from '@/types';
 
-// import { auth } from '@/firebase/firebase';
-// import { signInWithEmailAndPassword, signInWithCustomToken } from 'firebase/auth';
+// 커스텀 에러 인터페이스 (Axios 에러와 Firebase 에러 동시 호환)
+interface AuthError extends Error {
+  code?: string;
+  response?: {
+    status: number;
+  };
+}
 
-// Repository: 회원가입 API (Mock)
-const registerAPI = async ({
-  email,
-  password,
-  username,
-  battletag,
-  captchaToken,
-}: Record<string, string>) => {
-  /*
-  // 나중에 이식할 실제 Firebase 로직:
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  // Firestore에 유저 정보(username, battletag 등) 저장 로직 추가
-  return userCredential.user;
-  */
-
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log('가입 데이터:', {
-    email,
-    password,
-    username,
-    battletag,
-    captchaToken,
-  });
-  return { uid: 'mock-uid-new', email, username };
-};
-
-// Custom Mutation Hook: 회원가입
+// 1. 회원가입 (Register) 파이프라인
 export const useRegisterMutation = () => {
   return useMutation({
-    mutationFn: registerAPI,
-    onError: (error) => {
-      console.error('회원가입 실패:', error.message);
+    mutationFn: async ({
+      email,
+      password,
+      username,
+      battletag,
+      captchaToken,
+    }: Record<string, string>) => {
+      // 1. 캡챠 검증 (BFF 서버리스 통신)
+      await axios.post('/api/verify-captcha', { captchaToken });
+
+      // 2. 닉네임 중복 체크 (Firestore 쿼리)
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('username', '==', username));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        throw new Error('already-in-use-username'); // 커스텀 에러 던지기
+      }
+
+      // 3. 파이어베이스 Auth 생성
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      // 4. 이메일 인증 발송 및 Firestore 메타데이터 저장을 동시에 실행 (성능 극대화)
+      await Promise.all([
+        sendEmailVerification(user),
+        setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          email,
+          username,
+          battletag: battletag || null,
+          photoUrl: `https://ui-avatars.com/api/?name=${username}&background=random&color=fff`,
+          role: 'user' as UserRole,
+          createdAt: new Date().toISOString(), // 직렬화 최적화 적용
+        }),
+      ]);
+
+      return user;
+    },
+    onError: (error: AuthError) => {
+      console.error('회원가입 에러:', error);
+      if (error.response?.status === 403) {
+        alert('비정상적인 접근(로봇)으로 의심되어 차단되었습니다.');
+      } else if (error.message === 'already-in-use-username') {
+        alert('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.');
+      } else if (error.code === 'auth/email-already-in-use') {
+        alert('이미 가입된 이메일입니다.');
+      } else {
+        alert('회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      }
     },
   });
 };
 
-// Repository: 이메일 로그인 API
-const loginWithEmailAPI = async ({
-  email,
-  password,
-}: Record<string, string>) => {
-  /*
-  // 나중에 이식할 실제 Firebase 로직:
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  return userCredential.user;
-  */
-
-  // [note] 당장은 Firebase 셋업이 안 되어 있으니 Mock(가짜) 딜레이를 줍니다.
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  if (email === 'admin@test.com' && password === '1234') {
-    return { uid: 'mock-uid-123', email };
-  }
-  throw new Error('이메일 또는 비밀번호가 일치하지 않습니다.'); // 에러 발생 테스트용
-};
-
-// Custom Mutation Hook: 이메일 로그인
-export const useEmailLogin = () => {
+// 2. 로그인 (Login) 파이프라인
+export const useEmailLoginMutation = () => {
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
 
   return useMutation({
-    mutationFn: loginWithEmailAPI,
+    mutationFn: async ({
+      email,
+      password,
+      keepLoggedIn,
+    }: {
+      email: string;
+      password: string;
+      keepLoggedIn: boolean;
+    }) => {
+      // 로그인 유지 여부에 따른 세션 지속성 설정
+      const persistenceType = keepLoggedIn
+        ? browserLocalPersistence
+        : browserSessionPersistence;
+      await setPersistence(auth, persistenceType);
 
-    // 로그인 성공 시 (YAGNI: 더 이상 수동으로 상태 안 바꿔도 됨)
-    onSuccess: (data) => {
-      console.log('로그인 성공!', data);
-      navigate('/'); // 메인 화면으로 이동
+      // 파이어베이스 Auth 로그인
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      return userCredential.user;
     },
-
-    // 로그인 실패 시
-    onError: (error) => {
-      console.error('로그인 실패:', error.message);
-      // alert(error.message); // 필요하다면 토스트 메시지나 alert 호출
+    onSuccess: (user) => {
+      setAuth(user.uid);
+      // Zustand 상태 관리는 src/hooks/useAuthListener.ts 가 자동으로 감지해서 처리하므로 라우팅만 함
+      navigate('/');
+    },
+    onError: (error: AuthError) => {
+      console.error('로그인 에러:', error);
+      if (
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/invalid-credential' ||
+        error.code === 'auth/user-not-found'
+      ) {
+        alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+      } else {
+        alert('로그인 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
     },
   });
 };
 
-// 디스코드 로그인 핸들러
+// 3. 디스코드 로그인 핸들러 (서버리스 BFF 위임)
 export const handleDiscordLogin = () => {
+  // 클라이언트에서 ID를 섞어 조합하지 않고 서버리스 엔드포인트로 보냄
   window.location.href = '/api/auth/discord';
 };
 
-// Custom Mutation Hook: Logout
-export const useLogout = () => {
+// 4. 로그아웃 (Logout) 파이프라인
+export const useLogoutMutation = () => {
   const queryClient = useQueryClient();
   const { logout: clearAuthStore } = useAuthStore();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async () => {
-      // 실제 파이어베이스 로직: await auth.signOut
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Mock Delay
-      localStorage.removeItem('user');
+      await signOut(auth);
     },
-
-    // 로그아웃 성공 시 잔여 상태 청소
     onSuccess: () => {
-      clearAuthStore(); // Zustand 비우기
-      queryClient.clear(); // React Query에 남아있는 캐시 강제 소각
-      navigate('/login', { replace: true }); // 뒤로가기 못하게 막고 로그인 페이지로 이동
+      clearAuthStore(); // Zustand 세션 비우기
+      queryClient.clear(); // React Query 캐시 완벽 소각 (다른 유저 데이터 노출 방지)
+      navigate('/login', { replace: true });
+    },
+    onError: (error) => {
+      console.error('로그아웃 실패:', error);
     },
   });
 };

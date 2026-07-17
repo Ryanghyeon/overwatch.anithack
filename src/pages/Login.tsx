@@ -4,10 +4,10 @@ import { cn } from '@/utils/cn';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 // import { Turnstile } from 'react-turnstile'; // 나중에 npm install react-turnstile 후 주석 해제
-import { useEmailLogin, handleDiscordLogin } from '@/hooks/queries';
+import { useEmailLoginMutation, handleDiscordLogin } from '@/hooks';
 
 export const Login = () => {
-  const { mutate: login, isPending, error } = useEmailLogin();
+  const { mutate: login, isPending, error } = useEmailLoginMutation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +28,7 @@ export const Login = () => {
 
     setLocalError('');
     login(
-      { email, password },
+      { email, password, keepLoggedIn },
       { onError: () => setFailedAttempts((prev) => prev + 1) },
     );
   };

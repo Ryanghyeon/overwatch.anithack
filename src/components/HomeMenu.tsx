@@ -3,7 +3,7 @@ import { cn } from '@/utils/cn';
 
 // 스토어와 훅을 가져옵니다.
 import { useAuthStore } from '@/store/useAuthStore';
-import { useLogout } from '@/hooks/queries/useAuthMutations';
+import { useLogoutMutation } from '@/hooks';
 
 export const HomeMenu = () => {
   // AuthStore 있는 상태를 꺼내옴
@@ -11,7 +11,7 @@ export const HomeMenu = () => {
   const uid = useAuthStore((state) => state.uid);
 
   // useLogout 훅을 호출하여 mutate 함수를 꺼냅니다.
-  const { mutate: handleLogout } = useLogout();
+  const { mutate: handleLogout } = useLogoutMutation();
 
   // [!] Phase 4 진행을 위한 임시 목업(Mock) 데이터
   // 향후 useUser 쿼리 훅이 완성되면 거기서 nickname과 isAdmin을 가져와 교체 예정

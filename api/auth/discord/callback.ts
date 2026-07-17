@@ -1,0 +1,104 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { FieldValue } from 'firebase-admin/firestore';
+// 격리된 파이어베이스 어드민을 ESM 모듈(.js)로 호출
+import { getAdminAuth, getAdminFirestore } from '../../_lib/firebaseAdmin.js';
+
+// 디스코드 응답 데이터 타입 단언 (Strict Mode 방어)
+interface DiscordTokenResponse {
+  access_token?: string;
+  error?: string;
+}
+
+interface DiscordUser {
+  id: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Method Guard
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  const { code } = req.query;
+
+  // Payload Guard
+  if (!code || typeof code !== 'string') {
+    return res
+      .status(400)
+      .json({ error: 'Bad Request: Missing authorization code' });
+  }
+
+  // 리소스 고갈 방어 (10s timeout)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const params = new URLSearchParams({
+      client_id: process.env.DISCORD_CLIENT_ID || '',
+      client_secret: process.env.DISCORD_CLIENT_SECRET || '',
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: process.env.DISCORD_REDIRECT_URI || '',
+    });
+
+    // Step A: 디스코드 토큰 발급
+    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+      signal: controller.signal,
+    });
+
+    const tokenData = (await tokenResponse.json()) as DiscordTokenResponse;
+
+    if (!tokenData.access_token) {
+      console.error('[Discord] 토큰 발급 거절:', tokenData);
+      return res
+        .status(401)
+        .json({ error: 'Unauthorized: Token negotiation failed' });
+    }
+
+    // Step B: 디스코드 유저 정보 조회
+    const userResponse = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId); // 외부 통신 완료 시 타임아웃 해제
+
+    const user = (await userResponse.json()) as DiscordUser;
+
+    // Step C: 격리된 파이어베이스 도구 로드 및 커스텀 토큰 굽기
+    const adminAuth = getAdminAuth();
+    const db = getAdminFirestore();
+
+    const firebaseToken = await adminAuth.createCustomToken(user.id);
+
+    // Step D: Firestore DB 갱신
+    await db
+      .collection('users')
+      .doc(user.id)
+      .set(
+        {
+          uid: user.id,
+          username: user.username,
+          email: user.email || '',
+          avatar: user.avatar || '',
+          lastLogin: FieldValue.serverTimestamp(),
+        },
+        { merge: true }, // 기존 데이터 덮어쓰기 방지
+      );
+
+    // Step E: 프론트엔드로 상대 경로 리다이렉트 (레거시의 하드코딩 URL 대체)
+    res.redirect(302, `/login?token=${firebaseToken}`);
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error('[Discord Callback Error]:', error);
+    const status =
+      error instanceof Error && error.name === 'AbortError' ? 504 : 500;
+    res.status(status).json({ error: 'Internal Server Error or Timeout' });
+  }
+}

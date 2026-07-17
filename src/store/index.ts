@@ -1,1 +1,1 @@
-export * from './useCounterStore';
+export * from './useAuthStore';

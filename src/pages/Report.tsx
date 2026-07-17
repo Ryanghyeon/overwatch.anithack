@@ -1,0 +1,105 @@
+// src/pages/Report.tsx
+
+import { cn } from '@/utils/cn';
+import { useReport } from '@/hooks/useReport';
+
+export const Report = () => {
+  // 뷰 컴포넌트는 무엇을 그릴지만 결정. user 정보는 훅 담당
+  const {
+    battleTag,
+    setBattleTag,
+    reason,
+    setReason,
+    details,
+    setDetails,
+    submitReport,
+    isSubmitting,
+  } = useReport();
+
+  return (
+    // 화면 중앙 정렬 및 반응형 껍데기
+    <div className="flex min-h-[calc(100dvh-160px)] items-center justify-center p-5">
+      {/* form 태그로 감싸 엔터키(Enter) 제출 등 웹 표준을 준수 */}
+      <form
+        onSubmit={submitReport}
+        className={cn(
+          'border-border-main bg-bg-card w-full max-w-112.5 rounded-2xl border shadow-2xl transition-all duration-300',
+          'p-8 sm:p-10',
+        )}
+      >
+        <h1 className="text-text-main mb-8 text-center text-[2rem] font-black tracking-tight">
+          🚨 핵 사용자 신고
+        </h1>
+
+        <div className="flex flex-col gap-5">
+          {/* 배틀태그 입력창 */}
+          <input
+            type="text"
+            placeholder="배틀태그 입력 (예: Hacker#1234)"
+            value={battleTag}
+            onChange={(e) => setBattleTag(e.target.value)}
+            required
+            className={cn(
+              'border-border-main bg-bg-input text-text-main w-full rounded-lg border p-4 text-[16px] transition-all duration-200 outline-none',
+              'placeholder:text-text-muted focus:border-primary focus:ring-primary focus:ring-1',
+            )}
+          />
+
+          {/* 신고 사유 선택 */}
+          <select
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            required
+            className={cn(
+              'border-border-main bg-bg-input text-text-main w-full appearance-none rounded-lg border p-4 text-[16px] transition-all duration-200 outline-none',
+              'focus:border-primary focus:ring-primary focus:ring-1',
+              // 값이 비어있을 때(초기 상태)는 placeholder처럼 색상 흐리게 처리
+              reason === '' ? 'text-text-muted' : 'text-text-main',
+            )}
+          >
+            <option value="" disabled>
+              신고 사유 선택 (필수)
+            </option>
+            <option value="비인가 프로그램 (자동 조준/격발)">
+              비인가 프로그램 (자동 조준/격발)
+            </option>
+            <option value="비인가 프로그램 (위치 투시/ESP)">
+              비인가 프로그램 (위치 투시/ESP)
+            </option>
+            <option value="고의적 게임 진행 방해 (패작/트롤링)">
+              고의적 게임 진행 방해 (패작/트롤링)
+            </option>
+            <option value="부적절한 의사소통 (욕설/비하)">
+              부적절한 의사소통 (욕설/비하)
+            </option>
+            <option value="기타 사유">기타 사유</option>
+          </select>
+
+          {/* 세부사항 텍스트 에어리어 */}
+          <textarea
+            placeholder="핵 사용 정황이나 발생 시간 등 세부사항을 적어주세요. (선택)"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            className={cn(
+              'border-border-main bg-bg-input text-text-main min-h-30 w-full resize-none rounded-lg border p-4 text-[16px] transition-all duration-200 outline-none',
+              'placeholder:text-text-muted focus:border-primary focus:ring-primary focus:ring-1',
+            )}
+          ></textarea>
+
+          {/* 제출 버튼 */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={cn(
+              'mt-3 flex h-14 w-full items-center justify-center rounded-lg text-[16px] font-bold text-white transition-all duration-200',
+              'bg-red-500 hover:bg-red-600 active:scale-[0.98]',
+              'disabled:cursor-not-allowed disabled:opacity-50',
+            )}
+          >
+            {isSubmitting ? '접수 중...' : '신고 접수하기'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};

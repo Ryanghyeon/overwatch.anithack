@@ -1,1 +1,23 @@
 @import 'tailwindcss';
+
+/* Tailwind v4의 전역 테마(Design Token) 관리법 */
+@theme {
+  /* Point color */
+  --color-primary: #ff8800;
+  --color-primary-hover: #e67a00;
+
+  /* Discord */
+  --color-discord: #5865f2;
+  --color-discord-hover: #4752c4;
+
+  /* 2. 글로벌 배경 톤앤매너 (레거시 계승) */
+  --color-bg-main: #09090b; /* 화면 전체 바탕색 (tailwind gray-50) */
+  --color-bg-card: #18181b; /* 모달, 로그인 폼 등 카드 바탕색 */
+
+  /* 3. 테두리 질감 */
+  --color-border-main: #27272a; /* (tailwind gray-200) */
+
+  /* 4. 텍스트 가독성 계층 */
+  --color-text-main: #f9fafb; /* 찐한 기본 글자 (tailwind gray-900) */
+  --color-text-muted: #9ca3af; /* 부가 설명 텍스트 (tailwind gray-500) */
+}

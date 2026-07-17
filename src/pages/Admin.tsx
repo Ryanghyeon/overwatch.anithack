@@ -1,0 +1,136 @@
+// src/pages/Admin.tsx
+import { Link, useNavigate } from 'react-router-dom';
+import { cn } from '@/utils/cn';
+import { useAuthStore } from '@/store/useAuthStore';
+import {
+  useAdminReportsQuery,
+  useDeleteReportMutation,
+} from '@/hooks/queries/useAdminQueries';
+
+export const Admin = () => {
+  const navigate = useNavigate();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
+  // UI 렌더링 테스트용 임시 어드민 플래그 (Phase 5에서 실제 유저 role 데이터로 대체)
+  const isMockAdmin = true;
+
+  const { data: reports, isLoading } = useAdminReportsQuery();
+  const { mutate: deleteReport, isPending: isDeleting } =
+    useDeleteReportMutation();
+
+  // 🛡️ 인증 및 권한 가드
+  if (!isLoggedIn && !isMockAdmin) {
+    // 테스트용. ||로 변경할것
+    return (
+      <div className="flex min-h-[calc(100dvh-160px)] flex-col items-center justify-center gap-4 text-white">
+        <h2 className="text-xl font-bold">🚨 관리자 전용 페이지입니다.</h2>
+        <button
+          onClick={() => navigate('/')}
+          className="bg-border-main rounded-lg px-6 py-2 font-bold text-white transition-all hover:bg-white/10"
+        >
+          홈으로 돌아가기
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-[calc(100dvh-160px)] w-full flex-col items-center px-4 py-10 sm:px-6">
+      <div className="w-full max-w-200">
+        {/* 🏷️ 상단 헤더 영역 */}
+        <div className="border-border-main mb-8 flex items-center justify-between border-b pb-6">
+          <h1 className="text-text-main text-2xl font-black sm:text-3xl">
+            🛠️ 관리자 대시보드
+          </h1>
+          <Link
+            to="/"
+            className="border-border-main bg-bg-card text-text-main rounded-lg border px-4 py-2 text-sm font-bold transition-all hover:bg-white/5"
+          >
+            홈으로
+          </Link>
+        </div>
+
+        {/* 📊 데이터 렌더링 영역 */}
+        {isLoading ? (
+          <div className="text-text-muted py-20 text-center text-lg font-bold">
+            데이터를 불러오는 중...
+          </div>
+        ) : !reports?.length ? (
+          <div className="text-text-muted py-20 text-center">
+            접수된 신고 내역이 없습니다.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {reports.map((report) => (
+              // 🧩 개별 신고 카드
+              <div
+                key={report.id}
+                className="border-border-main bg-bg-card flex flex-col gap-4 rounded-xl border p-6 shadow-lg transition-transform hover:shadow-xl"
+              >
+                <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                  <h3 className="text-primary text-xl font-black">
+                    {report.battletag}
+                  </h3>
+                  <span className="text-text-muted text-sm">
+                    {report.createdAt.toLocaleString('ko-KR')}
+                  </span>
+                </div>
+
+                <p className="text-text-main text-base">
+                  <strong className="text-text-muted">사유 : </strong>{' '}
+                  {report.reason}
+                </p>
+
+                {report.details && (
+                  <div className="border-text-muted mt-2 rounded-lg border-l-4 bg-black/20 p-4">
+                    <span className="text-text-muted mb-2 block text-xs font-bold">
+                      📝 세부사항
+                    </span>
+                    <p className="text-text-main/90 text-sm leading-relaxed break-all whitespace-pre-wrap">
+                      {report.details}
+                    </p>
+                  </div>
+                )}
+
+                {/* 하단 액션 및 정보 영역 */}
+                <div className="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                  <div className="flex items-center gap-3">
+                    <span className="text-text-muted text-sm">
+                      신고자 UID : {report.reporterUid}
+                    </span>
+                    <Link
+                      to={`/profile/${report.reporterUid}`}
+                      className="rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-bold text-blue-400 transition-all hover:bg-blue-500/20"
+                    >
+                      🔍 프로필 보기
+                    </Link>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          `${report.battletag}의 신고 내역을 삭제하시겠습니까?`,
+                        )
+                      ) {
+                        deleteReport(report.id);
+                      }
+                    }}
+                    disabled={isDeleting}
+                    className={cn(
+                      'rounded-lg border border-red-500/20 bg-red-500/10 px-6 py-2 text-sm font-bold text-red-500 transition-all',
+                      'hover:bg-red-500 hover:text-white',
+                      'disabled:cursor-not-allowed disabled:opacity-50',
+                    )}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

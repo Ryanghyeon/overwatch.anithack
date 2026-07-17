@@ -2,7 +2,7 @@
 
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils/cn';
-import { useRanking } from '@/hooks/useRanking';
+import { useRanking } from '@/hooks';
 
 export const Ranking = () => {
   const { ranking, isLoading } = useRanking();

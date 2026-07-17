@@ -1,0 +1,26 @@
+/* src/api/ranking.ts */
+
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '@/firebase/firebase';
+
+export interface RankingData {
+  id: string;
+  battletag: string;
+  reportCount: number;
+}
+
+export const fetchRanking = async (): Promise<RankingData[]> => {
+  const q = query(collection(db, 'battletags'), orderBy('count', 'desc'));
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      battletag: data.battletag,
+      // 레거시 디테일 유지: DB의 count를 UI용 reportCount로 매핑
+      reportCount: data.count || 0,
+    };
+  });
+};

@@ -1,7 +1,6 @@
 /* src/pages/Home.tsx */
 
 import { cn } from '@/utils/cn';
-// Phase 2/3에서 구축된 (또는 향후 연결할) 훅 가져오기
 import { useSearch, useStats } from '@/hooks';
 
 // 컴포넌트 4인방

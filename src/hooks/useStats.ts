@@ -1,8 +1,21 @@
-// 페이지 테스트용 임시 데이터
+/* src/hooks/useStats.ts */
+
+import { useQuery } from '@tanstack/react-query';
+import { fetchHomeStats } from '@/api';
 
 export const useStats = () => {
+  // useQuery를 통한 API 함수 실행 & 상태 관리
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['homeStats'], // 이 쿼리의 고유 이름표 (캐싱에 사용됨)
+    queryFn: fetchHomeStats,
+    staleTime: 1000 * 60 * 5, // 5분간 데이터 재요청 없이 캐시된 데이터 사용 (비용 절약)
+  });
+
   return {
-    reportCount: '1,234', // UI 확인용 가짜 통계
-    battleTagCount: '567',
+    // data가 없으면(로딩중) 기본값 0
+    reportCount: data?.reportCount ?? 0,
+    battleTagCount: data?.battleTagCount ?? 0,
+    isLoading,
+    isError,
   };
 };

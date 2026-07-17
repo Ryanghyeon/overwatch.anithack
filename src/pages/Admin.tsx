@@ -1,26 +1,20 @@
-// src/pages/Admin.tsx
+/* src/pages/Admin.tsx */
+
 import { Link, useNavigate } from 'react-router-dom';
-import { cn } from '@/utils/cn';
-import { useAuthStore } from '@/store/useAuthStore';
-import {
-  useAdminReportsQuery,
-  useDeleteReportMutation,
-} from '@/hooks/queries/useAdminQueries';
+import { cn } from '@/utils';
+import { useAuthStore } from '@/store';
+import { useAdminReportsQuery, useDeleteReportMutation } from '@/hooks';
 
 export const Admin = () => {
   const navigate = useNavigate();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-  // UI 렌더링 테스트용 임시 어드민 플래그 (Phase 5에서 실제 유저 role 데이터로 대체)
-  const isMockAdmin = true;
-
   const { data: reports, isLoading } = useAdminReportsQuery();
   const { mutate: deleteReport, isPending: isDeleting } =
     useDeleteReportMutation();
 
-  // 🛡️ 인증 및 권한 가드
-  if (!isLoggedIn && !isMockAdmin) {
-    // 테스트용. ||로 변경할것
+  // 인증 및 권한 가드
+  if (!isLoggedIn) {
     return (
       <div className="flex min-h-[calc(100dvh-160px)] flex-col items-center justify-center gap-4 text-white">
         <h2 className="text-xl font-bold">🚨 관리자 전용 페이지입니다.</h2>
@@ -37,7 +31,6 @@ export const Admin = () => {
   return (
     <div className="flex min-h-[calc(100dvh-160px)] w-full flex-col items-center px-4 py-10 sm:px-6">
       <div className="w-full max-w-200">
-        {/* 🏷️ 상단 헤더 영역 */}
         <div className="border-border-main mb-8 flex items-center justify-between border-b pb-6">
           <h1 className="text-text-main text-2xl font-black sm:text-3xl">
             🛠️ 관리자 대시보드
@@ -50,7 +43,6 @@ export const Admin = () => {
           </Link>
         </div>
 
-        {/* 📊 데이터 렌더링 영역 */}
         {isLoading ? (
           <div className="text-text-muted py-20 text-center text-lg font-bold">
             데이터를 불러오는 중...
@@ -62,7 +54,6 @@ export const Admin = () => {
         ) : (
           <div className="flex flex-col gap-4">
             {reports.map((report) => (
-              // 🧩 개별 신고 카드
               <div
                 key={report.id}
                 className="border-border-main bg-bg-card flex flex-col gap-4 rounded-xl border p-6 shadow-lg transition-transform hover:shadow-xl"
@@ -72,7 +63,9 @@ export const Admin = () => {
                     {report.battletag}
                   </h3>
                   <span className="text-text-muted text-sm">
-                    {report.createdAt.toLocaleString('ko-KR')}
+                    {/* Firestore Timestamp 객체를 JS Date로 변환 후 렌더링 */}
+                    {report.createdAt?.toDate?.()?.toLocaleString('ko-KR') ||
+                      '날짜 미상'}
                   </span>
                 </div>
 
@@ -92,7 +85,6 @@ export const Admin = () => {
                   </div>
                 )}
 
-                {/* 하단 액션 및 정보 영역 */}
                 <div className="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3">
                     <span className="text-text-muted text-sm">
@@ -113,7 +105,11 @@ export const Admin = () => {
                           `${report.battletag}의 신고 내역을 삭제하시겠습니까?`,
                         )
                       ) {
-                        deleteReport(report.id);
+                        // 🚨 수정 포인트: reportId와 battletag를 묶어서 객체로 전송
+                        deleteReport({
+                          reportId: report.id,
+                          battletag: report.battletag,
+                        });
                       }
                     }}
                     disabled={isDeleting}

@@ -4,8 +4,8 @@
 export const isValidBattletag = (tag?: string | null): boolean => {
   if (!tag) return false;
   const cleanTag = tag.trim();
-  // 첫 글자는 영문/한글, 두 번째부터 숫자 포함 2~12글자, # 뒤에 숫자 3~6자리
-  const regex = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{1,11}#[0-9]{3,6}$/;
+  // 첫 글자는 영문/한글, 두 번째부터 숫자 포함 2~12글자, # 뒤에 숫자 4~5자리
+  const regex = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{1,11}#[0-9]{4,5}$/;
   return regex.test(cleanTag);
 };
 

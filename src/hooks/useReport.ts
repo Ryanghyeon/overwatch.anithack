@@ -1,31 +1,70 @@
 /* src/hooks/useReport.ts */
 
-import { useState } from 'react';
-import type { SyntheticEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/store';
+import { isValidBattletag } from '@/utils';
+import { submitNewReport } from '@/api/report';
 
-// [!] Phase 5에서 Zustand(useAuthStore)와 React Query를 붙여 진짜 통신 로직으로 바꿀 예정입니다.
 export const useReport = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const uid = useAuthStore((state) => state.uid);
+
+  // 폼 로컬 상태 관리
   const [battleTag, setBattleTag] = useState('');
   const [reason, setReason] = useState('');
   const [details, setDetails] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submitReport = (e?: SyntheticEvent<HTMLFormElement>) => {
-    // 💡 form 태그의 기본 동작(새로고침) 방지
-    if (e) e.preventDefault();
+  // UI용 에러 상태
+  const [localError, setLocalError] = useState('');
 
-    setIsSubmitting(true);
-    console.log('🚨 임시 신고 제출:', { battleTag, reason, details });
+  // 서버 통신 Mutation (API 호출과 서버 에러 처리만 담당)
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await submitNewReport(uid!, battleTag, reason, details);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ranking'] });
+      queryClient.invalidateQueries({ queryKey: ['adminReports'] });
+      if (uid) queryClient.invalidateQueries({ queryKey: ['myReports', uid] });
 
-    // API 통신 흉내 (1초 딜레이)
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('신고가 성공적으로 접수되었습니다! (테스트)');
-      // 접수 후 폼 초기화
+      alert(`${battleTag} 신고가 정상적으로 접수되었습니다.`);
+
       setBattleTag('');
       setReason('');
       setDetails('');
-    }, 1000);
+      setLocalError('');
+      navigate('/');
+    },
+    onError: (error: Error) => {
+      // API에서 던진 에러(예: 중복 신고)를 잡아서 빨간 글씨로 띄워줌
+      if (error.message === 'ALREADY_REPORTED') {
+        setLocalError('이미 신고한 배틀태그입니다.');
+      } else {
+        console.error('신고 접수 에러:', error);
+        setLocalError('신고 접수 중 서버 오류가 발생했습니다.');
+      }
+    },
+  });
+
+  // UI에서 호출할 최종 제출 함수
+  const submitReport = (e?: SyntheticEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+
+    // 프론트엔드 레벨 유효성 검사
+    if (!uid) return setLocalError('로그인이 필요합니다.');
+    if (!battleTag.trim()) return setLocalError('배틀태그를 입력해 주세요.');
+    if (!isValidBattletag(battleTag))
+      return setLocalError(
+        '올바른 배틀태그 형식이 아닙니다. (예: 비매너유저#12345)',
+      );
+    if (!reason) return setLocalError('신고 사유를 선택해 주세요.');
+
+    // 검증을 통과하면 에러 메시지 지우고 API 호출
+    setLocalError('');
+    mutation.mutate();
   };
 
   return {
@@ -35,7 +74,9 @@ export const useReport = () => {
     setReason,
     details,
     setDetails,
+    localError, // 컴포넌트로 전달
+    setLocalError, // 컴포넌트로 전달 (타이핑 시 에러 초기화용)
     submitReport,
-    isSubmitting,
+    isSubmitting: mutation.isPending,
   };
 };

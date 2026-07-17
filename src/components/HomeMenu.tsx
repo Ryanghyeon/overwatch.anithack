@@ -1,22 +1,14 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils/cn';
-
-// 스토어와 훅을 가져옵니다.
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/store';
 import { useLogoutMutation } from '@/hooks';
+import { useUser } from '@/hooks';
 
 export const HomeMenu = () => {
-  // AuthStore 있는 상태를 꺼내옴
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const uid = useAuthStore((state) => state.uid);
-
-  // useLogout 훅을 호출하여 mutate 함수를 꺼냅니다.
   const { mutate: handleLogout } = useLogoutMutation();
-
-  // [!] Phase 4 진행을 위한 임시 목업(Mock) 데이터
-  // 향후 useUser 쿼리 훅이 완성되면 거기서 nickname과 isAdmin을 가져와 교체 예정
-  const userName = '유저';
-  const isAdmin = uid === 'admin-mock-uid';
+  // Firestore 유저 데이터 연동
+  const { data: user, isLoading } = useUser();
 
   // 비로그인 상태
   if (!isLoggedIn) {
@@ -45,6 +37,19 @@ export const HomeMenu = () => {
       </div>
     );
   }
+
+  // 로그인 상태이지만 아직 유저 정보를 불러오는 중일 때 방어 로직 (깜빡임 방지)
+  if (isLoading) {
+    return (
+      <div className="text-text-muted mt-8 flex h-50 items-center justify-center text-[15px]">
+        유저 정보를 불러오는 중...
+      </div>
+    );
+  }
+
+  // 데이터 로딩 완료 후 진짜 유저 정보 세팅
+  const userName = user?.username;
+  const isAdmin = user?.role === 'admin';
 
   // 로그인 상태 (유저 or 관리자)
   return (
@@ -104,7 +109,7 @@ export const HomeMenu = () => {
               'hover:-translate-y-px hover:bg-[#ff6b81] active:scale-[0.98]',
             )}
           >
-            🛠 관리자 대시보드
+            관리자 대시보드
           </Link>
         )}
 

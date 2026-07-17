@@ -20,6 +20,7 @@ import {
   query,
   collection,
   where,
+  serverTimestamp,
 } from 'firebase/firestore';
 
 import { auth, db } from '@/firebase/firebase';
@@ -62,7 +63,7 @@ export const useRegisterMutation = () => {
         password,
       );
 
-      // 4. 이메일 인증 발송 및 Firestore 메타데이터 저장을 동시에 실행 (성능 극대화)
+      // 이메일 인증 발송 및 Firestore 메타데이터 저장을 동시에 실행 (성능 극대화)
       await Promise.all([
         sendEmailVerification(user),
         setDoc(doc(db, 'users', user.uid), {
@@ -72,7 +73,7 @@ export const useRegisterMutation = () => {
           battletag: battletag || null,
           photoUrl: `https://ui-avatars.com/api/?name=${username}&background=random&color=fff`,
           role: 'user' as UserRole,
-          createdAt: new Date().toISOString(), // 직렬화 최적화 적용
+          createdAt: serverTimestamp(),
         }),
       ]);
 

@@ -1,13 +1,10 @@
 // src/pages/MyPage.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/utils/cn';
-import { useAuthStore } from '@/store/useAuthStore';
-import {
-  useMyProfileQuery,
-  useMyReportsQuery,
-  useUpdateProfileMutation,
-} from '@/hooks/queries/useMyPageQueries';
+import { cn } from '@/utils';
+import { useAuthStore } from '@/store';
+import { useUser } from '@/hooks';
+import { useMyReportsQuery, useUpdateProfileMutation } from '@/hooks';
 
 type TabType = 'dashboard' | 'reports' | 'settings';
 
@@ -15,12 +12,9 @@ export const MyPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
 
-  // 🚨 수정됨: 클라이언트 전역 상태에서 isLoggedIn 플래그를 가져옵니다.
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-  // 인증 가드 (비로그인 튕겨내기)
-  // 테스트를 위해 로그인 없이 넘어가도록 함. !isLoggedIn으로 바꿀 것
-  if (isLoggedIn) {
+  if (!isLoggedIn) {
     return (
       <div className="flex min-h-[calc(100dvh-160px)] flex-col items-center justify-center gap-4 text-white">
         <h2 className="text-xl font-bold">로그인이 필요한 페이지입니다.</h2>
@@ -28,7 +22,7 @@ export const MyPage = () => {
           onClick={() => navigate('/login')}
           className="bg-primary rounded-lg px-6 py-2 font-bold text-white"
         >
-          로그인 하러 가기
+          로그인하기
         </button>
       </div>
     );
@@ -61,18 +55,20 @@ export const MyPage = () => {
         <div className="p-6 sm:p-10">
           {activeTab === 'dashboard' && <DashboardTab />}
           {activeTab === 'reports' && <ReportsTab />}
-          {activeTab === 'settings' && <SettingsTab />}
+          {activeTab === 'settings' && (
+            <SettingsTab
+              onNavigateDashboard={() => setActiveTab('dashboard')}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-// ==========================================
-// 🧩 하위 탭 컴포넌트 1: 대시보드
-// ==========================================
+// 하위 탭 컴포넌트 1: 대시보드
 const DashboardTab = () => {
-  const { data: profile, isLoading } = useMyProfileQuery();
+  const { data: profile, isLoading } = useUser(); // ✨ useMyProfileQuery -> useUser 교체
 
   if (isLoading)
     return (
@@ -94,7 +90,11 @@ const DashboardTab = () => {
             {profile?.username}
           </h2>
           <p className="text-text-muted text-sm">
-            가입일: {profile?.createdAt.toLocaleDateString()}
+            {/* createdAt은 ISO 문자열이므로 Date 객체로 감싸서 변환 */}
+            가입일:{' '}
+            {profile?.createdAt
+              ? new Date(profile.createdAt).toLocaleDateString()
+              : '알 수 없음'}
           </p>
         </div>
       </div>
@@ -117,9 +117,7 @@ const DashboardTab = () => {
   );
 };
 
-// ==========================================
-// 🧩 하위 탭 컴포넌트 2: 신고 내역 리스트
-// ==========================================
+// 하위 탭 컴포넌트 2: 신고 내역 리스트 (Mock 유지)
 const ReportsTab = () => {
   const { data: reports, isLoading } = useMyReportsQuery();
 
@@ -168,18 +166,59 @@ const ReportsTab = () => {
   );
 };
 
-// ==========================================
-// 🧩 하위 탭 컴포넌트 3: 설정 폼
-// ==========================================
-const SettingsTab = () => {
-  const { data: profile } = useMyProfileQuery();
+// 하위 탭 컴포넌트 3: 설정 폼 (껍데기 - 데이터 로딩 담당)
+const SettingsTab = ({
+  onNavigateDashboard,
+}: {
+  onNavigateDashboard: () => void;
+}) => {
+  const { data: profile, isLoading } = useUser();
+
+  if (isLoading || !profile) {
+    return (
+      <div className="text-text-muted py-20 text-center">
+        설정 정보를 불러오는 중...
+      </div>
+    );
+  }
+
+  // 데이터가 모두 준비되었을 때만 하위 폼 컴포넌트를 렌더링하고 데이터를 넘깁니다.
+  return (
+    <SettingsForm
+      initialProfile={profile}
+      onNavigateDashboard={onNavigateDashboard}
+    />
+  );
+};
+
+// 설정 폼 알맹이 (상태 관리 담당)
+interface SettingsFormProps {
+  initialProfile: {
+    username: string;
+    battletag?: string | null; // 배틀태그는 없을 수도 있으므로 null 허용
+  };
+  onNavigateDashboard: () => void;
+}
+
+// 정의한 타입을 컴포넌트에 주입
+const SettingsForm = ({
+  initialProfile,
+  onNavigateDashboard,
+}: SettingsFormProps) => {
   const { mutate: updateProfile, isPending } = useUpdateProfileMutation();
-  const [username, setUsername] = useState(profile?.username || '');
-  const [battletag, setBattletag] = useState(profile?.battletag || '');
+  const [username, setUsername] = useState(initialProfile.username || '');
+  const [battletag, setBattletag] = useState(initialProfile.battletag || '');
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile({ username, battletag });
+    updateProfile(
+      { username, battletag },
+      {
+        onSuccess: () => {
+          onNavigateDashboard();
+        },
+      },
+    );
   };
 
   return (
@@ -207,6 +246,7 @@ const SettingsTab = () => {
           value={battletag}
           onChange={(e) => setBattletag(e.target.value)}
           className="border-border-main bg-bg-input text-text-main focus:border-primary w-full rounded-lg border p-4 outline-none"
+          placeholder="예) Justice#1234"
         />
       </div>
 

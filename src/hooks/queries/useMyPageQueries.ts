@@ -1,21 +1,10 @@
 // src/hooks/queries/useMyPageQueries.ts
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebase/firebase';
 import { useAuthStore } from '@/store/useAuthStore';
 
-// 💡 [Phase 5 교체 예정] 임시 Mock Fetcher 함수들
-const fetchProfile = async (uid: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  return {
-    uid,
-    username: '오버워치보안관',
-    battletag: 'Justice#1234',
-    photoUrl: `https://ui-avatars.com/api/?name=오버워치보안관&background=random&color=fff`,
-    role: 'user',
-    createdAt: new Date('2023-01-01'),
-  };
-};
-
-// mock
+// [TODO] 신고 도메인 작업 시 파이어베이스 실데이터로 교체할 예정
 const fetchMyReports = async (uid: string) => {
   console.log(`[Mock API] ${uid} 유저의 신고 내역을 불러오는 중...`);
   await new Promise((resolve) => setTimeout(resolve, 800));
@@ -37,18 +26,6 @@ const fetchMyReports = async (uid: string) => {
   ];
 };
 
-// 서버 데이터 읽기 (Queries)
-export const useMyProfileQuery = () => {
-  const uid = useAuthStore((state) => state.uid);
-
-  return useQuery({
-    queryKey: ['profile', uid],
-    // uid가 null이 아닐 때만 쿼리가 작동하므로 not 단언
-    queryFn: () => fetchProfile(uid!),
-    enabled: !!uid,
-  });
-};
-
 export const useMyReportsQuery = () => {
   const uid = useAuthStore((state) => state.uid);
 
@@ -59,13 +36,31 @@ export const useMyReportsQuery = () => {
   });
 };
 
-// 서버 데이터 쓰기/수정 (Mutations)
+// Firestore 실제 연동
 export const useUpdateProfileMutation = () => {
+  const { uid } = useAuthStore();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: { username: string; battletag: string }) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('✅ 프로필 업데이트 완료:', data);
+      if (!uid) throw new Error('인증 정보가 없습니다.');
+
+      const userRef = doc(db, 'users', uid);
+      // Firestore 문서 업데이트
+      await updateDoc(userRef, {
+        username: data.username,
+        battletag: data.battletag || null,
+      });
       return true;
+    },
+    onSuccess: () => {
+      // 데이터 업데이트가 성공하면 최신 데이터를 다시 불러오게 강제함
+      queryClient.invalidateQueries({ queryKey: ['user', uid] });
+      alert('프로필이 성공적으로 변경되었습니다.');
+    },
+    onError: (error) => {
+      console.error('프로필 업데이트 에러:', error);
+      alert('프로필 변경 중 오류가 발생했습니다.');
     },
   });
 };

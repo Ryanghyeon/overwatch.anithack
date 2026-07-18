@@ -1,10 +1,11 @@
 // src/hooks/queries/useUser.ts
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
 import { useAuthStore } from '@/store';
 import type { User } from '@/types';
+import { checkDuplicate } from '@/api';
 
 // Repository 계층: Firestore 데이터 패칭
 const fetchUserData = async (uid: string): Promise<User> => {
@@ -42,4 +43,15 @@ export const useUser = () => {
     // 가져온 데이터는 5분 동안 신선(stale)한 것으로 간주하여 중복 호출 방지
     staleTime: 1000 * 60 * 5,
   });
+};
+
+export const useCheckDuplicate = () => {
+  const mutation = useMutation({
+    mutationFn: checkDuplicate,
+  });
+
+  return {
+    validateDuplicate: mutation.mutateAsync,
+    isChecking: mutation.isPending,
+  };
 };

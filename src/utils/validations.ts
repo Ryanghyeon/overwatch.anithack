@@ -12,7 +12,9 @@ export const isValidBattletag = (tag?: string | null): boolean => {
 // 2. 이메일 형식 검사
 export const isValidEmail = (email?: string | null): boolean => {
   if (!email) return false;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // 영문, 숫자, 허용된 특수문자(._%+-) 조합 @ 도메인.최상위도메인(2글자 이상)
+  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
 };
 
 // 3. 닉네임 형식 검사 (특수문자 제외, 한글/영문/숫자 2~12자)

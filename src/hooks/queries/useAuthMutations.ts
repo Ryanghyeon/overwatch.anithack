@@ -82,12 +82,11 @@ export const useRegisterMutation = () => {
     onError: (error: AuthError) => {
       console.error('회원가입 에러:', error);
       if (error.response?.status === 403) {
-        alert('비정상적인 접근(로봇)으로 의심되어 차단되었습니다.');
-      } else if (error.message === 'already-in-use-username') {
-        alert('이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요.');
-      } else if (error.code === 'auth/email-already-in-use') {
-        alert('이미 가입된 이메일입니다.');
-      } else {
+        alert('비정상적인 접근으로 의심되어 차단되었습니다.');
+      } else if (
+        error.code !== 'auth/email-already-in-use' &&
+        error.message !== 'already-in-use-username'
+      ) {
         alert('회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
       }
     },

@@ -20,7 +20,7 @@
 
   // 네스팅 규칙
   "explorer.fileNesting.patterns": {
-    "README.md": "README-ko.md",
+    "README.md": "README-ko.md, CONTRIBUTING.md",
     "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc, .gitignore, renovate.json5",
     "vite.config.ts": "vite.config.ts.timestamp-*, index.html",
     "eslint.config.js": ".prettierrc, eslint.config.*, prettier.config.*, .prettierignore",

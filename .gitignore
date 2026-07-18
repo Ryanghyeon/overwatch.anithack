@@ -7,17 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & Build
 node_modules
 dist
 dist-ssr
 *.local
 
+# Cache (TypeScript & ESLint)
+*.tsbuildinfo
+.eslintcache
+
 # Editor directories and files
 .vscode/*
-# 새로 clone된 환경에서 파일 네스팅을 위해 추가
+# 동일한 DX 및 formatting 환경 유지를 위한 필수 설정 파일 공유
 !.vscode/settings.json
-
-# 현재는 공통 익스텐션이 없으나 추후 협업을 위해 남겨둠
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -27,3 +30,7 @@ dist-ssr
 *.sln
 *.sw?
 
+# Env & Deploy
+.env
+.env.*
+.vercel

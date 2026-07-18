@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile } from 'react-turnstile';
 import {
   cn,
   isValidEmail,
@@ -235,8 +235,8 @@ export const Register = () => {
 
           <div className="mt-4 mb-5 flex justify-center">
             <Turnstile
-              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
-              onSuccess={(token) => setCaptchaToken(token)}
+              sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+              onVerify={(token) => setCaptchaToken(token)}
             />
           </div>
 

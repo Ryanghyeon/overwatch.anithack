@@ -1,7 +1,7 @@
 // src/pages/Ranking.tsx
 
 import { Link } from 'react-router-dom';
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useRanking } from '@/hooks';
 
 export const Ranking = () => {

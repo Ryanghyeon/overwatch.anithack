@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/utils';
 import { useAuthStore } from '@/store';
-import { useUser } from '@/hooks';
 import {
+  useUser,
   useMyReportsQuery,
   useUpdateProfileMutation,
   useCheckDuplicate,

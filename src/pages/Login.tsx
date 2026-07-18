@@ -1,11 +1,10 @@
 /* src/pages/Login.tsx */
 
-import { cn } from '@/utils/cn';
+import { cn, isValidEmail } from '@/utils';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Turnstile } from 'react-turnstile';
 import { useEmailLoginMutation, handleDiscordLogin } from '@/hooks';
-import { isValidEmail } from '@/utils';
 
 export const Login = () => {
   const { mutate: login, isPending, error } = useEmailLoginMutation();

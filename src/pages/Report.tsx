@@ -1,6 +1,6 @@
 // src/pages/Report.tsx
-import { cn } from '@/utils/cn';
-import { useReport } from '@/hooks/useReport';
+import { cn } from '@/utils';
+import { useReport } from '@/hooks';
 
 export const Report = () => {
   const {

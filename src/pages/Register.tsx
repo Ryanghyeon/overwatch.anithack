@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Turnstile } from '@marsidev/react-turnstile';
-import { cn } from '@/utils/cn';
 import {
+  cn,
   isValidEmail,
   isValidUsername,
   isValidPassword,
   isValidBattletag,
-} from '@/utils/validations';
+} from '@/utils';
 import { useRegisterMutation, useCheckDuplicate } from '@/hooks';
 
 // 내부 재사용 컴포넌트: InputGroup

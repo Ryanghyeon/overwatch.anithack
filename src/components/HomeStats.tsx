@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 // 부모(Home)가 데이터를 패칭해서 내려주도록 Props 정의
 // 통계 숫자는 포맷팅(예: "1,234")되어 넘어올 수 있으므로 string도 허용

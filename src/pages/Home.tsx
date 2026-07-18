@@ -1,6 +1,6 @@
 /* src/pages/Home.tsx */
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useSearch, useStats } from '@/hooks';
 
 // 컴포넌트 4인방

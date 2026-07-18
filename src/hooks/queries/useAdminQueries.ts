@@ -1,8 +1,8 @@
 /* src/hooks/queries/useAdminQueries.ts */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '@/store/useAuthStore';
-import { fetchAdminReports, deleteReportAndSyncRanking } from '@/api/admin';
+import { useAuthStore } from '@/store';
+import { fetchAdminReports, deleteReportAndSyncRanking } from '@/api';
 
 // 서버 데이터 읽기 (전체 신고 내역 조회)
 export const useAdminReportsQuery = () => {

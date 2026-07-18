@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { cn } from '@/utils/cn';
-import { isValidBattletag } from '@/utils/validations';
-import type { SyntheticEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
+import { cn, isValidBattletag } from '@/utils';
 
 interface SearchFormProps {
   searchQuery: string;

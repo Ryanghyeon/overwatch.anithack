@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store';
-import { useLogoutMutation } from '@/hooks/queries'; // Phase 2에서 만든 로그아웃 행동대장
+import { useLogoutMutation } from '@/hooks';
 
 export const useAutoLogout = () => {
   const { isLoggedIn } = useAuthStore();

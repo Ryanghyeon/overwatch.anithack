@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useAuthStore } from '@/store';
-import { useLogoutMutation } from '@/hooks';
-import { useUser } from '@/hooks';
+import { useLogoutMutation, useUser } from '@/hooks';
 
 export const HomeMenu = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);

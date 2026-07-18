@@ -2,6 +2,7 @@
 
 import { Outlet } from 'react-router-dom';
 import { useAutoLogout } from '@/hooks';
+import { Footer } from '@/components';
 
 export const Layout = () => {
   useAutoLogout(); // 유저가 이 레이아웃에 있는 동안 계속 감시
@@ -13,8 +14,7 @@ export const Layout = () => {
       <main className="flex grow flex-col">
         <Outlet />
       </main>
-
-      {/* TODO: 여기에 <Footer /> 컴포넌트가 들어갑니다 */}
+      <Footer />
     </div>
   );
 };

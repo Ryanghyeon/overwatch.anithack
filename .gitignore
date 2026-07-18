@@ -33,4 +33,5 @@ dist-ssr
 # Env & Deploy
 .env
 .env.*
+!.env.example
 .vercel

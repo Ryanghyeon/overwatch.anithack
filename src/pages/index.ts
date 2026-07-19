@@ -1,4 +1,4 @@
-export * from './Home/Home';
+export * from './Home';
 export * from './Login';
 export * from './Report';
 export * from './Ranking';

@@ -4,7 +4,8 @@ import { cn } from '@/utils';
 import { useSearch, useStats } from '@/hooks';
 
 // 컴포넌트 4인방
-import { SearchForm, SearchResult, HomeMenu, HomeStats } from '@/components';
+import { SearchForm, SearchResult } from '@/components';
+import { HomeMenu, HomeStats } from './components';
 
 export const Home = () => {
   // 비즈니스 로직 훅 (View와 완전히 분리됨)

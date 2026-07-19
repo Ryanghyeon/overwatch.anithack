@@ -1,9 +1,10 @@
-/* src/pages/Login.tsx */
+/* src/pages/Login/index.tsx */
 
 import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 import { Turnstile } from 'react-turnstile';
 import { handleDiscordLogin, useLoginForm } from '@/hooks';
+import { PasswordResetModal } from './PasswordResetModal';
 
 export const Login = () => {
   const {
@@ -15,8 +16,8 @@ export const Login = () => {
     setUiState,
     modalState,
     setModalState,
-    handlePasswordReset,
     onSubmit,
+    handlePasswordReset,
   } = useLoginForm();
 
   return (
@@ -193,86 +194,13 @@ export const Login = () => {
           </div>
         </form>
       </div>
-
       {/* 비밀번호 찾기 모달창 */}
-      {modalState.isOpen && (
-        <div
-          className={cn(
-            'fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm',
-          )}
-          onClick={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
-        >
-          <div
-            className={cn(
-              'flex w-full max-w-100 flex-col rounded-2xl p-8',
-              'border-border-main bg-bg-card text-text-main border shadow-[0_10px_40px_rgba(0,0,0,0.5)]',
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="mb-2 text-[20px] font-bold">비밀번호 찾기</h2>
-            <p className="text-text-muted mb-6 text-[13px] leading-relaxed">
-              가입하신 이메일 주소를 입력하시면,
-              <br />
-              비밀번호 재설정 링크를 보내드립니다.
-            </p>
-
-            <input
-              type="email"
-              value={modalState.email}
-              onChange={(e) =>
-                setModalState((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                  error: '',
-                }))
-              }
-              placeholder="가입한 이메일 입력"
-              className={cn(
-                'mb-4 w-full rounded-lg px-4 py-3 text-[15px] transition-all outline-none',
-                'border-border-main bg-bg-main border',
-                'focus:border-primary focus:bg-bg-card focus:ring-primary focus:ring-2',
-              )}
-            />
-            {modalState.error && (
-              <p className="mb-4 text-center text-[13px] font-medium text-[#ff4757]">
-                {modalState.error}
-              </p>
-            )}
-
-            <div className="mb-4 flex min-h-16.25 justify-center">
-              <Turnstile
-                sitekey="0x4AAAAAADwlrxyiGsogdlgW"
-                onVerify={(token) => {
-                  setUiState((prev) => ({ ...prev, turnstileToken: token }));
-                  setModalState((prev) => ({ ...prev, error: '' }));
-                }}
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handlePasswordReset}
-                disabled={modalState.isResetting}
-                className={cn(
-                  'bg-primary hover:bg-primary-hover flex-1 rounded-lg py-3 font-bold text-white transition-all',
-                )}
-              >
-                {modalState.isResetting ? '발송 중...' : '이메일 받기'}
-              </button>
-              <button
-                onClick={() =>
-                  setModalState((prev) => ({ ...prev, isOpen: false }))
-                }
-                className={cn(
-                  'border-border-main text-text-muted hover:bg-bg-main flex-1 rounded-lg border bg-transparent py-3 font-bold transition-all',
-                )}
-              >
-                취소
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <PasswordResetModal
+        modalState={modalState}
+        setModalState={setModalState}
+        setUiState={setUiState}
+        handlePasswordReset={handlePasswordReset}
+      />
     </div>
   );
 };

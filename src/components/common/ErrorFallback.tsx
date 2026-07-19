@@ -1,9 +1,6 @@
 import type { FallbackProps } from 'react-error-boundary';
 
-export default function ErrorFallback({
-  error,
-  resetErrorBoundary,
-}: FallbackProps) {
+export function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   // TODO: 프로젝트 시작 시 디자인에 맞춰 에러 페이지 UI를 수정
   return (
     <div>

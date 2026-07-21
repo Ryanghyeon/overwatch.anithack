@@ -1,111 +1,25 @@
-/* src/pages/Login.tsx */
+/* src/pages/Login/index.tsx */
 
-import { cn, isValidEmail } from '@/utils';
-import { useState } from 'react';
+import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 import { Turnstile } from 'react-turnstile';
-import { useEmailLoginMutation, handleDiscordLogin } from '@/hooks';
+import { handleDiscordLogin } from '@/hooks';
+import { useLoginForm } from './hooks';
+import { PasswordResetModal } from './components';
 
 export const Login = () => {
-  const { mutate: login, isPending, error } = useEmailLoginMutation();
-
-  // 메인 폼 유저 입력 데이터 묶기
-  const [formData, setFormData] = useState(() => ({
-    email: localStorage.getItem('savedEmail') || '', // 처음 마운트될 때 한번만 실행됨
-    password: '',
-    keepLoggedIn: false,
-    rememberEmail: !!localStorage.getItem('savedEmail'),
-  }));
-
-  // 메인 폼 에러 & 검증 상태 묶기
-  const [uiState, setUiState] = useState({
-    failedAttempts: 0,
-    localError: '',
-    turnstileToken: null as string | null,
-  });
-
-  // 비밀번호 찾기(모달) 전용 상태 묶기
-  const [modalState, setModalState] = useState({
-    isOpen: false,
-    email: '',
-    isResetting: false,
-    error: '',
-  });
-
-  const onSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-
-    if (uiState.failedAttempts >= 5 && !uiState.turnstileToken) {
-      return setUiState((prev) => ({
-        ...prev,
-        localError: '안전한 환경인지 확인 중입니다..',
-      }));
-    }
-
-    if (!formData.email || !formData.password) {
-      return setUiState((prev) => ({
-        ...prev,
-        localError: '이메일과 비밀번호를 모두 입력해주세요.',
-      }));
-    }
-    if (!isValidEmail(formData.email)) {
-      return setUiState((prev) => ({
-        ...prev,
-        localError: '올바른 이메일 형식을 입력해 주세요.',
-      }));
-    }
-
-    setUiState((prev) => ({ ...prev, localError: '' }));
-    // 로컬스토리지 이메일 저장
-    if (formData.rememberEmail) {
-      localStorage.setItem('savedEmail', formData.email);
-    } else {
-      localStorage.removeItem('savedEmail');
-    }
-
-    // 로그인 실행
-    login(
-      {
-        email: formData.email,
-        password: formData.password,
-        keepLoggedIn: formData.keepLoggedIn,
-      },
-      {
-        onError: () =>
-          setUiState((prev) => ({
-            ...prev,
-            failedAttempts: prev.failedAttempts + 1,
-          })),
-      },
-    );
-  };
-
-  const handlePasswordReset = () => {
-    if (!modalState.email)
-      return setModalState((prev) => ({
-        ...prev,
-        error: '가입하신 이메일 주소를 입력해 주세요.',
-      }));
-    if (!isValidEmail(modalState.email)) {
-      return setModalState((prev) => ({
-        ...prev,
-        error: '올바른 이메일 형식을 입력해 주세요.',
-      }));
-    }
-
-    setModalState((prev) => ({ ...prev, isResetting: true }));
-    setTimeout(() => {
-      alert(
-        '비밀번호 재설정 링크가 이메일로 발송되었습니다!\n메일함을 확인해 주세요.',
-      );
-      setModalState({
-        isOpen: false,
-        email: '',
-        isResetting: false,
-        error: '',
-      }); // 전체 초기화
-    }, 1000);
-  };
+  const {
+    isPending,
+    error,
+    formData,
+    setFormData,
+    uiState,
+    setUiState,
+    modalState,
+    setModalState,
+    onSubmit,
+    handlePasswordReset,
+  } = useLoginForm();
 
   return (
     <div className="flex grow items-center justify-center p-5">
@@ -281,86 +195,13 @@ export const Login = () => {
           </div>
         </form>
       </div>
-
       {/* 비밀번호 찾기 모달창 */}
-      {modalState.isOpen && (
-        <div
-          className={cn(
-            'fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm',
-          )}
-          onClick={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
-        >
-          <div
-            className={cn(
-              'flex w-full max-w-100 flex-col rounded-2xl p-8',
-              'border-border-main bg-bg-card text-text-main border shadow-[0_10px_40px_rgba(0,0,0,0.5)]',
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="mb-2 text-[20px] font-bold">비밀번호 찾기</h2>
-            <p className="text-text-muted mb-6 text-[13px] leading-relaxed">
-              가입하신 이메일 주소를 입력하시면,
-              <br />
-              비밀번호 재설정 링크를 보내드립니다.
-            </p>
-
-            <input
-              type="email"
-              value={modalState.email}
-              onChange={(e) =>
-                setModalState((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                  error: '',
-                }))
-              }
-              placeholder="가입한 이메일 입력"
-              className={cn(
-                'mb-4 w-full rounded-lg px-4 py-3 text-[15px] transition-all outline-none',
-                'border-border-main bg-bg-main border',
-                'focus:border-primary focus:bg-bg-card focus:ring-primary focus:ring-2',
-              )}
-            />
-            {modalState.error && (
-              <p className="mb-4 text-center text-[13px] font-medium text-[#ff4757]">
-                {modalState.error}
-              </p>
-            )}
-
-            <div className="mb-4 flex min-h-16.25 justify-center">
-              <Turnstile
-                sitekey="0x4AAAAAADwlrxyiGsogdlgW"
-                onVerify={(token) => {
-                  setUiState((prev) => ({ ...prev, turnstileToken: token }));
-                  setModalState((prev) => ({ ...prev, error: '' }));
-                }}
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handlePasswordReset}
-                disabled={modalState.isResetting}
-                className={cn(
-                  'bg-primary hover:bg-primary-hover flex-1 rounded-lg py-3 font-bold text-white transition-all',
-                )}
-              >
-                {modalState.isResetting ? '발송 중...' : '이메일 받기'}
-              </button>
-              <button
-                onClick={() =>
-                  setModalState((prev) => ({ ...prev, isOpen: false }))
-                }
-                className={cn(
-                  'border-border-main text-text-muted hover:bg-bg-main flex-1 rounded-lg border bg-transparent py-3 font-bold transition-all',
-                )}
-              >
-                취소
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <PasswordResetModal
+        modalState={modalState}
+        setModalState={setModalState}
+        setUiState={setUiState}
+        handlePasswordReset={handlePasswordReset}
+      />
     </div>
   );
 };

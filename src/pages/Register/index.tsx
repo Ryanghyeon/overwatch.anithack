@@ -1,6 +1,6 @@
 import { Turnstile } from 'react-turnstile';
 import { cn } from '@/utils';
-import { useRegisterForm } from '@/hooks';
+import { useRegisterForm } from './hooks';
 import { InputGroup } from '@/components';
 
 // 메인 페이지 컴포넌트: Register

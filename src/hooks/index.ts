@@ -5,4 +5,3 @@ export * from './useStats';
 export * from './useReport';
 export * from './useCopyToClipboard';
 export * from './useLoginForm';
-export * from './useRegisterForm';

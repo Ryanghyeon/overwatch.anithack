@@ -3,7 +3,8 @@
 import { cn } from '@/utils';
 import { Link } from 'react-router-dom';
 import { Turnstile } from 'react-turnstile';
-import { handleDiscordLogin, useLoginForm } from '@/hooks';
+import { handleDiscordLogin } from '@/hooks';
+import { useLoginForm } from './hooks';
 import { PasswordResetModal } from './components';
 
 export const Login = () => {
